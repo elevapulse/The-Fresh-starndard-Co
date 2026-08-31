@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Stripe Sandbox Test — The Fresh Standard Co.</title>
+<style>
+:root{--forest:#23392d;--sage:#7f9073;--cream:#f7f5ef;--ink:#1c2922}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;display:grid;place-items:center;padding:24px}
+.card{width:min(620px,100%);background:#fff;border:1px solid #dfe4dc;border-radius:28px;padding:36px;box-shadow:0 24px 70px rgba(35,57,45,.11)}
+.badge{display:inline-block;background:#e6ece1;color:var(--forest);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:8px 11px;border-radius:999px}
+h1{font-family:Georgia,serif;font-size:40px;line-height:1.05;margin:18px 0 12px}p{line-height:1.65;color:#68716b}
+label{font-size:12px;font-weight:800;display:grid;gap:7px;margin-top:14px}input{font:inherit;padding:14px;border:1px solid #d7ddd5;border-radius:13px;width:100%}
+button{margin-top:20px;width:100%;border:0;border-radius:999px;background:var(--forest);color:#fff;padding:16px 20px;font:inherit;font-weight:800;cursor:pointer}
+button:disabled{opacity:.55;cursor:wait}.status{margin-top:16px;padding:14px;border-radius:14px;background:#f3f6f1;display:none}.status.show{display:block}
+.small{font-size:12px;color:#7a837d;margin-top:18px}.ok{color:#315f3f}.err{color:#9a342c}
+</style>
+</head>
+<body>
+<main class="card">
+<span class="badge">Sandbox only</span>
+<h1>Test saved-card booking</h1>
+<p>This page is not linked from the public website. It verifies that Netlify can create a Stripe Checkout session in <strong>setup mode</strong>, so a test card can be saved without charging real money.</p>
+<form id="f">
+<label>Name<input name="name" autocomplete="name" value="Test Customer"></label>
+<label>Email<input name="email" type="email" autocomplete="email" required placeholder="you@example.com"></label>
+<label>Test quote ID<input name="quoteId" value="TEST-001" required></label>
+<button type="submit">Open Stripe Sandbox Checkout →</button>
+</form>
+<div id="status" class="status"></div>
+<p class="small">Use Stripe test card data only on the Stripe-hosted page. No live charge is created by this step.</p>
+</main>
+<script>
+const qs=new URLSearchParams(location.search);
+const status=document.getElementById('status');
+if(qs.get('setup')==='success'){status.className='status show ok';status.textContent='✓ Stripe returned successfully. The test card setup completed.'}
+if(qs.get('setup')==='cancelled'){status.className='status show';status.textContent='Stripe Checkout was cancelled. No card was saved.'}
+
+document.getElementById('f').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const btn=e.currentTarget.querySelector('button');
+  btn.disabled=true; btn.textContent='Connecting to Stripe…';
+  status.className='status'; status.textContent='';
+  try{
+    const data=Object.fromEntries(new FormData(e.currentTarget));
+    const r=await fetch('/.netlify/functions/create-card-setup',{
+      method:'POST',
+      headers:{'content-type':'application/json'},
+      body:JSON.stringify(data)
+    });
+    const j=await r.json();
+    if(!r.ok) throw new Error(j.error||'Could not start Stripe Checkout.');
+    location.href=j.url;
+  }catch(err){
+    status.className='status show err';
+    status.textContent=err.message;
+    btn.disabled=false; btn.textContent='Open Stripe Sandbox Checkout →';
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+V23 changes only:
+- Added real /terms/ page.
+- Added real /privacy/ page.
+- Updated Terms/Privacy links in index.html where they used #terms or #privacy.
+- Public website design otherwise left unchanged.
+- Stripe sandbox files from V22 preserved.
+- After HTTPS is active, use:
+  https://thefreshstandardco.com/terms
+  https://thefreshstandardco.com/privacy
