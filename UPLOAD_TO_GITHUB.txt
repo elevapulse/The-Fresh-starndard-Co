@@ -1,0 +1,18 @@
+UPLOAD THE CONTENTS OF THIS FOLDER TO THE ROOT OF THE GITHUB REPOSITORY.
+
+Required root items:
+- index.html
+- quote.html
+- stripe-test.html
+- netlify.toml
+- privacy/
+- terms/
+- netlify/
+
+Required backend files:
+- netlify/functions/stripe-health.mjs
+- netlify/functions/create-card-setup.mjs
+- netlify/functions/stripe-webhook.mjs
+
+Do NOT upload only the ZIP.
+Do NOT put these files inside an extra parent folder in GitHub.
