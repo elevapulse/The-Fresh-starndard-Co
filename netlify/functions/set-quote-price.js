@@ -8,13 +8,7 @@ function json(data, status = 200) {
   });
 }
 
-
 export default async (request) => {
-
-  /*
-    Only POST requests are allowed.
-  */
-
   if (request.method !== "POST") {
     return json(
       {
@@ -25,14 +19,8 @@ export default async (request) => {
     );
   }
 
-
-  /*
-    ADMIN AUTHENTICATION
-  */
-
   const adminPassword =
     process.env.ADMIN_PASSWORD;
-
 
   const suppliedPassword =
     String(
@@ -40,7 +28,6 @@ export default async (request) => {
         "x-admin-password"
       ) || ""
     );
-
 
   if (!adminPassword) {
     return json(
@@ -52,7 +39,6 @@ export default async (request) => {
       500
     );
   }
-
 
   if (
     !suppliedPassword ||
@@ -67,18 +53,11 @@ export default async (request) => {
     );
   }
 
-
-  /*
-    DATABASE CONFIGURATION
-  */
-
   const supabaseUrl =
     process.env.SUPABASE_URL;
 
-
   const serviceRoleKey =
     process.env.SUPABASE_SERVICE_ROLE_KEY;
-
 
   if (
     !supabaseUrl ||
@@ -94,13 +73,7 @@ export default async (request) => {
     );
   }
 
-
-  /*
-    READ REQUEST
-  */
-
   let body;
-
 
   try {
     body = await request.json();
@@ -114,16 +87,13 @@ export default async (request) => {
     );
   }
 
-
   const quoteId =
     String(
       body.quote_id || ""
     ).trim();
 
-
   const price =
     Number(body.price);
-
 
   if (!quoteId) {
     return json(
@@ -134,7 +104,6 @@ export default async (request) => {
       400
     );
   }
-
 
   if (
     !Number.isFinite(price) ||
@@ -151,21 +120,11 @@ export default async (request) => {
     );
   }
 
-
-  /*
-    Convert dollars to cents.
-
-    Example:
-    $159.00 → 15900
-  */
-
   const quotedPrice =
     Math.round(price * 100);
 
-
   const baseUrl =
     supabaseUrl.replace(/\/$/, "");
-
 
   const endpoint =
     `${baseUrl}` +
@@ -173,23 +132,15 @@ export default async (request) => {
       quoteId
     )}`;
 
-
   /*
-    STEP 1:
-    GET THE CURRENT QUOTE FIRST.
-
-    We do this BEFORE changing the price.
-
-    This is what prevents someone from
-    bypassing the dashboard and changing
-    an already accepted price.
+    FIRST:
+    Retrieve the existing quote BEFORE
+    allowing any price changes.
   */
 
   let existingRes;
 
-
   try {
-
     existingRes =
       await fetch(
         `${endpoint}&select=*`,
@@ -208,15 +159,12 @@ export default async (request) => {
           }
         }
       );
-
   } catch (error) {
-
     return json(
       {
         ok: false,
         error:
           "Could not connect to database.",
-
         detail:
           error?.message || null
       },
@@ -224,19 +172,15 @@ export default async (request) => {
     );
   }
 
-
   const existingData =
     await existingRes
       .json()
       .catch(() => null);
 
-
   if (!existingRes.ok) {
-
     return json(
       {
         ok: false,
-
         error:
           existingData?.message ||
           existingData?.error ||
@@ -246,15 +190,12 @@ export default async (request) => {
     );
   }
 
-
   const existingQuote =
     Array.isArray(existingData)
       ? existingData[0]
       : existingData;
 
-
   if (!existingQuote) {
-
     return json(
       {
         ok: false,
@@ -264,18 +205,13 @@ export default async (request) => {
     );
   }
 
-
   /*
-    PRICE LOCK
+    PRICE LOCK:
 
-    ONLY these statuses may have
-    their quote price changed:
+    Only NEW and QUOTED requests
+    can have their price changed.
 
-    new
-    quoted
-
-    Everything after acceptance
-    is locked.
+    Once accepted, the price is final.
   */
 
   const editableStatuses = [
@@ -283,20 +219,16 @@ export default async (request) => {
     "quoted"
   ];
 
-
   if (
     !editableStatuses.includes(
       existingQuote.status
     )
   ) {
-
     return json(
       {
         ok: false,
-
         error:
           "This quote is locked and the agreed price can no longer be changed.",
-
         status:
           existingQuote.status
       },
@@ -304,32 +236,22 @@ export default async (request) => {
     );
   }
 
-
   /*
-    PRESERVE EXISTING OFFER TOKEN.
-
-    If this quote already has a customer
-    offer link, keep that same link.
-
-    Only create a new token if the quote
-    does not have one yet.
+    Keep the SAME customer offer link
+    if one already exists.
   */
 
   const quoteToken =
     existingQuote.quote_token ||
     crypto.randomUUID();
 
-
   /*
-    STEP 2:
-    UPDATE THE QUOTE
+    NOW we are allowed to update it.
   */
 
   let dbRes;
 
-
   try {
-
     dbRes =
       await fetch(
         endpoint,
@@ -366,16 +288,12 @@ export default async (request) => {
             })
         }
       );
-
   } catch (error) {
-
     return json(
       {
         ok: false,
-
         error:
           "Could not connect to database.",
-
         detail:
           error?.message || null
       },
@@ -383,19 +301,15 @@ export default async (request) => {
     );
   }
 
-
   const dbData =
     await dbRes
       .json()
       .catch(() => null);
 
-
   if (!dbRes.ok) {
-
     return json(
       {
         ok: false,
-
         error:
           dbData?.message ||
           dbData?.error ||
@@ -405,15 +319,12 @@ export default async (request) => {
     );
   }
 
-
   const quote =
     Array.isArray(dbData)
       ? dbData[0]
       : dbData;
 
-
   if (!quote) {
-
     return json(
       {
         ok: false,
@@ -422,11 +333,6 @@ export default async (request) => {
       404
     );
   }
-
-
-  /*
-    SUCCESS
-  */
 
   return json({
     ok: true,
