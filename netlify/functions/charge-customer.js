@@ -21,7 +21,7 @@ async function stripePost(
   path,
   secretKey,
   params,
-  idempotencyKey = null
+  idempotencyKey
 ) {
   const headers =
     stripeHeaders(secretKey);
@@ -56,9 +56,6 @@ async function stripePost(
     error.stripeCode =
       data?.error?.code || null;
 
-    error.declineCode =
-      data?.error?.decline_code || null;
-
     error.paymentIntent =
       data?.error?.payment_intent || null;
 
@@ -69,10 +66,106 @@ async function stripePost(
 }
 
 
+async function getQuote(
+  quoteId,
+  supabaseUrl,
+  serviceRoleKey
+) {
+  const endpoint =
+    `${supabaseUrl.replace(/\/$/, "")}` +
+    `/rest/v1/quotes` +
+    `?id=eq.${encodeURIComponent(quoteId)}` +
+    `&select=*`;
+
+  const response =
+    await fetch(
+      endpoint,
+      {
+        headers: {
+          apikey: serviceRoleKey,
+          Authorization:
+            `Bearer ${serviceRoleKey}`
+        }
+      }
+    );
+
+  const data =
+    await response
+      .json()
+      .catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(
+      data?.message ||
+      "Could not retrieve booking."
+    );
+  }
+
+  return Array.isArray(data)
+    ? data[0]
+    : null;
+}
+
+
+async function updateQuote(
+  quoteId,
+  values,
+  supabaseUrl,
+  serviceRoleKey
+) {
+  const endpoint =
+    `${supabaseUrl.replace(/\/$/, "")}` +
+    `/rest/v1/quotes` +
+    `?id=eq.${encodeURIComponent(quoteId)}`;
+
+  const response =
+    await fetch(
+      endpoint,
+      {
+        method: "PATCH",
+
+        headers: {
+          apikey: serviceRoleKey,
+
+          Authorization:
+            `Bearer ${serviceRoleKey}`,
+
+          "content-type":
+            "application/json",
+
+          Prefer:
+            "return=representation"
+        },
+
+        body:
+          JSON.stringify(values)
+      }
+    );
+
+  const data =
+    await response
+      .json()
+      .catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(
+      data?.message ||
+      data?.error ||
+      "Could not update booking."
+    );
+  }
+
+  return Array.isArray(data)
+    ? data[0]
+    : data;
+}
+
+
 export default async (request) => {
 
   /*
-    Only POST is allowed.
+    Only the owner dashboard should POST
+    to this function.
   */
 
   if (request.method !== "POST") {
@@ -121,15 +214,16 @@ export default async (request) => {
 
 
   /*
-    Protect this endpoint with the same
-    owner password used by the dashboard.
+    Require the owner password.
+
+    The Stripe secret and Supabase service
+    key never leave the server.
   */
 
   const suppliedPassword =
     request.headers.get(
       "x-admin-password"
     );
-
 
   if (
     !suppliedPassword ||
@@ -146,12 +240,10 @@ export default async (request) => {
 
 
   /*
-    Read request body.
+    Read the quote ID.
 
     IMPORTANT:
-    The browser sends ONLY the quote ID.
-
-    It does NOT tell us how much to charge.
+    The browser does NOT send us the amount.
   */
 
   let body;
@@ -171,9 +263,7 @@ export default async (request) => {
 
 
   const quoteId =
-    String(
-      body.quote_id || ""
-    ).trim();
+    String(body.quote_id || "").trim();
 
 
   if (!quoteId) {
@@ -188,64 +278,25 @@ export default async (request) => {
 
 
   /*
-    Retrieve the booking from Supabase.
-
-    Price and Stripe information come
-    directly from our database.
+    Get the authoritative booking record
+    directly from Supabase.
   */
 
-  const quoteEndpoint =
-    `${supabaseUrl.replace(/\/$/, "")}` +
-    `/rest/v1/quotes` +
-    `?id=eq.${encodeURIComponent(quoteId)}` +
-    `&select=*`;
-
-
-  let quoteResponse;
+  let quote;
 
   try {
-
-    quoteResponse =
-      await fetch(
-        quoteEndpoint,
-        {
-          headers: {
-            apikey:
-              serviceRoleKey,
-
-            Authorization:
-              `Bearer ${serviceRoleKey}`
-          }
-        }
+    quote =
+      await getQuote(
+        quoteId,
+        supabaseUrl,
+        serviceRoleKey
       );
-
   } catch (error) {
-
     return json(
       {
         ok: false,
         error:
-          "Could not connect to database.",
-        detail:
-          error?.message || null
-      },
-      500
-    );
-  }
-
-
-  const quoteData =
-    await quoteResponse
-      .json()
-      .catch(() => null);
-
-
-  if (!quoteResponse.ok) {
-    return json(
-      {
-        ok: false,
-        error:
-          quoteData?.message ||
+          error.message ||
           "Could not retrieve booking."
       },
       500
@@ -253,18 +304,11 @@ export default async (request) => {
   }
 
 
-  const quote =
-    Array.isArray(quoteData)
-      ? quoteData[0]
-      : null;
-
-
   if (!quote) {
     return json(
       {
         ok: false,
-        error:
-          "Booking not found."
+        error: "Booking not found."
       },
       404
     );
@@ -272,18 +316,30 @@ export default async (request) => {
 
 
   /*
-    CRITICAL SAFETY CHECK:
+    Prevent duplicate charges.
 
-    The cleaning must have been explicitly
-    marked completed before charging.
+    A booking must be COMPLETED before
+    this endpoint will attempt payment.
   */
+
+  if (quote.status === "charged") {
+    return json(
+      {
+        ok: false,
+        error:
+          "This customer has already been charged."
+      },
+      409
+    );
+  }
+
 
   if (quote.status !== "completed") {
     return json(
       {
         ok: false,
         error:
-          `Customer cannot be charged while booking status is "${quote.status}".`
+          `This booking cannot be charged while its status is "${quote.status}".`
       },
       400
     );
@@ -291,7 +347,9 @@ export default async (request) => {
 
 
   /*
-    Make sure a valid server-side price exists.
+    Validate the SERVER-SIDE amount.
+
+    quoted_price is stored in cents.
   */
 
   const amount =
@@ -314,7 +372,8 @@ export default async (request) => {
 
 
   /*
-    Verify saved Stripe information exists.
+    The card must already have been saved
+    through Stripe Checkout.
   */
 
   const stripeCustomerId =
@@ -340,16 +399,16 @@ export default async (request) => {
 
 
   /*
-    Create and immediately confirm an
-    off-session PaymentIntent.
+    Build the Stripe PaymentIntent.
 
-    This attempts to charge the saved card.
+    off_session=true:
+    The customer is not actively entering
+    their card during this charge.
 
-    Currency is USD.
+    confirm=true:
+    Stripe immediately attempts payment.
 
-    off_session=true tells Stripe that
-    the customer is not actively entering
-    their card at this moment.
+    The amount comes ONLY from Supabase.
   */
 
   const params =
@@ -381,26 +440,26 @@ export default async (request) => {
 
 
   params.set(
-    "confirm",
-    "true"
-  );
-
-
-  params.set(
     "off_session",
     "true"
   );
 
 
   params.set(
+    "confirm",
+    "true"
+  );
+
+
+  params.set(
     "description",
-    `The Fresh Standard Co. cleaning ${quote.quote_number || quote.id}`
+    `The Fresh Standard Co. cleaning ${quote.quote_number || quoteId}`
   );
 
 
   params.set(
     "metadata[quote_id]",
-    quote.id
+    quoteId
   );
 
 
@@ -411,16 +470,16 @@ export default async (request) => {
 
 
   /*
-    Idempotency prevents accidental duplicate
-    charges if the request is retried.
+    Idempotency protects against accidental
+    duplicate Stripe PaymentIntents if the
+    owner double-clicks or the request retries.
 
-    For this booking's completion cycle,
-    Stripe will treat retries with this key
-    as the same payment request.
+    Each booking gets one deterministic
+    completion charge key.
   */
 
   const idempotencyKey =
-    `fresh-standard-charge-${quote.id}-${quote.completed_at || "completed"}`;
+    `fresh-standard-charge-${quoteId}`;
 
 
   let paymentIntent;
@@ -438,38 +497,35 @@ export default async (request) => {
 
   } catch (error) {
 
+    /*
+      Some cards can require additional
+      customer authentication.
+
+      In that case we do NOT mark the
+      booking as charged.
+    */
+
     console.error(
       "Stripe charge failed:",
       error.message
     );
 
 
-    /*
-      IMPORTANT:
-      We leave the booking as COMPLETED.
-
-      We do NOT mark it charged when
-      Stripe declines or requires additional
-      customer authentication.
-    */
-
     return json(
       {
         ok: false,
 
         error:
-          error.message ||
-          "Customer payment could not be completed.",
+          "The customer could not be charged.",
+
+        detail:
+          error.message,
 
         stripe_code:
           error.stripeCode || null,
 
-        decline_code:
-          error.declineCode || null,
-
-        requires_customer_action:
-          error.stripeCode ===
-            "authentication_required"
+        payment_intent_id:
+          error.paymentIntent?.id || null
       },
       402
     );
@@ -477,11 +533,13 @@ export default async (request) => {
 
 
   /*
-    Stripe must explicitly report success.
+    We only mark the booking charged if
+    Stripe explicitly reports success.
   */
 
   if (
-    paymentIntent.status !== "succeeded"
+    paymentIntent.status !==
+    "succeeded"
   ) {
     return json(
       {
@@ -502,111 +560,66 @@ export default async (request) => {
 
 
   /*
-    Stripe successfully charged the card.
+    Stripe succeeded.
 
-    Now update Supabase.
+    NOW update Supabase.
   */
 
   const chargedAt =
     new Date().toISOString();
 
 
-  const updateEndpoint =
-    `${supabaseUrl.replace(/\/$/, "")}` +
-    `/rest/v1/quotes` +
-    `?id=eq.${encodeURIComponent(quote.id)}`;
-
-
-  let updateResponse;
+  let updatedQuote;
 
 
   try {
 
-    updateResponse =
-      await fetch(
-        updateEndpoint,
+    updatedQuote =
+      await updateQuote(
+        quoteId,
+
         {
-          method: "PATCH",
+          status:
+            "charged",
 
-          headers: {
-            apikey:
-              serviceRoleKey,
+          stripe_payment_intent_id:
+            paymentIntent.id,
 
-            Authorization:
-              `Bearer ${serviceRoleKey}`,
+          charged_at:
+            chargedAt
+        },
 
-            "content-type":
-              "application/json",
-
-            Prefer:
-              "return=representation"
-          },
-
-          body: JSON.stringify({
-            status:
-              "charged",
-
-            charged_at:
-              chargedAt,
-
-            stripe_payment_intent_id:
-              paymentIntent.id
-          })
-        }
+        supabaseUrl,
+        serviceRoleKey
       );
 
   } catch (error) {
 
     /*
-      IMPORTANT:
+      Important:
+      Stripe already charged successfully.
 
-      Stripe already succeeded at this point.
-
-      Because we used an idempotency key,
-      retrying the same request will NOT
-      create a second Stripe charge.
+      Return a special error instead of
+      attempting another payment.
     */
 
+    console.error(
+      "Payment succeeded but database update failed:",
+      error.message
+    );
+
+
     return json(
       {
         ok: false,
 
-        payment_succeeded:
-          true,
+        payment_succeeded: true,
 
         error:
-          "Payment succeeded, but the booking could not be updated.",
-
-        payment_intent_id:
-          paymentIntent.id,
+          "Stripe charged the customer, but the booking record could not be updated.",
 
         detail:
-          error?.message || null
-      },
-      500
-    );
-  }
-
-
-  const updatedData =
-    await updateResponse
-      .json()
-      .catch(() => null);
-
-
-  if (!updateResponse.ok) {
-
-    return json(
-      {
-        ok: false,
-
-        payment_succeeded:
-          true,
-
-        error:
-          updatedData?.message ||
-          updatedData?.error ||
-          "Payment succeeded, but the booking could not be updated.",
+          error.message,
 
         payment_intent_id:
           paymentIntent.id
@@ -616,16 +629,6 @@ export default async (request) => {
   }
 
 
-  const updatedQuote =
-    Array.isArray(updatedData)
-      ? updatedData[0]
-      : updatedData;
-
-
-  /*
-    Everything succeeded.
-  */
-
   return json({
     ok: true,
 
@@ -633,26 +636,30 @@ export default async (request) => {
       "Customer charged successfully.",
 
     quote_id:
-      quote.id,
+      quoteId,
 
-    quote_number:
-      quote.quote_number,
+    status:
+      updatedQuote?.status ||
+      "charged",
 
     amount:
       amount,
 
     amount_formatted:
-      `$${(amount / 100).toFixed(2)}`,
+      (amount / 100)
+        .toLocaleString(
+          "en-US",
+          {
+            style: "currency",
+            currency: "USD"
+          }
+        ),
 
     payment_intent_id:
       paymentIntent.id,
 
     payment_status:
       paymentIntent.status,
-
-    status:
-      updatedQuote?.status ||
-      "charged",
 
     charged_at:
       updatedQuote?.charged_at ||
