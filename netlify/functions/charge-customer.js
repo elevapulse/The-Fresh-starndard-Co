@@ -56,6 +56,12 @@ async function stripePost(
     error.stripeCode =
       data?.error?.code || null;
 
+    error.declineCode =
+      data?.error?.decline_code || null;
+
+    error.stripeType =
+      data?.error?.type || null;
+
     error.paymentIntent =
       data?.error?.payment_intent || null;
 
@@ -158,6 +164,83 @@ async function updateQuote(
   return Array.isArray(data)
     ? data[0]
     : data;
+}
+
+
+function classifyStripeFailure(error) {
+  const stripeCode =
+    String(
+      error?.stripeCode || ""
+    ).toLowerCase();
+
+  const declineCode =
+    String(
+      error?.declineCode || ""
+    ).toLowerCase();
+
+  const paymentIntentStatus =
+    String(
+      error?.paymentIntent?.status || ""
+    ).toLowerCase();
+
+
+  const authenticationRequired =
+    stripeCode ===
+      "authentication_required" ||
+
+    declineCode ===
+      "authentication_required" ||
+
+    paymentIntentStatus ===
+      "requires_action";
+
+
+  if (authenticationRequired) {
+    return {
+      failure_type:
+        "authentication_required",
+
+      customer_action_required:
+        true,
+
+      customer_message:
+        "The customer's bank requires additional authentication before this payment can be completed."
+    };
+  }
+
+
+  const cardDeclined =
+    stripeCode ===
+      "card_declined" ||
+
+    error?.stripeType ===
+      "card_error";
+
+
+  if (cardDeclined) {
+    return {
+      failure_type:
+        "card_declined",
+
+      customer_action_required:
+        true,
+
+      customer_message:
+        "The customer's saved payment method was declined. A new payment method is required."
+    };
+  }
+
+
+  return {
+    failure_type:
+      "payment_failed",
+
+    customer_action_required:
+      false,
+
+    customer_message:
+      "Stripe could not complete this payment. Review the payment before trying again."
+  };
 }
 
 
@@ -498,17 +581,26 @@ export default async (request) => {
   } catch (error) {
 
     /*
-      Some cards can require additional
-      customer authentication.
+      IMPORTANT:
 
-      In that case we do NOT mark the
-      booking as charged.
+      Stripe did NOT report a successful charge.
+
+      Classify the failure so the dashboard
+      knows whether the customer needs to
+      authenticate, replace their card, or
+      whether the payment simply needs review.
+
+      We do NOT mark the booking charged.
     */
 
     console.error(
       "Stripe charge failed:",
       error.message
     );
+
+
+    const failure =
+      classifyStripeFailure(error);
 
 
     return json(
@@ -521,8 +613,23 @@ export default async (request) => {
         detail:
           error.message,
 
+        failure_type:
+          failure.failure_type,
+
+        customer_action_required:
+          failure.customer_action_required,
+
+        customer_message:
+          failure.customer_message,
+
         stripe_code:
           error.stripeCode || null,
+
+        decline_code:
+          error.declineCode || null,
+
+        payment_status:
+          error.paymentIntent?.status || null,
 
         payment_intent_id:
           error.paymentIntent?.id || null
@@ -541,12 +648,33 @@ export default async (request) => {
     paymentIntent.status !==
     "succeeded"
   ) {
+
+    const authenticationRequired =
+      paymentIntent.status ===
+      "requires_action";
+
+
     return json(
       {
         ok: false,
 
         error:
-          "Stripe did not confirm the payment.",
+          authenticationRequired
+            ? "The customer must authenticate this payment."
+            : "Stripe did not confirm the payment.",
+
+        failure_type:
+          authenticationRequired
+            ? "authentication_required"
+            : "payment_failed",
+
+        customer_action_required:
+          authenticationRequired,
+
+        customer_message:
+          authenticationRequired
+            ? "The customer's bank requires additional authentication before this payment can be completed."
+            : "Stripe could not complete this payment. Review the payment before trying again.",
 
         payment_status:
           paymentIntent.status,
