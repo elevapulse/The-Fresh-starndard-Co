@@ -381,6 +381,63 @@
       line-height: 1.5;
     }
 
+    /* BOOKING ACTION */
+
+    .booking-action {
+      margin-top: 18px;
+      padding: 18px;
+      background: #f3f4ef;
+      border-radius: 14px;
+    }
+
+    .booking-action-title {
+      font-family: Georgia, serif;
+      font-size: 20px;
+      margin-bottom: 7px;
+    }
+
+    .booking-action-text {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    .complete-button {
+      width: 100%;
+      border: 0;
+      background: var(--sage);
+      color: white;
+      padding: 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .complete-button:disabled {
+      opacity: 0.55;
+      cursor: wait;
+    }
+
+    .completed-box {
+      margin-top: 18px;
+      padding: 18px;
+      background: #e8efe9;
+      border-radius: 14px;
+    }
+
+    .completed-title {
+      font-family: Georgia, serif;
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+
+    .completed-text {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
     .empty,
     .loading {
       background: var(--paper);
@@ -706,6 +763,7 @@
 
                 <button
                   class="copy"
+                  id="copy-${q.id}"
                   onclick="copyOffer(
                     '${q.id}',
                     '${offerUrl(q)}'
@@ -725,6 +783,61 @@
             : `
               <div id="result-${q.id}"></div>
             `;
+
+
+        const bookingAction =
+          ["card_saved", "booked"].includes(q.status)
+            ? `
+              <div
+                class="booking-action"
+                id="booking-action-${q.id}"
+              >
+                <div class="booking-action-title">
+                  Card Saved
+                </div>
+
+                <div class="booking-action-text">
+                  The customer's payment method is secured.
+                  When the cleaning has actually been completed,
+                  mark it complete below.
+                  This will NOT charge the customer.
+                </div>
+
+                <button
+                  class="complete-button"
+                  id="complete-${q.id}"
+                  onclick="markCleaningComplete('${q.id}')"
+                >
+                  Mark Cleaning Complete
+                </button>
+              </div>
+            `
+            : q.status === "completed"
+              ? `
+                <div class="completed-box">
+                  <div class="completed-title">
+                    Cleaning Completed ✓
+                  </div>
+
+                  <div class="completed-text">
+                    This cleaning has been marked complete.
+                    The customer has not been charged yet.
+                  </div>
+                </div>
+              `
+              : q.status === "charged"
+                ? `
+                  <div class="completed-box">
+                    <div class="completed-title">
+                      Payment Completed ✓
+                    </div>
+
+                    <div class="completed-text">
+                      This booking has already been charged.
+                    </div>
+                  </div>
+                `
+                : "";
 
 
         return `
@@ -874,6 +987,8 @@
                 </button>
 
                 ${existingOffer}
+
+                ${bookingAction}
 
               </div>
 
@@ -1149,6 +1264,84 @@
         "Copy this customer link:",
         url
       );
+
+    }
+  }
+
+
+  async function markCleaningComplete(quoteId) {
+
+    const button =
+      document.getElementById(
+        `complete-${quoteId}`
+      );
+
+    if (!button) {
+      return;
+    }
+
+    const confirmed =
+      window.confirm(
+        "Mark this cleaning as complete?\n\n" +
+        "This will NOT charge the customer."
+      );
+
+    if (!confirmed) {
+      return;
+    }
+
+    const originalText =
+      button.textContent;
+
+    button.disabled = true;
+    button.textContent =
+      "Marking Complete...";
+
+    try {
+
+      const response = await fetch(
+        "/.netlify/functions/mark-cleaning-complete",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json",
+            "x-admin-password": adminPassword
+          },
+
+          body: JSON.stringify({
+            quote_id: quoteId
+          })
+        }
+      );
+
+      const data =
+        await response.json();
+
+      if (!response.ok || !data.ok) {
+        throw new Error(
+          data.error ||
+          "Could not mark cleaning complete."
+        );
+      }
+
+      alert(
+        "Cleaning marked complete.\n\n" +
+        "The customer has NOT been charged."
+      );
+
+      await loadQuotes();
+
+    } catch (error) {
+
+      alert(
+        error.message ||
+        "Could not mark cleaning complete."
+      );
+
+      button.disabled = false;
+      button.textContent =
+        originalText;
 
     }
   }
