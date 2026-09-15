@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Your Cleaning Quote | The Fresh Standard Co.</title>
+
+  <meta name="robots" content="noindex,nofollow">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #f4f1e9;
+      color: #17352b;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 680px;
+      background: #fffdf8;
+      border-radius: 24px;
+      padding: 50px;
+      box-shadow: 0 20px 60px rgba(23, 53, 43, 0.10);
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 42px;
+    }
+
+    .brand-name {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 26px;
+      letter-spacing: 2px;
+      font-weight: 600;
+    }
+
+    .brand-sub {
+      margin-top: 7px;
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      opacity: 0.65;
+    }
+
+    .eyebrow {
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #758b78;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      margin: 0;
+      text-align: center;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 42px;
+      font-weight: 400;
+    }
+
+    .intro {
+      text-align: center;
+      color: #64716b;
+      line-height: 1.6;
+      margin: 15px auto 36px;
+      max-width: 500px;
+    }
+
+    .details {
+      border-top: 1px solid #e6e5df;
+      border-bottom: 1px solid #e6e5df;
+      padding: 25px 0;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 25px;
+      padding: 9px 0;
+    }
+
+    .label {
+      color: #7a827e;
+    }
+
+    .value {
+      text-align: right;
+      font-weight: 600;
+    }
+
+    .price-section {
+      text-align: center;
+      padding: 38px 0 32px;
+    }
+
+    .price-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #758b78;
+      font-weight: 700;
+    }
+
+    .price {
+      margin-top: 8px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 56px;
+      line-height: 1;
+    }
+
+    .price-note {
+      margin-top: 13px;
+      color: #7a827e;
+      font-size: 13px;
+    }
+
+    button {
+      width: 100%;
+      border: 0;
+      border-radius: 999px;
+      background: #17352b;
+      color: white;
+      padding: 18px 25px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .2s ease, opacity .2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: .55;
+      transform: none;
+    }
+
+    .terms {
+      text-align: center;
+      font-size: 12px;
+      color: #7a827e;
+      line-height: 1.6;
+      margin: 18px auto 0;
+      max-width: 480px;
+    }
+
+    .status {
+      text-align: center;
+      padding: 50px 20px;
+      color: #66736d;
+    }
+
+    .error {
+      color: #9a3f3f;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        padding: 35px 24px;
+        border-radius: 18px;
+      }
+
+      h1 {
+        font-size: 34px;
+      }
+
+      .price {
+        font-size: 48px;
+      }
+
+      .row {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="page">
+
+  <div class="card">
+
+    <div class="brand">
+      <div class="brand-name">THE FRESH</div>
+      <div class="brand-sub">Standard Co.</div>
+    </div>
+
+    <div id="loading" class="status">
+      Loading your quote...
+    </div>
+
+    <div id="error" class="status error hidden">
+      We couldn't find this quote. Please contact The Fresh Standard Co.
+    </div>
+
+    <div id="offer" class="hidden">
+
+      <div class="eyebrow">Your Cleaning Quote</div>
+
+      <h1 id="welcome">
+        Your fresh start is ready.
+      </h1>
+
+      <p class="intro">
+        Review your personalized cleaning quote below.
+        When you're ready, continue to securely confirm your booking.
+      </p>
+
+      <div class="details">
+
+        <div class="row">
+          <span class="label">Quote</span>
+          <span class="value" id="quoteNumber">—</span>
+        </div>
+
+        <div class="row">
+          <span class="label">Service</span>
+          <span class="value" id="service">—</span>
+        </div>
+
+        <div class="row" id="propertyRow">
+          <span class="label">Property</span>
+          <span class="value" id="property">—</span>
+        </div>
+
+        <div class="row" id="frequencyRow">
+          <span class="label">Frequency</span>
+          <span class="value" id="frequency">—</span>
+        </div>
+
+        <div class="row" id="sizeRow">
+          <span class="label">Property Details</span>
+          <span class="value" id="size">—</span>
+        </div>
+
+        <div class="row" id="zipRow">
+          <span class="label">ZIP Code</span>
+          <span class="value" id="zip">—</span>
+        </div>
+
+      </div>
+
+      <div class="price-section">
+
+        <div class="price-label">
+          Your Quote
+        </div>
+
+        <div class="price" id="price">
+          $0.00
+        </div>
+
+        <div class="price-note">
+          Your card will not be charged today.
+        </div>
+
+      </div>
+
+      <button id="acceptButton">
+        Accept &amp; Book
+      </button>
+
+      <div class="terms">
+        By continuing, you agree to The Fresh Standard Co.'s booking,
+        cancellation and payment terms. Your payment method will be
+        securely collected through Stripe.
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get("token");
+
+  const loading = document.getElementById("loading");
+  const errorBox = document.getElementById("error");
+  const offer = document.getElementById("offer");
+  const acceptButton = document.getElementById("acceptButton");
+
+  function showError(message) {
+    loading.classList.add("hidden");
+    offer.classList.add("hidden");
+
+    if (message) {
+      errorBox.textContent = message;
+    }
+
+    errorBox.classList.remove("hidden");
+  }
+
+  function hideRow(id) {
+    document.getElementById(id).classList.add("hidden");
+  }
+
+  async function loadOffer() {
+
+    if (!token) {
+      showError("This quote link is invalid.");
+      return;
+    }
+
+    try {
+
+      const response = await fetch(
+        "/.netlify/functions/get-quote-offer?token=" +
+        encodeURIComponent(token)
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.ok || !data.offer) {
+        throw new Error(data.error || "Offer not found");
+      }
+
+      const q = data.offer;
+
+      loading.classList.add("hidden");
+      offer.classList.remove("hidden");
+
+      if (q.customer_name) {
+        const firstName = q.customer_name.split(" ")[0];
+
+        document.getElementById("welcome").textContent =
+          `${firstName}, your fresh start is ready.`;
+      }
+
+      document.getElementById("quoteNumber").textContent =
+        q.quote_number || "—";
+
+      document.getElementById("service").textContent =
+        q.service_type || "—";
+
+      if (q.property_type) {
+        document.getElementById("property").textContent =
+          q.property_type;
+      } else {
+        hideRow("propertyRow");
+      }
+
+      if (q.frequency) {
+        document.getElementById("frequency").textContent =
+          q.frequency;
+      } else {
+        hideRow("frequencyRow");
+      }
+
+      const details = [];
+
+      if (q.bedrooms !== null && q.bedrooms !== undefined) {
+        details.push(`${q.bedrooms} bed`);
+      }
+
+      if (q.bathrooms !== null && q.bathrooms !== undefined) {
+        details.push(`${q.bathrooms} bath`);
+      }
+
+      if (q.square_feet) {
+        details.push(
+          `${Number(q.square_feet).toLocaleString()} sq ft`
+        );
+      }
+
+      if (details.length) {
+        document.getElementById("size").textContent =
+          details.join(" · ");
+      } else {
+        hideRow("sizeRow");
+      }
+
+      if (q.zip_code) {
+        document.getElementById("zip").textContent =
+          q.zip_code;
+      } else {
+        hideRow("zipRow");
+      }
+
+      const dollars = Number(q.quoted_price) / 100;
+
+      document.getElementById("price").textContent =
+        dollars.toLocaleString("en-US", {
+          style: "currency",
+          currency: "USD"
+        });
+
+    } catch (err) {
+      showError(
+        "We couldn't load this quote. Please contact The Fresh Standard Co."
+      );
+    }
+  }
+
+  acceptButton.addEventListener("click", async () => {
+
+    /*
+      NEXT STEP:
+      This button will call our Stripe Checkout function.
+
+      We are intentionally NOT putting Stripe price information
+      in the browser. The server will retrieve the real quote
+      amount from Supabase using this token.
+    */
+
+    acceptButton.disabled = true;
+    acceptButton.textContent = "Preparing secure checkout...";
+
+    alert(
+      "Your quote is ready. Secure booking will be connected in the next step."
+    );
+
+    acceptButton.disabled = false;
+    acceptButton.textContent = "Accept & Book";
+  });
+
+  loadOffer();
+</script>
+
+</body>
+</html>
