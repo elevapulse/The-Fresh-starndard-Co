@@ -381,7 +381,7 @@
       line-height: 1.5;
     }
 
-    /* BOOKING ACTION */
+    /* BOOKING ACTIONS */
 
     .booking-action {
       margin-top: 18px;
@@ -436,6 +436,50 @@
       color: var(--muted);
       font-size: 13px;
       line-height: 1.5;
+    }
+
+    .amount-due {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(23,53,43,.12);
+    }
+
+    .amount-label {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .amount-value {
+      font-family: Georgia, serif;
+      font-size: 28px;
+    }
+
+    .charge-button {
+      width: 100%;
+      margin-top: 15px;
+      border: 0;
+      background: var(--green);
+      color: white;
+      padding: 15px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .charge-button:disabled {
+      opacity: 0.55;
+      cursor: wait;
+    }
+
+    .payment-id {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+      word-break: break-all;
     }
 
     .empty,
@@ -785,59 +829,123 @@
             `;
 
 
-        const bookingAction =
-          ["card_saved", "booked"].includes(q.status)
-            ? `
-              <div
-                class="booking-action"
-                id="booking-action-${q.id}"
-              >
-                <div class="booking-action-title">
-                  Card Saved
-                </div>
+        let bookingAction = "";
 
-                <div class="booking-action-text">
-                  The customer's payment method is secured.
-                  When the cleaning has actually been completed,
-                  mark it complete below.
-                  This will NOT charge the customer.
-                </div>
 
-                <button
-                  class="complete-button"
-                  id="complete-${q.id}"
-                  onclick="markCleaningComplete('${q.id}')"
-                >
-                  Mark Cleaning Complete
-                </button>
+        if (
+          ["card_saved", "booked"]
+            .includes(q.status)
+        ) {
+
+          bookingAction = `
+            <div
+              class="booking-action"
+              id="booking-action-${q.id}"
+            >
+
+              <div class="booking-action-title">
+                Card Saved
               </div>
-            `
-            : q.status === "completed"
-              ? `
-                <div class="completed-box">
-                  <div class="completed-title">
-                    Cleaning Completed ✓
-                  </div>
 
-                  <div class="completed-text">
-                    This cleaning has been marked complete.
-                    The customer has not been charged yet.
-                  </div>
+              <div class="booking-action-text">
+                The customer's payment method is secured.
+                When the cleaning has actually been completed,
+                mark it complete below.
+                This will NOT charge the customer.
+              </div>
+
+              <button
+                class="complete-button"
+                id="complete-${q.id}"
+                onclick="markCleaningComplete('${q.id}')"
+              >
+                Mark Cleaning Complete
+              </button>
+
+            </div>
+          `;
+
+        } else if (q.status === "completed") {
+
+          bookingAction = `
+            <div class="completed-box">
+
+              <div class="completed-title">
+                Cleaning Completed ✓
+              </div>
+
+              <div class="completed-text">
+                This cleaning has been marked complete.
+                The customer's card has not been charged yet.
+              </div>
+
+              <div class="amount-due">
+
+                <div class="amount-label">
+                  Amount Due
                 </div>
-              `
-              : q.status === "charged"
-                ? `
-                  <div class="completed-box">
-                    <div class="completed-title">
-                      Payment Completed ✓
-                    </div>
 
-                    <div class="completed-text">
-                      This booking has already been charged.
+                <div class="amount-value">
+                  ${money(q.quoted_price)}
+                </div>
+
+              </div>
+
+              <button
+                class="charge-button"
+                id="charge-${q.id}"
+                onclick="chargeCustomer(
+                  '${q.id}',
+                  ${Number(q.quoted_price) || 0}
+                )"
+              >
+                Charge Customer — ${money(q.quoted_price)}
+              </button>
+
+            </div>
+          `;
+
+        } else if (q.status === "charged") {
+
+          bookingAction = `
+            <div class="completed-box">
+
+              <div class="completed-title">
+                Payment Completed ✓
+              </div>
+
+              <div class="completed-text">
+                This booking has been successfully charged.
+              </div>
+
+              <div class="amount-due">
+
+                <div class="amount-label">
+                  Amount Charged
+                </div>
+
+                <div class="amount-value">
+                  ${money(q.quoted_price)}
+                </div>
+
+              </div>
+
+              ${
+                q.stripe_payment_intent_id
+                  ? `
+                    <div class="payment-id">
+                      Stripe Payment ID:
+                      ${escapeHtml(
+                        q.stripe_payment_intent_id
+                      )}
                     </div>
-                  </div>
-                `
-                : "";
+                  `
+                  : ""
+              }
+
+            </div>
+          `;
+        }
 
 
         return `
@@ -935,6 +1043,7 @@
                   q.notes
                     ? `
                       <div class="notes">
+
                         <div class="detail-label">
                           Customer Notes
                         </div>
@@ -942,6 +1051,7 @@
                         <div class="detail-value">
                           ${escapeHtml(q.notes)}
                         </div>
+
                       </div>
                     `
                     : ""
@@ -1001,51 +1111,64 @@
 
 
   async function login() {
-    const password = passwordInput.value;
+
+    const password =
+      passwordInput.value;
 
     if (!password) {
+
       loginError.textContent =
         "Enter your admin password.";
 
       loginError.classList.remove("hidden");
+
       return;
     }
 
     loginButton.disabled = true;
-    loginButton.textContent = "Signing In...";
+
+    loginButton.textContent =
+      "Signing In...";
 
     loginError.classList.add("hidden");
 
     try {
 
-      const response = await fetch(
-        "/.netlify/functions/admin-auth",
-        {
-          method: "POST",
+      const response =
+        await fetch(
+          "/.netlify/functions/admin-auth",
+          {
+            method: "POST",
 
-          headers: {
-            "Content-Type": "application/json"
-          },
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
 
-          body: JSON.stringify({
-            password: password
-          })
-        }
-      );
+            body:
+              JSON.stringify({
+                password: password
+              })
+          }
+        );
 
-      const data = await response.json();
+      const data =
+        await response.json();
 
       if (!response.ok || !data.ok) {
         throw new Error(
-          data.error || "Sign in failed."
+          data.error ||
+          "Sign in failed."
         );
       }
 
-      adminPassword = password;
+      adminPassword =
+        password;
 
       passwordInput.value = "";
 
       loginPage.classList.add("hidden");
+
       dashboard.classList.remove("hidden");
 
       await loadQuotes();
@@ -1053,15 +1176,17 @@
     } catch (error) {
 
       loginError.textContent =
-        error.message || "Sign in failed.";
+        error.message ||
+        "Sign in failed.";
 
       loginError.classList.remove("hidden");
 
     } finally {
 
       loginButton.disabled = false;
-      loginButton.textContent = "Sign In";
 
+      loginButton.textContent =
+        "Sign In";
     }
   }
 
@@ -1076,24 +1201,31 @@
 
     try {
 
-      const response = await fetch(
-        "/.netlify/functions/admin-quotes",
-        {
-          headers: {
-            "x-admin-password": adminPassword
+      const response =
+        await fetch(
+          "/.netlify/functions/admin-quotes",
+          {
+            headers: {
+              "x-admin-password":
+                adminPassword
+            }
           }
-        }
-      );
+        );
 
-      const data = await response.json();
+      const data =
+        await response.json();
 
       if (!response.ok || !data.ok) {
+
         throw new Error(
-          data.error || "Could not load quotes."
+          data.error ||
+          "Could not load quotes."
         );
       }
 
-      renderQuotes(data.quotes || []);
+      renderQuotes(
+        data.quotes || []
+      );
 
     } catch (error) {
 
@@ -1105,7 +1237,6 @@
           )}
         </div>
       `;
-
     }
   }
 
@@ -1134,35 +1265,48 @@
       !Number.isFinite(price) ||
       price <= 0
     ) {
-      alert("Enter a valid quote price.");
+
+      alert(
+        "Enter a valid quote price."
+      );
+
       return;
     }
 
     button.disabled = true;
-    button.textContent = "Creating Offer...";
+
+    button.textContent =
+      "Creating Offer...";
 
     try {
 
-      const response = await fetch(
-        "/.netlify/functions/set-quote-price",
-        {
-          method: "POST",
+      const response =
+        await fetch(
+          "/.netlify/functions/set-quote-price",
+          {
+            method: "POST",
 
-          headers: {
-            "Content-Type": "application/json",
-            "x-admin-password": adminPassword
-          },
+            headers: {
+              "Content-Type":
+                "application/json",
 
-          body: JSON.stringify({
-            quote_id: quoteId,
-            price: price
-          })
-        }
-      );
+              "x-admin-password":
+                adminPassword
+            },
 
-      const data = await response.json();
+            body:
+              JSON.stringify({
+                quote_id: quoteId,
+                price: price
+              })
+          }
+        );
+
+      const data =
+        await response.json();
 
       if (!response.ok || !data.ok) {
+
         throw new Error(
           data.error ||
           "Could not create offer."
@@ -1196,6 +1340,7 @@
         .addEventListener(
           "click",
           () => {
+
             copyOffer(
               quoteId,
               data.offer_url
@@ -1221,10 +1366,10 @@
         button.textContent ===
         "Creating Offer..."
       ) {
+
         button.textContent =
           "Create Customer Offer";
       }
-
     }
   }
 
@@ -1236,7 +1381,9 @@
 
     try {
 
-      await navigator.clipboard.writeText(url);
+      await navigator
+        .clipboard
+        .writeText(url);
 
       const button =
         document.getElementById(
@@ -1251,11 +1398,15 @@
         button.textContent =
           "Copied ✓";
 
-        setTimeout(() => {
-          button.textContent =
-            original;
-        }, 1500);
+        setTimeout(
+          () => {
 
+            button.textContent =
+              original;
+
+          },
+          1500
+        );
       }
 
     } catch {
@@ -1264,12 +1415,13 @@
         "Copy this customer link:",
         url
       );
-
     }
   }
 
 
-  async function markCleaningComplete(quoteId) {
+  async function markCleaningComplete(
+    quoteId
+  ) {
 
     const button =
       document.getElementById(
@@ -1294,31 +1446,38 @@
       button.textContent;
 
     button.disabled = true;
+
     button.textContent =
       "Marking Complete...";
 
     try {
 
-      const response = await fetch(
-        "/.netlify/functions/mark-cleaning-complete",
-        {
-          method: "POST",
+      const response =
+        await fetch(
+          "/.netlify/functions/mark-cleaning-complete",
+          {
+            method: "POST",
 
-          headers: {
-            "Content-Type": "application/json",
-            "x-admin-password": adminPassword
-          },
+            headers: {
+              "Content-Type":
+                "application/json",
 
-          body: JSON.stringify({
-            quote_id: quoteId
-          })
-        }
-      );
+              "x-admin-password":
+                adminPassword
+            },
+
+            body:
+              JSON.stringify({
+                quote_id: quoteId
+              })
+          }
+        );
 
       const data =
         await response.json();
 
       if (!response.ok || !data.ok) {
+
         throw new Error(
           data.error ||
           "Could not mark cleaning complete."
@@ -1340,9 +1499,185 @@
       );
 
       button.disabled = false;
+
       button.textContent =
         originalText;
+    }
+  }
 
+
+  async function chargeCustomer(
+    quoteId,
+    displayedAmount
+  ) {
+
+    const button =
+      document.getElementById(
+        `charge-${quoteId}`
+      );
+
+    if (!button) {
+      return;
+    }
+
+
+    const formattedAmount =
+      money(displayedAmount);
+
+
+    const confirmed =
+      window.confirm(
+        `Charge this customer ${formattedAmount}?\n\n` +
+        "This will attempt to charge the saved card.\n\n" +
+        "Only continue if the cleaning has been completed."
+      );
+
+
+    if (!confirmed) {
+      return;
+    }
+
+
+    const secondConfirmation =
+      window.confirm(
+        `FINAL CONFIRMATION\n\n` +
+        `Charge ${formattedAmount} now?`
+      );
+
+
+    if (!secondConfirmation) {
+      return;
+    }
+
+
+    const originalText =
+      button.textContent;
+
+
+    button.disabled = true;
+
+    button.textContent =
+      "Processing Payment...";
+
+
+    try {
+
+      /*
+        IMPORTANT:
+        We send ONLY the quote ID.
+
+        The amount shown in the browser is
+        NOT trusted by the backend.
+
+        charge-customer.js retrieves the real
+        quoted_price directly from Supabase.
+      */
+
+      const response =
+        await fetch(
+          "/.netlify/functions/charge-customer",
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json",
+
+              "x-admin-password":
+                adminPassword
+            },
+
+            body:
+              JSON.stringify({
+                quote_id: quoteId
+              })
+          }
+        );
+
+
+      const data =
+        await response
+          .json()
+          .catch(() => null);
+
+
+      if (
+        !response.ok ||
+        !data ||
+        !data.ok
+      ) {
+
+        /*
+          Special safety case:
+
+          Stripe says payment succeeded,
+          but Supabase failed to update.
+
+          DO NOT tell the owner to retry.
+        */
+
+        if (
+          data &&
+          data.payment_succeeded
+        ) {
+
+          alert(
+            "IMPORTANT:\n\n" +
+            "Stripe successfully charged the customer, " +
+            "but the dashboard/database could not be updated.\n\n" +
+            "DO NOT CLICK CHARGE AGAIN.\n\n" +
+            "Stripe Payment ID:\n" +
+            (data.payment_intent_id || "Unknown")
+          );
+
+          button.disabled = true;
+
+          button.textContent =
+            "Payment Needs Review";
+
+          return;
+        }
+
+
+        const detail =
+          data?.detail
+            ? `\n\n${data.detail}`
+            : "";
+
+
+        throw new Error(
+          (
+            data?.error ||
+            "Could not charge customer."
+          ) +
+          detail
+        );
+      }
+
+
+      alert(
+        `Payment successful!\n\n` +
+        `${data.amount_formatted || formattedAmount} charged.\n\n` +
+        `Stripe Payment ID:\n` +
+        `${data.payment_intent_id || "—"}`
+      );
+
+
+      await loadQuotes();
+
+
+    } catch (error) {
+
+      alert(
+        error.message ||
+        "Could not charge customer."
+      );
+
+
+      button.disabled = false;
+
+      button.textContent =
+        originalText;
     }
   }
 
@@ -1352,10 +1687,10 @@
     adminPassword = "";
 
     dashboard.classList.add("hidden");
+
     loginPage.classList.remove("hidden");
 
     quotesContainer.innerHTML = "";
-
   }
 
 
@@ -1372,13 +1707,14 @@
       if (event.key === "Enter") {
         login();
       }
-
     }
   );
 
 
   document
-    .getElementById("refreshButton")
+    .getElementById(
+      "refreshButton"
+    )
     .addEventListener(
       "click",
       loadQuotes
@@ -1386,7 +1722,9 @@
 
 
   document
-    .getElementById("logoutButton")
+    .getElementById(
+      "logoutButton"
+    )
     .addEventListener(
       "click",
       logout
