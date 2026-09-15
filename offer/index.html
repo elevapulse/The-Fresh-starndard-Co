@@ -220,7 +220,9 @@
 
     <div id="offer" class="hidden">
 
-      <div class="eyebrow">Your Cleaning Quote</div>
+      <div class="eyebrow">
+        Your Cleaning Quote
+      </div>
 
       <h1 id="welcome">
         Your fresh start is ready.
@@ -322,14 +324,12 @@
   }
 
   async function loadOffer() {
-
     if (!token) {
       showError("This quote link is invalid.");
       return;
     }
 
     try {
-
       const response = await fetch(
         "/.netlify/functions/get-quote-offer?token=" +
         encodeURIComponent(token)
@@ -411,7 +411,9 @@
           currency: "USD"
         });
 
-    } catch (err) {
+    } catch (error) {
+      console.error(error);
+
       showError(
         "We couldn't load this quote. Please contact The Fresh Standard Co."
       );
@@ -419,25 +421,46 @@
   }
 
   acceptButton.addEventListener("click", async () => {
-
-    /*
-      NEXT STEP:
-      This button will call our Stripe Checkout function.
-
-      We are intentionally NOT putting Stripe price information
-      in the browser. The server will retrieve the real quote
-      amount from Supabase using this token.
-    */
-
     acceptButton.disabled = true;
     acceptButton.textContent = "Preparing secure checkout...";
 
-    alert(
-      "Your quote is ready. Secure booking will be connected in the next step."
-    );
+    try {
+      const response = await fetch(
+        "/.netlify/functions/create-checkout-session",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            token: token
+          })
+        }
+      );
 
-    acceptButton.disabled = false;
-    acceptButton.textContent = "Accept & Book";
+      const data = await response.json();
+
+      if (!response.ok || !data.ok || !data.checkout_url) {
+        throw new Error(
+          data.detail ||
+          data.error ||
+          "Could not start secure checkout."
+        );
+      }
+
+      window.location.href = data.checkout_url;
+
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        error.message ||
+        "We couldn't start secure checkout. Please try again."
+      );
+
+      acceptButton.disabled = false;
+      acceptButton.textContent = "Accept & Book";
+    }
   });
 
   loadOffer();
