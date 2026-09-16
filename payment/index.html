@@ -24,7 +24,6 @@
       --sage: #829381;
       --cream: #f4f1e9;
       --paper: #fffdf8;
-      --line: #dedfd8;
       --muted: #6e7772;
       --red: #9d4141;
     }
@@ -53,7 +52,8 @@
       padding: 48px 42px;
       box-shadow:
         0 20px 70px rgba(23, 53, 43, 0.10);
-      border: 1px solid rgba(23, 53, 43, 0.06);
+      border:
+        1px solid rgba(23, 53, 43, 0.06);
       text-align: center;
     }
 
@@ -135,10 +135,6 @@
       cursor: pointer;
     }
 
-    .button:hover {
-      opacity: 0.94;
-    }
-
     .button:disabled {
       opacity: 0.55;
       cursor: wait;
@@ -151,14 +147,22 @@
       line-height: 1.6;
     }
 
-    .error {
+    .message {
       margin-top: 25px;
       padding: 16px;
       border-radius: 14px;
-      background: #f5e8e8;
-      color: var(--red);
       font-size: 13px;
       line-height: 1.6;
+    }
+
+    .message.error {
+      background: #f5e8e8;
+      color: var(--red);
+    }
+
+    .message.success {
+      background: #e8efe9;
+      color: var(--green);
     }
 
     .hidden {
@@ -204,8 +208,8 @@
       <div class="description">
         Your cleaning service has been completed,
         but your original payment method could not
-        be processed. Please use the secure payment
-        button below to complete your payment.
+        be processed. Please continue below to
+        securely complete your payment.
       </div>
 
       <div class="secure-box">
@@ -215,9 +219,10 @@
         </div>
 
         <div class="secure-text">
-          Payment information is securely handled
-          by Stripe. The Fresh Standard Co. does not
-          receive or store your full card number.
+          Your payment information is securely
+          handled by Stripe. The Fresh Standard Co.
+          does not receive or store your full card
+          number.
         </div>
 
       </div>
@@ -231,13 +236,13 @@
       </button>
 
       <div
-        id="errorBox"
-        class="error hidden"
+        id="messageBox"
+        class="message hidden"
       ></div>
 
       <div class="footer-note">
-        The amount due is the price previously
-        agreed for your cleaning service.
+        You will be charged the price previously
+        agreed for your completed cleaning service.
       </div>
 
     </section>
@@ -251,9 +256,9 @@
         "paymentButton"
       );
 
-    const errorBox =
+    const messageBox =
       document.getElementById(
-        "errorBox"
+        "messageBox"
       );
 
 
@@ -262,26 +267,30 @@
         window.location.search
       );
 
+
     const token =
       String(
         params.get("token") || ""
       ).trim();
 
 
-    function showError(message) {
-      errorBox.textContent =
+    function showMessage(
+      message,
+      type = "error"
+    ) {
+      messageBox.textContent =
         message;
 
-      errorBox.classList.remove(
-        "hidden"
-      );
+      messageBox.className =
+        `message ${type}`;
     }
 
 
     if (!token) {
+
       paymentButton.disabled = true;
 
-      showError(
+      showMessage(
         "This payment link is invalid or incomplete."
       );
     }
@@ -301,52 +310,92 @@
         paymentButton.textContent =
           "Opening Secure Payment...";
 
-        errorBox.classList.add(
+
+        messageBox.classList.add(
           "hidden"
         );
 
 
         try {
 
-          /*
-            IMPORTANT:
+          const response =
+            await fetch(
+              "/.netlify/functions/create-payment-recovery",
+              {
+                method: "POST",
 
-            The customer-facing page does NOT
-            create the recovery session itself.
+                headers: {
+                  "Content-Type":
+                    "application/json"
+                },
 
-            Recovery Checkout links are created
-            from the private owner dashboard.
-
-            This page expects the Stripe Checkout
-            URL to be supplied as a secure URL
-            parameter after the owner generates it.
-          */
-
-          const checkoutUrl =
-            sessionStorage.getItem(
-              `fresh-payment-${token}`
+                body:
+                  JSON.stringify({
+                    token: token
+                  })
+              }
             );
 
 
-          if (!checkoutUrl) {
+          const data =
+            await response
+              .json()
+              .catch(() => null);
+
+
+          if (
+            !response.ok ||
+            !data ||
+            !data.ok
+          ) {
+
+            if (
+              data &&
+              data.already_paid
+            ) {
+
+              showMessage(
+                "This cleaning has already been paid. No additional payment is required.",
+                "success"
+              );
+
+              paymentButton.classList.add(
+                "hidden"
+              );
+
+              return;
+            }
+
+
             throw new Error(
-              "This payment session is no longer available. Please request a new secure payment link."
+              data?.error ||
+              "Secure payment could not be opened."
             );
           }
 
 
-          sessionStorage.removeItem(
-            `fresh-payment-${token}`
-          );
+          if (!data.checkout_url) {
+            throw new Error(
+              "Stripe did not return a secure checkout link."
+            );
+          }
 
+
+          /*
+            Redirect directly to the Stripe-hosted
+            Checkout Session.
+
+            This works across devices because
+            nothing depends on sessionStorage.
+          */
 
           window.location.href =
-            checkoutUrl;
+            data.checkout_url;
 
 
         } catch (error) {
 
-          showError(
+          showMessage(
             error.message ||
             "Secure payment could not be opened."
           );
