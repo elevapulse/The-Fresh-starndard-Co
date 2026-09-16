@@ -167,6 +167,15 @@ async function updateQuote(
 }
 
 
+/*
+  Classify Stripe failures.
+
+  Any failure that requires the customer to
+  authenticate, replace their card, contact
+  their bank, or use another payment method
+  should open the secure recovery flow.
+*/
+
 function classifyStripeFailure(error) {
   const stripeCode =
     String(
@@ -178,11 +187,20 @@ function classifyStripeFailure(error) {
       error?.declineCode || ""
     ).toLowerCase();
 
+  const stripeType =
+    String(
+      error?.stripeType || ""
+    ).toLowerCase();
+
   const paymentIntentStatus =
     String(
       error?.paymentIntent?.status || ""
     ).toLowerCase();
 
+
+  /*
+    Authentication / 3D Secure required.
+  */
 
   const authenticationRequired =
     stripeCode ===
@@ -204,32 +222,104 @@ function classifyStripeFailure(error) {
         true,
 
       customer_message:
-        "The customer's bank requires additional authentication before this payment can be completed."
+        "The customer's bank requires additional authentication. Send the customer the secure payment link to complete the payment."
     };
   }
 
+
+  /*
+    Insufficient funds.
+
+    The saved card cannot complete the charge.
+    The customer should be sent back through
+    secure Stripe Checkout so they can use
+    another payment method.
+  */
+
+  if (
+    declineCode ===
+      "insufficient_funds" ||
+
+    stripeCode ===
+      "insufficient_funds"
+  ) {
+    return {
+      failure_type:
+        "insufficient_funds",
+
+      customer_action_required:
+        true,
+
+      customer_message:
+        "The customer's saved payment method has insufficient funds. Send the customer the secure payment link so they can use another payment method."
+    };
+  }
+
+
+  /*
+    Other card declines.
+
+    Stripe commonly returns:
+      code = card_declined
+      decline_code = the specific reason
+
+    These should also use the recovery link.
+  */
 
   const cardDeclined =
     stripeCode ===
       "card_declined" ||
 
-    error?.stripeType ===
+    stripeType ===
       "card_error";
 
 
   if (cardDeclined) {
     return {
       failure_type:
+        declineCode ||
         "card_declined",
 
       customer_action_required:
         true,
 
       customer_message:
-        "The customer's saved payment method was declined. A new payment method is required."
+        "The customer's saved payment method was declined. Send the customer the secure payment link so they can use another payment method."
     };
   }
 
+
+  /*
+    PaymentIntent states where Stripe is
+    explicitly waiting for a different or
+    corrected payment method.
+  */
+
+  if (
+    paymentIntentStatus ===
+      "requires_payment_method"
+  ) {
+    return {
+      failure_type:
+        "requires_payment_method",
+
+      customer_action_required:
+        true,
+
+      customer_message:
+        "The saved payment method could not complete the payment. Send the customer the secure payment link so they can use another payment method."
+    };
+  }
+
+
+  /*
+    Unknown/system failure.
+
+    Do NOT automatically send the customer
+    through recovery because this may be an
+    API/configuration/server problem rather
+    than a card problem.
+  */
 
   return {
     failure_type:
@@ -581,14 +671,11 @@ export default async (request) => {
   } catch (error) {
 
     /*
-      IMPORTANT:
-
       Stripe did NOT report a successful charge.
 
       Classify the failure so the dashboard
       knows whether the customer needs to
-      authenticate, replace their card, or
-      whether the payment simply needs review.
+      authenticate or replace their card.
 
       We do NOT mark the booking charged.
     */
@@ -649,9 +736,18 @@ export default async (request) => {
     "succeeded"
   ) {
 
-    const authenticationRequired =
-      paymentIntent.status ===
-      "requires_action";
+    const paymentIntentStatus =
+      String(
+        paymentIntent.status || ""
+      ).toLowerCase();
+
+
+    const customerActionRequired =
+      paymentIntentStatus ===
+        "requires_action" ||
+
+      paymentIntentStatus ===
+        "requires_payment_method";
 
 
     return json(
@@ -659,22 +755,31 @@ export default async (request) => {
         ok: false,
 
         error:
-          authenticationRequired
+          paymentIntentStatus ===
+            "requires_action"
             ? "The customer must authenticate this payment."
             : "Stripe did not confirm the payment.",
 
         failure_type:
-          authenticationRequired
+          paymentIntentStatus ===
+            "requires_action"
             ? "authentication_required"
-            : "payment_failed",
+            : paymentIntentStatus ===
+                "requires_payment_method"
+              ? "requires_payment_method"
+              : "payment_failed",
 
         customer_action_required:
-          authenticationRequired,
+          customerActionRequired,
 
         customer_message:
-          authenticationRequired
-            ? "The customer's bank requires additional authentication before this payment can be completed."
-            : "Stripe could not complete this payment. Review the payment before trying again.",
+          paymentIntentStatus ===
+            "requires_action"
+            ? "The customer's bank requires additional authentication. Send the customer the secure payment link to complete the payment."
+            : paymentIntentStatus ===
+                "requires_payment_method"
+              ? "The saved payment method could not complete the payment. Send the customer the secure payment link so they can use another payment method."
+              : "Stripe could not complete this payment. Review the payment before trying again.",
 
         payment_status:
           paymentIntent.status,
