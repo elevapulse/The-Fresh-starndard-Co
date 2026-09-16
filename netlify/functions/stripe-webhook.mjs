@@ -1,2478 +1,1064 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <meta name="robots" content="noindex,nofollow">
-
-  <title>
-    Owner Dashboard | The Fresh Standard Co.
-  </title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    :root {
-      --green: #17352b;
-      --sage: #829381;
-      --cream: #f4f1e9;
-      --paper: #fffdf8;
-      --line: #dedfd8;
-      --muted: #6e7772;
-      --red: #9d4141;
-    }
-
-    body {
-      margin: 0;
-      background: var(--cream);
-      color: var(--green);
-      font-family: Arial, Helvetica, sans-serif;
-    }
-
-    button,
-    input {
-      font: inherit;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    /* LOGIN */
-
-    .login-page {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 25px;
-    }
-
-    .login-card {
-      width: 100%;
-      max-width: 430px;
-      background: var(--paper);
-      padding: 45px;
-      border-radius: 24px;
-      box-shadow:
-        0 20px 60px rgba(23, 53, 43, 0.10);
-    }
-
-    .brand {
-      text-align: center;
-      margin-bottom: 35px;
-    }
-
-    .brand-main {
-      font-family: Georgia, serif;
-      font-size: 27px;
-      letter-spacing: 2px;
-    }
-
-    .brand-sub {
-      margin-top: 6px;
-      font-size: 10px;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: var(--sage);
-    }
-
-    h1,
-    h2,
-    h3 {
-      font-family: Georgia, serif;
-      font-weight: 400;
-    }
-
-    .login-card h1 {
-      text-align: center;
-      margin-bottom: 8px;
-    }
-
-    .login-description {
-      text-align: center;
-      color: var(--muted);
-      margin-bottom: 30px;
-      line-height: 1.6;
-    }
-
-    input {
-      width: 100%;
-      padding: 15px 17px;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      background: white;
-      color: var(--green);
-      outline: none;
-    }
-
-    input:focus {
-      border-color: var(--sage);
-    }
-
-    .primary {
-      width: 100%;
-      border: 0;
-      background: var(--green);
-      color: white;
-      padding: 16px;
-      border-radius: 999px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .primary:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-    }
-
-    .login-button {
-      margin-top: 14px;
-    }
-
-    .login-error {
-      color: var(--red);
-      text-align: center;
-      font-size: 13px;
-      margin-top: 15px;
-    }
-
-    /* DASHBOARD */
-
-    header {
-      background: var(--green);
-      color: white;
-      padding: 25px 32px;
-    }
-
-    .header-inner {
-      max-width: 1250px;
-      margin: auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 25px;
-    }
-
-    .header-brand {
-      font-family: Georgia, serif;
-      font-size: 22px;
-      letter-spacing: 1px;
-    }
-
-    .header-label {
-      margin-top: 5px;
-      color: #cbd6cf;
-      font-size: 12px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    .logout {
-      border: 1px solid rgba(255,255,255,.35);
-      color: white;
-      background: transparent;
-      border-radius: 999px;
-      padding: 10px 18px;
-      cursor: pointer;
-    }
-
-    main {
-      max-width: 1250px;
-      margin: auto;
-      padding: 45px 25px 80px;
-    }
-
-    .top {
-      display: flex;
-      justify-content: space-between;
-      gap: 25px;
-      align-items: flex-end;
-      margin-bottom: 30px;
-    }
-
-    .top h1 {
-      font-size: 40px;
-      margin: 0;
-    }
-
-    .top p {
-      color: var(--muted);
-      margin: 8px 0 0;
-    }
-
-    .refresh {
-      border: 1px solid var(--line);
-      background: var(--paper);
-      color: var(--green);
-      padding: 11px 18px;
-      border-radius: 999px;
-      cursor: pointer;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 15px;
-      margin-bottom: 30px;
-    }
-
-    .stat {
-      background: var(--paper);
-      border-radius: 18px;
-      padding: 20px;
-      border: 1px solid rgba(23,53,43,.05);
-    }
-
-    .stat-label {
-      color: var(--muted);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .stat-value {
-      font-family: Georgia, serif;
-      font-size: 31px;
-      margin-top: 7px;
-    }
-
-    .quotes {
-      display: grid;
-      gap: 18px;
-    }
-
-    .quote-card {
-      background: var(--paper);
-      border-radius: 22px;
-      padding: 26px;
-      border: 1px solid rgba(23,53,43,.06);
-      box-shadow:
-        0 10px 35px rgba(23,53,43,.05);
-    }
-
-    .quote-head {
-      display: flex;
-      justify-content: space-between;
-      gap: 25px;
-      margin-bottom: 22px;
-    }
-
-    .quote-number {
-      color: var(--sage);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 1px;
-    }
-
-    .customer {
-      font-family: Georgia, serif;
-      font-size: 26px;
-      margin-top: 5px;
-    }
-
-    .status-badge {
-      align-self: flex-start;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: #edf1ec;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 700;
-    }
-
-    .quote-grid {
-      display: grid;
-      grid-template-columns: 1.2fr 1fr;
-      gap: 30px;
-    }
-
-    .details {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px 25px;
-    }
-
-    .detail-label {
-      color: var(--muted);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 4px;
-    }
-
-    .detail-value {
-      line-height: 1.5;
-      word-break: break-word;
-    }
-
-    .notes {
-      grid-column: 1 / -1;
-      background: #f6f4ee;
-      padding: 14px;
-      border-radius: 12px;
-    }
-
-    .pricing {
-      border-left: 1px solid var(--line);
-      padding-left: 30px;
-    }
-
-    .pricing h3 {
-      margin: 0 0 15px;
-      font-size: 22px;
-    }
-
-    .price-wrap {
-      position: relative;
-      margin-bottom: 12px;
-    }
-
-    .dollar {
-      position: absolute;
-      left: 17px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-weight: 700;
-    }
-
-    .price-input {
-      padding-left: 34px;
-      font-size: 18px;
-      font-weight: 700;
-    }
-
-    .price-input:disabled {
-      background: #eeece5;
-      color: var(--green);
-      opacity: 1;
-      cursor: not-allowed;
-    }
-
-    .locked-note {
-      margin-top: 9px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    .locked-button {
-      width: 100%;
-      border: 1px solid var(--line);
-      background: #e9e7e0;
-      color: var(--muted);
-      padding: 16px;
-      border-radius: 999px;
-      font-weight: 700;
-      cursor: not-allowed;
-    }
-
-    .offer-result {
-      margin-top: 15px;
-      padding: 15px;
-      border-radius: 12px;
-      background: #eef2ed;
-    }
-
-    .offer-price {
-      font-family: Georgia, serif;
-      font-size: 25px;
-      margin-bottom: 10px;
-    }
-
-    .copy {
-      width: 100%;
-      border: 1px solid var(--green);
-      color: var(--green);
-      background: transparent;
-      padding: 12px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-weight: 700;
-    }
-
-    .existing-offer {
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 10px;
-      line-height: 1.5;
-    }
-
-    /* BOOKING ACTIONS */
-
-    .booking-action {
-      margin-top: 18px;
-      padding: 18px;
-      background: #f3f4ef;
-      border-radius: 14px;
-    }
-
-    .booking-action-title {
-      font-family: Georgia, serif;
-      font-size: 20px;
-      margin-bottom: 7px;
-    }
-
-    .booking-action-text {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-      margin-bottom: 14px;
-    }
-
-    .complete-button {
-      width: 100%;
-      border: 0;
-      background: var(--sage);
-      color: white;
-      padding: 14px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-weight: 700;
-    }
-
-    .complete-button:disabled {
-      opacity: 0.55;
-      cursor: wait;
-    }
-
-    .completed-box {
-      margin-top: 18px;
-      padding: 18px;
-      background: #e8efe9;
-      border-radius: 14px;
-    }
-
-    .completed-title {
-      font-family: Georgia, serif;
-      font-size: 20px;
-      margin-bottom: 6px;
-    }
-
-    .completed-text {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .amount-due {
-      margin-top: 15px;
-      padding-top: 15px;
-      border-top: 1px solid rgba(23,53,43,.12);
-    }
-
-    .amount-label {
-      color: var(--muted);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 4px;
-    }
-
-    .amount-value {
-      font-family: Georgia, serif;
-      font-size: 28px;
-    }
-
-    .charge-button {
-      width: 100%;
-      margin-top: 15px;
-      border: 0;
-      background: var(--green);
-      color: white;
-      padding: 15px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-weight: 700;
-    }
-
-    .charge-button:disabled {
-      opacity: 0.55;
-      cursor: wait;
-    }
-
-    .payment-id {
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1.5;
-      word-break: break-all;
-    }
-
-    /* BRANDED MODALS */
-
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      background: rgba(12, 30, 24, 0.52);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-    }
-
-    .modal-card {
-      width: 100%;
-      max-width: 470px;
-      background: var(--paper);
-      border-radius: 26px;
-      padding: 34px;
-      box-shadow:
-        0 28px 80px rgba(10, 30, 23, 0.28);
-      border: 1px solid rgba(23,53,43,.08);
-      text-align: center;
-      animation: modalIn .18s ease-out;
-    }
-
-    @keyframes modalIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px) scale(.98);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-
-    .modal-icon {
-      width: 58px;
-      height: 58px;
-      margin: 0 auto 20px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #e7eee8;
-      color: var(--green);
-      font-size: 27px;
-      font-weight: 700;
-    }
-
-    .modal-icon.error {
-      background: #f5e8e8;
-      color: var(--red);
-    }
-
-    .modal-icon.warning {
-      background: #f3eee1;
-      color: #755f2e;
-    }
-
-    .modal-eyebrow {
-      color: var(--sage);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-
-    .modal-title {
-      margin: 0;
-      font-family: Georgia, serif;
-      font-size: 31px;
-      font-weight: 400;
-      color: var(--green);
-    }
-
-    .modal-message {
-      margin: 13px auto 0;
-      max-width: 390px;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.65;
-    }
-
-    .modal-amount {
-      margin: 24px 0 0;
-      padding: 18px;
-      border-radius: 16px;
-      background: #eef2ed;
-    }
-
-    .modal-amount-label {
-      color: var(--muted);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-    }
-
-    .modal-amount-value {
-      margin-top: 4px;
-      font-family: Georgia, serif;
-      font-size: 35px;
-      color: var(--green);
-    }
-
-    .modal-reference {
-      margin-top: 17px;
-      padding: 14px;
-      background: #f4f2ec;
-      border-radius: 13px;
-      text-align: left;
-    }
-
-    .modal-reference-label {
-      color: var(--muted);
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 1.4px;
-      text-transform: uppercase;
-      margin-bottom: 5px;
-    }
-
-    .modal-reference-value {
-      font-size: 12px;
-      line-height: 1.5;
-      word-break: break-all;
-      color: var(--green);
-    }
-
-    .modal-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 25px;
-    }
-
-    .modal-button {
-      flex: 1;
-      border: 0;
-      padding: 14px 17px;
-      border-radius: 999px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .modal-button.secondary {
-      background: #eceae3;
-      color: var(--green);
-    }
-
-    .modal-button.primary-modal {
-      background: var(--green);
-      color: white;
-    }
-
-    .modal-button.danger {
-      background: var(--red);
-      color: white;
-    }
-
-    .empty,
-    .loading {
-      background: var(--paper);
-      border-radius: 20px;
-      padding: 45px;
-      text-align: center;
-      color: var(--muted);
-    }
-
-    @media (max-width: 850px) {
-      .stats {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .quote-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .pricing {
-        border-left: 0;
-        border-top: 1px solid var(--line);
-        padding-left: 0;
-        padding-top: 25px;
-      }
-    }
-
-    @media (max-width: 550px) {
-      .login-card {
-        padding: 35px 22px;
-      }
-
-      header {
-        padding: 20px;
-      }
-
-      .top {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .top h1 {
-        font-size: 34px;
-      }
-
-      .stats {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .quote-head {
-        flex-direction: column;
-      }
-
-      .details {
-        grid-template-columns: 1fr;
-      }
-
-      .notes {
-        grid-column: auto;
-      }
-
-      .quote-card {
-        padding: 20px;
-      }
-
-      .modal-card {
-        padding: 28px 20px;
-      }
-
-      .modal-actions {
-        flex-direction: column-reverse;
-      }
-    }
-  </style>
-</head>
-
-<body>
-
-  <!-- LOGIN -->
-
-  <section id="loginPage" class="login-page">
-
-    <div class="login-card">
-
-      <div class="brand">
-        <div class="brand-main">
-          THE FRESH
-        </div>
-
-        <div class="brand-sub">
-          Standard Co.
-        </div>
-      </div>
-
-      <h1>Owner Dashboard</h1>
-
-      <div class="login-description">
-        Sign in to review incoming cleaning requests
-        and create customer offers.
-      </div>
-
-      <input
-        id="password"
-        type="password"
-        placeholder="Admin password"
-        autocomplete="current-password"
-      >
-
-      <button
-        id="loginButton"
-        class="primary login-button"
-      >
-        Sign In
-      </button>
-
-      <div
-        id="loginError"
-        class="login-error hidden"
-      ></div>
-
-    </div>
-
-  </section>
-
-
-  <!-- DASHBOARD -->
-
-  <section id="dashboard" class="hidden">
-
-    <header>
-      <div class="header-inner">
-
-        <div>
-          <div class="header-brand">
-            THE FRESH STANDARD CO.
-          </div>
-
-          <div class="header-label">
-            Owner Dashboard
-          </div>
-        </div>
-
-        <button
-          id="logoutButton"
-          class="logout"
-        >
-          Sign Out
-        </button>
-
-      </div>
-    </header>
-
-    <main>
-
-      <div class="top">
-
-        <div>
-          <h1>Quote Requests</h1>
-
-          <p>
-            Review leads, set pricing and create
-            customer booking offers.
-          </p>
-        </div>
-
-        <button
-          id="refreshButton"
-          class="refresh"
-        >
-          Refresh
-        </button>
-
-      </div>
-
-      <div class="stats">
-
-        <div class="stat">
-          <div class="stat-label">Total</div>
-          <div id="totalCount" class="stat-value">0</div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-label">New</div>
-          <div id="newCount" class="stat-value">0</div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-label">Quoted</div>
-          <div id="quotedCount" class="stat-value">0</div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-label">Booked</div>
-          <div id="bookedCount" class="stat-value">0</div>
-        </div>
-
-      </div>
-
-      <div id="quotes" class="quotes">
-        <div class="loading">
-          Loading quotes...
-        </div>
-      </div>
-
-    </main>
-
-  </section>
-
-
-  <!-- BRANDED MODAL -->
-
-  <div
-    id="modalOverlay"
-    class="modal-overlay hidden"
-  >
-    <div
-      id="modalCard"
-      class="modal-card"
-      role="dialog"
-      aria-modal="true"
-    >
-
-      <div
-        id="modalIcon"
-        class="modal-icon"
-      >
-        ✓
-      </div>
-
-      <div
-        id="modalEyebrow"
-        class="modal-eyebrow"
-      ></div>
-
-      <h2
-        id="modalTitle"
-        class="modal-title"
-      ></h2>
-
-      <div
-        id="modalMessage"
-        class="modal-message"
-      ></div>
-
-      <div
-        id="modalAmount"
-        class="modal-amount hidden"
-      >
-        <div class="modal-amount-label">
-          Amount
-        </div>
-
-        <div
-          id="modalAmountValue"
-          class="modal-amount-value"
-        ></div>
-      </div>
-
-      <div
-        id="modalReference"
-        class="modal-reference hidden"
-      >
-        <div
-          id="modalReferenceLabel"
-          class="modal-reference-label"
-        ></div>
-
-        <div
-          id="modalReferenceValue"
-          class="modal-reference-value"
-        ></div>
-      </div>
-
-      <div
-        id="modalActions"
-        class="modal-actions"
-      ></div>
-
-    </div>
-  </div>
-
-
-<script>
-  let adminPassword = "";
-
-  let modalResolver = null;
-
-
-  const loginPage =
-    document.getElementById("loginPage");
-
-  const dashboard =
-    document.getElementById("dashboard");
-
-  const passwordInput =
-    document.getElementById("password");
-
-  const loginButton =
-    document.getElementById("loginButton");
-
-  const loginError =
-    document.getElementById("loginError");
-
-  const quotesContainer =
-    document.getElementById("quotes");
-
-
-  const modalOverlay =
-    document.getElementById("modalOverlay");
-
-  const modalIcon =
-    document.getElementById("modalIcon");
-
-  const modalEyebrow =
-    document.getElementById("modalEyebrow");
-
-  const modalTitle =
-    document.getElementById("modalTitle");
-
-  const modalMessage =
-    document.getElementById("modalMessage");
-
-  const modalAmount =
-    document.getElementById("modalAmount");
-
-  const modalAmountValue =
-    document.getElementById("modalAmountValue");
-
-  const modalReference =
-    document.getElementById("modalReference");
-
-  const modalReferenceLabel =
-    document.getElementById("modalReferenceLabel");
-
-  const modalReferenceValue =
-    document.getElementById("modalReferenceValue");
-
-  const modalActions =
-    document.getElementById("modalActions");
-
-
-  function escapeHtml(value) {
-    return String(value ?? "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
-  }
-
-
-  function money(cents) {
-    if (!cents) return "";
-
-    return (Number(cents) / 100)
-      .toLocaleString("en-US", {
-        style: "currency",
-        currency: "USD"
-      });
-  }
-
-
-  function offerUrl(q) {
-    if (!q.quote_token) return "";
-
-    return (
-      "https://thefreshstandardco.com/offer/?token=" +
-      encodeURIComponent(q.quote_token)
+import crypto from "node:crypto";
+
+
+function json(data, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: {
+      "content-type": "application/json",
+      "cache-control": "no-store"
+    }
+  });
+}
+
+
+/*
+  Verify Stripe's webhook signature.
+
+  IMPORTANT:
+  STRIPE_WEBHOOK_SECRET must contain the whsec_...
+  secret from the Stripe webhook endpoint.
+*/
+
+function verifyStripeSignature(
+  rawBody,
+  signatureHeader,
+  webhookSecret
+) {
+  if (!signatureHeader) {
+    throw new Error(
+      "Missing Stripe-Signature header."
     );
   }
 
+  const parts =
+    signatureHeader.split(",");
 
-  function paymentUrl(q) {
-    if (!q.quote_token) return "";
+  let timestamp = null;
+  const signatures = [];
 
-    return (
-      "https://thefreshstandardco.com/payment/?token=" +
-      encodeURIComponent(q.quote_token)
+  for (const part of parts) {
+    const [key, value] =
+      part.split("=");
+
+    if (key === "t") {
+      timestamp = value;
+    }
+
+    if (key === "v1") {
+      signatures.push(value);
+    }
+  }
+
+  if (!timestamp || !signatures.length) {
+    throw new Error(
+      "Invalid Stripe signature header."
     );
   }
 
-
-  function closeModal(result) {
-    modalOverlay.classList.add("hidden");
-
-    document.body.style.overflow = "";
-
-    if (modalResolver) {
-      const resolver = modalResolver;
-      modalResolver = null;
-      resolver(result);
-    }
-  }
-
-
-  function prepareModal({
-    type = "success",
-    eyebrow = "",
-    title = "",
-    message = "",
-    amount = "",
-    referenceLabel = "",
-    referenceValue = ""
-  }) {
-
-    modalIcon.className = "modal-icon";
-
-    if (type === "error") {
-      modalIcon.classList.add("error");
-      modalIcon.textContent = "×";
-    } else if (type === "warning") {
-      modalIcon.classList.add("warning");
-      modalIcon.textContent = "!";
-    } else if (type === "confirm") {
-      modalIcon.classList.add("warning");
-      modalIcon.textContent = "?";
-    } else {
-      modalIcon.textContent = "✓";
-    }
-
-    modalEyebrow.textContent = eyebrow;
-    modalTitle.textContent = title;
-    modalMessage.textContent = message;
-
-    if (amount) {
-      modalAmountValue.textContent = amount;
-      modalAmount.classList.remove("hidden");
-    } else {
-      modalAmountValue.textContent = "";
-      modalAmount.classList.add("hidden");
-    }
-
-    if (referenceValue) {
-      modalReferenceLabel.textContent =
-        referenceLabel || "Reference";
-
-      modalReferenceValue.textContent =
-        referenceValue;
-
-      modalReference.classList.remove("hidden");
-    } else {
-      modalReferenceLabel.textContent = "";
-      modalReferenceValue.textContent = "";
-      modalReference.classList.add("hidden");
-    }
-
-    modalActions.innerHTML = "";
-
-    document.body.style.overflow = "hidden";
-
-    modalOverlay.classList.remove("hidden");
-  }
-
-
-  function showMessageModal({
-    type = "success",
-    eyebrow = "",
-    title = "",
-    message = "",
-    amount = "",
-    referenceLabel = "",
-    referenceValue = "",
-    buttonText = "Done"
-  }) {
-
-    return new Promise(resolve => {
-
-      modalResolver = resolve;
-
-      prepareModal({
-        type,
-        eyebrow,
-        title,
-        message,
-        amount,
-        referenceLabel,
-        referenceValue
-      });
-
-      const button =
-        document.createElement("button");
-
-      button.className =
-        "modal-button primary-modal";
-
-      button.textContent =
-        buttonText;
-
-      button.addEventListener(
-        "click",
-        () => closeModal(true)
-      );
-
-      modalActions.appendChild(button);
-    });
-  }
-
-
-  function showConfirmModal({
-    eyebrow = "",
-    title = "",
-    message = "",
-    amount = "",
-    confirmText = "Confirm",
-    cancelText = "Cancel",
-    danger = false
-  }) {
-
-    return new Promise(resolve => {
-
-      modalResolver = resolve;
-
-      prepareModal({
-        type: "confirm",
-        eyebrow,
-        title,
-        message,
-        amount
-      });
-
-      const cancelButton =
-        document.createElement("button");
-
-      cancelButton.className =
-        "modal-button secondary";
-
-      cancelButton.textContent =
-        cancelText;
-
-      cancelButton.addEventListener(
-        "click",
-        () => closeModal(false)
-      );
-
-
-      const confirmButton =
-        document.createElement("button");
-
-      confirmButton.className =
-        danger
-          ? "modal-button danger"
-          : "modal-button primary-modal";
-
-      confirmButton.textContent =
-        confirmText;
-
-      confirmButton.addEventListener(
-        "click",
-        () => closeModal(true)
-      );
-
-
-      modalActions.appendChild(cancelButton);
-      modalActions.appendChild(confirmButton);
-    });
-  }
-
-
-  function setStats(quotes) {
-    document.getElementById("totalCount").textContent =
-      quotes.length;
-
-    document.getElementById("newCount").textContent =
-      quotes.filter(q => q.status === "new").length;
-
-    document.getElementById("quotedCount").textContent =
-      quotes.filter(q => q.status === "quoted").length;
-
-    document.getElementById("bookedCount").textContent =
-      quotes.filter(q =>
-        [
-          "accepted",
-          "card_saved",
-          "booked",
-          "completed",
-          "charged"
-        ].includes(q.status)
-      ).length;
-  }
-
-
-  function renderQuotes(quotes) {
-    setStats(quotes);
-
-    if (!quotes.length) {
-      quotesContainer.innerHTML = `
-        <div class="empty">
-          No quote requests yet.
-        </div>
-      `;
-
-      return;
-    }
-
-    quotesContainer.innerHTML =
-      quotes.map(q => {
-
-        const propertyDetails = [
-          q.bedrooms !== null &&
-          q.bedrooms !== undefined
-            ? `${q.bedrooms} bed`
-            : "",
-
-          q.bathrooms !== null &&
-          q.bathrooms !== undefined
-            ? `${q.bathrooms} bath`
-            : "",
-
-          q.square_feet
-            ? `${Number(q.square_feet).toLocaleString()} sq ft`
-            : ""
-        ]
-        .filter(Boolean)
-        .join(" · ");
-
-
-        const priceLocked =
-          [
-            "accepted",
-            "card_saved",
-            "booked",
-            "completed",
-            "charged"
-          ].includes(q.status);
-
-
-        const existingOffer =
-          q.quoted_price && q.quote_token
-            ? `
-              <div
-                class="offer-result"
-                id="result-${q.id}"
-              >
-
-                <div class="offer-price">
-                  ${money(q.quoted_price)}
-                </div>
-
-                <button
-                  class="copy"
-                  id="copy-${q.id}"
-                  onclick="copyOffer(
-                    '${q.id}',
-                    '${offerUrl(q)}'
-                  )"
-                >
-                  Copy Customer Link
-                </button>
-
-                <div class="existing-offer">
-                  ${
-                    priceLocked
-                      ? "Customer offer accepted. Price is now locked."
-                      : "Offer already created. You can update the price and generate it again."
-                  }
-                </div>
-
-              </div>
-            `
-            : `
-              <div id="result-${q.id}"></div>
-            `;
-
-
-        let bookingAction = "";
-
-
-        if (
-          ["card_saved", "booked"]
-            .includes(q.status)
-        ) {
-
-          bookingAction = `
-            <div
-              class="booking-action"
-              id="booking-action-${q.id}"
-            >
-
-              <div class="booking-action-title">
-                Card Saved
-              </div>
-
-              <div class="booking-action-text">
-                The customer's payment method is secured.
-                When the cleaning has actually been completed,
-                mark it complete below.
-                This will NOT charge the customer.
-              </div>
-
-              <button
-                class="complete-button"
-                id="complete-${q.id}"
-                onclick="markCleaningComplete('${q.id}')"
-              >
-                Mark Cleaning Complete
-              </button>
-
-            </div>
-          `;
-
-        } else if (q.status === "completed") {
-
-          bookingAction = `
-            <div class="completed-box">
-
-              <div class="completed-title">
-                Cleaning Completed ✓
-              </div>
-
-              <div class="completed-text">
-                This cleaning has been marked complete.
-                The customer's card has not been charged yet.
-              </div>
-
-              <div class="amount-due">
-
-                <div class="amount-label">
-                  Amount Due
-                </div>
-
-                <div class="amount-value">
-                  ${money(q.quoted_price)}
-                </div>
-
-              </div>
-
-              <button
-                class="charge-button"
-                id="charge-${q.id}"
-                onclick="chargeCustomer(
-                  '${q.id}',
-                  ${Number(q.quoted_price) || 0},
-                  '${paymentUrl(q)}'
-                )"
-              >
-                Charge Customer — ${money(q.quoted_price)}
-              </button>
-
-            </div>
-          `;
-
-        } else if (q.status === "charged") {
-
-          bookingAction = `
-            <div class="completed-box">
-
-              <div class="completed-title">
-                Payment Completed ✓
-              </div>
-
-              <div class="completed-text">
-                This booking has been successfully charged.
-              </div>
-
-              <div class="amount-due">
-
-                <div class="amount-label">
-                  Amount Charged
-                </div>
-
-                <div class="amount-value">
-                  ${money(q.quoted_price)}
-                </div>
-
-              </div>
-
-              ${
-                q.stripe_payment_intent_id
-                  ? `
-                    <div class="payment-id">
-                      Stripe Payment ID:
-                      ${escapeHtml(
-                        q.stripe_payment_intent_id
-                      )}
-                    </div>
-                  `
-                  : ""
-              }
-
-            </div>
-          `;
-        }
-
-
-        const pricingControls =
-          priceLocked
-            ? `
-              <h3>Quote Price</h3>
-
-              <div class="price-wrap">
-
-                <span class="dollar">$</span>
-
-                <input
-                  id="price-${q.id}"
-                  class="price-input"
-                  type="number"
-                  value="${
-                    q.quoted_price
-                      ? Number(q.quoted_price) / 100
-                      : ""
-                  }"
-                  disabled
-                >
-
-              </div>
-
-              <button
-                class="locked-button"
-                type="button"
-                disabled
-              >
-                Price Locked
-              </button>
-
-              <div class="locked-note">
-                The customer has already accepted this offer
-                and secured a payment method.
-                The agreed price can no longer be edited.
-              </div>
-            `
-            : `
-              <h3>Set Quote Price</h3>
-
-              <div class="price-wrap">
-
-                <span class="dollar">$</span>
-
-                <input
-                  id="price-${q.id}"
-                  class="price-input"
-                  type="number"
-                  min="1"
-                  step="0.01"
-                  placeholder="150.00"
-                  value="${
-                    q.quoted_price
-                      ? Number(q.quoted_price) / 100
-                      : ""
-                  }"
-                >
-
-              </div>
-
-              <button
-                class="primary"
-                id="create-${q.id}"
-                onclick="createOffer('${q.id}')"
-              >
-                ${
-                  q.quoted_price
-                    ? "Update Customer Offer"
-                    : "Create Customer Offer"
-                }
-              </button>
-            `;
-
-
-        return `
-          <article class="quote-card">
-
-            <div class="quote-head">
-
-              <div>
-                <div class="quote-number">
-                  ${escapeHtml(q.quote_number)}
-                </div>
-
-                <div class="customer">
-                  ${escapeHtml(q.customer_name)}
-                </div>
-              </div>
-
-              <div class="status-badge">
-                ${escapeHtml(q.status || "new")}
-              </div>
-
-            </div>
-
-
-            <div class="quote-grid">
-
-              <div class="details">
-
-                <div>
-                  <div class="detail-label">Service</div>
-
-                  <div class="detail-value">
-                    ${escapeHtml(q.service_type || "—")}
-                  </div>
-                </div>
-
-
-                <div>
-                  <div class="detail-label">Property</div>
-
-                  <div class="detail-value">
-                    ${escapeHtml(q.property_type || "—")}
-                  </div>
-                </div>
-
-
-                <div>
-                  <div class="detail-label">Frequency</div>
-
-                  <div class="detail-value">
-                    ${escapeHtml(q.frequency || "—")}
-                  </div>
-                </div>
-
-
-                <div>
-                  <div class="detail-label">
-                    Property Details
-                  </div>
-
-                  <div class="detail-value">
-                    ${escapeHtml(propertyDetails || "—")}
-                  </div>
-                </div>
-
-
-                <div>
-                  <div class="detail-label">ZIP</div>
-
-                  <div class="detail-value">
-                    ${escapeHtml(q.zip_code || "—")}
-                  </div>
-                </div>
-
-
-                <div>
-                  <div class="detail-label">Phone</div>
-
-                  <div class="detail-value">
-                    ${escapeHtml(q.customer_phone || "—")}
-                  </div>
-                </div>
-
-
-                <div>
-                  <div class="detail-label">Email</div>
-
-                  <div class="detail-value">
-                    ${escapeHtml(q.customer_email || "—")}
-                  </div>
-                </div>
-
-
-                ${
-                  q.notes
-                    ? `
-                      <div class="notes">
-
-                        <div class="detail-label">
-                          Customer Notes
-                        </div>
-
-                        <div class="detail-value">
-                          ${escapeHtml(q.notes)}
-                        </div>
-
-                      </div>
-                    `
-                    : ""
-                }
-
-              </div>
-
-
-              <div class="pricing">
-
-                ${pricingControls}
-
-                ${existingOffer}
-
-                ${bookingAction}
-
-              </div>
-
-            </div>
-
-          </article>
-        `;
-      }).join("");
-  }
-
-
-  async function login() {
-
-    const password =
-      passwordInput.value;
-
-    if (!password) {
-
-      loginError.textContent =
-        "Enter your admin password.";
-
-      loginError.classList.remove("hidden");
-
-      return;
-    }
-
-    loginButton.disabled = true;
-
-    loginButton.textContent =
-      "Signing In...";
-
-    loginError.classList.add("hidden");
-
+  const signedPayload =
+    `${timestamp}.${rawBody}`;
+
+  const expectedSignature =
+    crypto
+      .createHmac(
+        "sha256",
+        webhookSecret
+      )
+      .update(
+        signedPayload,
+        "utf8"
+      )
+      .digest("hex");
+
+  const expectedBuffer =
+    Buffer.from(
+      expectedSignature,
+      "hex"
+    );
+
+  let valid = false;
+
+  for (const signature of signatures) {
     try {
-
-      const response =
-        await fetch(
-          "/.netlify/functions/admin-auth",
-          {
-            method: "POST",
-
-            headers: {
-              "Content-Type":
-                "application/json"
-            },
-
-            body:
-              JSON.stringify({
-                password: password
-              })
-          }
+      const signatureBuffer =
+        Buffer.from(
+          signature,
+          "hex"
         );
-
-      const data =
-        await response.json();
-
-      if (!response.ok || !data.ok) {
-        throw new Error(
-          data.error ||
-          "Sign in failed."
-        );
-      }
-
-      adminPassword =
-        password;
-
-      passwordInput.value = "";
-
-      loginPage.classList.add("hidden");
-
-      dashboard.classList.remove("hidden");
-
-      await loadQuotes();
-
-    } catch (error) {
-
-      loginError.textContent =
-        error.message ||
-        "Sign in failed.";
-
-      loginError.classList.remove("hidden");
-
-    } finally {
-
-      loginButton.disabled = false;
-
-      loginButton.textContent =
-        "Sign In";
-    }
-  }
-
-
-  async function loadQuotes() {
-
-    quotesContainer.innerHTML = `
-      <div class="loading">
-        Loading quotes...
-      </div>
-    `;
-
-    try {
-
-      const response =
-        await fetch(
-          "/.netlify/functions/admin-quotes",
-          {
-            headers: {
-              "x-admin-password":
-                adminPassword
-            }
-          }
-        );
-
-      const data =
-        await response.json();
-
-      if (!response.ok || !data.ok) {
-
-        throw new Error(
-          data.error ||
-          "Could not load quotes."
-        );
-      }
-
-      renderQuotes(
-        data.quotes || []
-      );
-
-    } catch (error) {
-
-      quotesContainer.innerHTML = `
-        <div class="empty">
-          ${escapeHtml(
-            error.message ||
-            "Could not load quotes."
-          )}
-        </div>
-      `;
-    }
-  }
-
-
-  async function createOffer(quoteId) {
-
-    const input =
-      document.getElementById(
-        `price-${quoteId}`
-      );
-
-    const button =
-      document.getElementById(
-        `create-${quoteId}`
-      );
-
-    const result =
-      document.getElementById(
-        `result-${quoteId}`
-      );
-
-    if (
-      !input ||
-      !button
-    ) {
-
-      await showMessageModal({
-        type: "error",
-        eyebrow: "Price locked",
-        title: "This offer cannot be changed",
-        message:
-          "The customer has already accepted this offer and secured a payment method."
-      });
-
-      return;
-    }
-
-
-    const price =
-      Number(input.value);
-
-
-    if (
-      !Number.isFinite(price) ||
-      price <= 0
-    ) {
-
-      await showMessageModal({
-        type: "error",
-        eyebrow: "Quote price",
-        title: "Enter a valid price",
-        message:
-          "The quote price must be greater than $0."
-      });
-
-      return;
-    }
-
-
-    button.disabled = true;
-
-    button.textContent =
-      "Creating Offer...";
-
-
-    try {
-
-      const response =
-        await fetch(
-          "/.netlify/functions/set-quote-price",
-          {
-            method: "POST",
-
-            headers: {
-              "Content-Type":
-                "application/json",
-
-              "x-admin-password":
-                adminPassword
-            },
-
-            body:
-              JSON.stringify({
-                quote_id: quoteId,
-                price: price
-              })
-          }
-        );
-
-      const data =
-        await response.json();
-
-      if (!response.ok || !data.ok) {
-
-        throw new Error(
-          data.error ||
-          "Could not create offer."
-        );
-      }
-
-
-      result.className =
-        "offer-result";
-
-
-      result.innerHTML = `
-        <div class="offer-price">
-          ${money(data.quoted_price)}
-        </div>
-
-        <button
-          class="copy"
-          id="copy-${quoteId}"
-        >
-          Copy Customer Link
-        </button>
-
-        <div class="existing-offer">
-          Offer created successfully.
-        </div>
-      `;
-
-
-      document
-        .getElementById(
-          `copy-${quoteId}`
-        )
-        .addEventListener(
-          "click",
-          () => {
-
-            copyOffer(
-              quoteId,
-              data.offer_url
-            );
-          }
-        );
-
-
-      button.textContent =
-        "Update Customer Offer";
-
-
-    } catch (error) {
-
-      await showMessageModal({
-        type: "error",
-        eyebrow: "Offer error",
-        title: "Could not create offer",
-        message:
-          error.message ||
-          "Could not create offer."
-      });
-
-
-    } finally {
-
-      button.disabled = false;
 
       if (
-        button.textContent ===
-        "Creating Offer..."
+        signatureBuffer.length ===
+        expectedBuffer.length
       ) {
-
-        button.textContent =
-          "Create Customer Offer";
-      }
-    }
-  }
-
-
-  async function copyOffer(
-    quoteId,
-    url
-  ) {
-
-    try {
-
-      await navigator
-        .clipboard
-        .writeText(url);
-
-      const button =
-        document.getElementById(
-          `copy-${quoteId}`
-        );
-
-      if (button) {
-
-        const original =
-          button.textContent;
-
-        button.textContent =
-          "Copied ✓";
-
-        setTimeout(
-          () => {
-
-            button.textContent =
-              original;
-
-          },
-          1500
-        );
+        if (
+          crypto.timingSafeEqual(
+            signatureBuffer,
+            expectedBuffer
+          )
+        ) {
+          valid = true;
+          break;
+        }
       }
 
     } catch {
-
-      await showMessageModal({
-        type: "warning",
-        eyebrow: "Customer link",
-        title: "Copy this link",
-        message: url,
-        buttonText: "Done"
-      });
+      // Ignore malformed signatures.
     }
   }
 
+  if (!valid) {
+    throw new Error(
+      "Stripe signature verification failed."
+    );
+  }
 
-  async function markCleaningComplete(
-    quoteId
+
+  /*
+    Reject very old webhook requests.
+    Stripe commonly recommends a tolerance window.
+  */
+
+  const eventTime =
+    Number(timestamp);
+
+  const currentTime =
+    Math.floor(Date.now() / 1000);
+
+  if (
+    !Number.isFinite(eventTime) ||
+    Math.abs(currentTime - eventTime) > 300
+  ) {
+    throw new Error(
+      "Stripe webhook timestamp is outside tolerance."
+    );
+  }
+
+  return true;
+}
+
+
+/*
+  Retrieve an object directly from Stripe.
+*/
+
+async function stripeGet(
+  path,
+  stripeSecretKey
+) {
+  const response =
+    await fetch(
+      `https://api.stripe.com/v1/${path}`,
+      {
+        headers: {
+          Authorization:
+            `Bearer ${stripeSecretKey}`
+        }
+      }
+    );
+
+  const data =
+    await response
+      .json()
+      .catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(
+      data?.error?.message ||
+      `Stripe request failed with status ${response.status}`
+    );
+  }
+
+  return data;
+}
+
+
+/*
+  Retrieve the authoritative quote
+  directly from Supabase.
+*/
+
+async function getQuote(
+  quoteId,
+  supabaseUrl,
+  serviceRoleKey
+) {
+  const endpoint =
+    `${supabaseUrl.replace(/\/$/, "")}` +
+    `/rest/v1/quotes` +
+    `?id=eq.${encodeURIComponent(quoteId)}` +
+    `&select=*`;
+
+  const response =
+    await fetch(
+      endpoint,
+      {
+        headers: {
+          apikey:
+            serviceRoleKey,
+
+          Authorization:
+            `Bearer ${serviceRoleKey}`
+        }
+      }
+    );
+
+  const data =
+    await response
+      .json()
+      .catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(
+      data?.message ||
+      data?.error ||
+      "Could not retrieve quote from Supabase."
+    );
+  }
+
+  return Array.isArray(data)
+    ? data[0]
+    : null;
+}
+
+
+/*
+  Update a quote in Supabase.
+*/
+
+async function updateQuote(
+  quoteId,
+  values,
+  supabaseUrl,
+  serviceRoleKey
+) {
+  const endpoint =
+    `${supabaseUrl.replace(/\/$/, "")}` +
+    `/rest/v1/quotes?id=eq.${encodeURIComponent(quoteId)}`;
+
+  const response =
+    await fetch(
+      endpoint,
+      {
+        method: "PATCH",
+
+        headers: {
+          apikey:
+            serviceRoleKey,
+
+          Authorization:
+            `Bearer ${serviceRoleKey}`,
+
+          "content-type":
+            "application/json",
+
+          Prefer:
+            "return=representation"
+        },
+
+        body:
+          JSON.stringify(values)
+      }
+    );
+
+  const data =
+    await response
+      .json()
+      .catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(
+      data?.message ||
+      data?.error ||
+      "Could not update quote in Supabase."
+    );
+  }
+
+  return Array.isArray(data)
+    ? data[0]
+    : data;
+}
+
+
+/*
+  Main Netlify Function
+*/
+
+export default async (request) => {
+
+  if (request.method !== "POST") {
+    return json(
+      {
+        ok: false,
+        error: "Method not allowed"
+      },
+      405
+    );
+  }
+
+
+  const webhookSecret =
+    process.env.STRIPE_WEBHOOK_SECRET;
+
+  const stripeSecretKey =
+    process.env.STRIPE_SECRET_KEY;
+
+  const supabaseUrl =
+    process.env.SUPABASE_URL;
+
+  const serviceRoleKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+
+  if (
+    !webhookSecret ||
+    !stripeSecretKey ||
+    !supabaseUrl ||
+    !serviceRoleKey
+  ) {
+    console.error(
+      "Stripe webhook environment variables are incomplete."
+    );
+
+    return json(
+      {
+        received: false,
+        error:
+          "Webhook configuration is incomplete."
+      },
+      500
+    );
+  }
+
+
+  /*
+    Stripe signature verification MUST use
+    the exact raw request body.
+  */
+
+  const rawBody =
+    await request.text();
+
+  const signatureHeader =
+    request.headers.get(
+      "stripe-signature"
+    );
+
+
+  try {
+    verifyStripeSignature(
+      rawBody,
+      signatureHeader,
+      webhookSecret
+    );
+  } catch (error) {
+
+    console.error(
+      "Webhook signature error:",
+      error.message
+    );
+
+    return json(
+      {
+        received: false,
+        error:
+          "Invalid webhook signature."
+      },
+      400
+    );
+  }
+
+
+  let event;
+
+  try {
+    event =
+      JSON.parse(rawBody);
+  } catch {
+
+    return json(
+      {
+        received: false,
+        error:
+          "Invalid webhook payload."
+      },
+      400
+    );
+  }
+
+
+  console.log(
+    "Stripe event received:",
+    event.type,
+    event.id
+  );
+
+
+  /*
+    CHECKOUT SESSION COMPLETED
+
+    We support two Checkout flows:
+
+    1. mode=setup
+       Original booking flow.
+       Saves the customer's card.
+
+    2. mode=payment + payment_type=recovery
+       Recovery flow after an off-session
+       payment could not be completed.
+       This actually charges the customer.
+  */
+
+  if (
+    event.type ===
+    "checkout.session.completed"
   ) {
 
-    const button =
-      document.getElementById(
-        `complete-${quoteId}`
-      );
-
-    if (!button) {
-      return;
-    }
+    const session =
+      event.data?.object;
 
 
-    const confirmed =
-      await showConfirmModal({
-        eyebrow: "Service status",
-        title: "Mark cleaning complete?",
-        message:
-          "This confirms the cleaning has been completed. " +
-          "The customer will NOT be charged yet.",
-        confirmText: "Mark Complete",
-        cancelText: "Cancel"
+    if (!session) {
+      return json({
+        received: true
       });
-
-
-    if (!confirmed) {
-      return;
     }
 
 
-    const originalText =
-      button.textContent;
+    /*
+      ========================================
+      ORIGINAL CARD-SAVING FLOW
+      ========================================
+    */
+
+    if (session.mode === "setup") {
+
+      const quoteId =
+        session.metadata?.quote_id;
 
 
-    button.disabled = true;
-
-    button.textContent =
-      "Marking Complete...";
-
-
-    try {
-
-      const response =
-        await fetch(
-          "/.netlify/functions/mark-cleaning-complete",
-          {
-            method: "POST",
-
-            headers: {
-              "Content-Type":
-                "application/json",
-
-              "x-admin-password":
-                adminPassword
-            },
-
-            body:
-              JSON.stringify({
-                quote_id: quoteId
-              })
-          }
+      if (!quoteId) {
+        console.error(
+          "Setup Checkout Session has no quote_id metadata."
         );
 
-
-      const data =
-        await response.json();
-
-
-      if (!response.ok || !data.ok) {
-
-        throw new Error(
-          data.error ||
-          "Could not mark cleaning complete."
+        return json(
+          {
+            received: false,
+            error:
+              "Missing quote metadata."
+          },
+          400
         );
       }
 
 
-      await loadQuotes();
+      const setupIntentId =
+        session.setup_intent;
 
 
-      await showMessageModal({
-        type: "success",
-        eyebrow: "Service completed",
-        title: "Cleaning marked complete",
-        message:
-          "The service is now marked complete. " +
-          "The customer has NOT been charged."
-      });
+      if (!setupIntentId) {
+        console.error(
+          "Checkout Session has no SetupIntent."
+        );
 
-
-    } catch (error) {
-
-      await showMessageModal({
-        type: "error",
-        eyebrow: "Completion error",
-        title: "Could not update booking",
-        message:
-          error.message ||
-          "Could not mark cleaning complete."
-      });
-
-
-      button.disabled = false;
-
-      button.textContent =
-        originalText;
-    }
-  }
-
-
-  async function chargeCustomer(
-    quoteId,
-    displayedAmount,
-    recoveryLink
-  ) {
-
-    const button =
-      document.getElementById(
-        `charge-${quoteId}`
-      );
-
-
-    if (!button) {
-      return;
-    }
-
-
-    const formattedAmount =
-      money(displayedAmount);
-
-
-    const confirmed =
-      await showConfirmModal({
-        eyebrow: "Payment authorization",
-        title: "Charge customer?",
-        message:
-          "The cleaning is marked complete. " +
-          "This will charge the customer's saved payment method.",
-        amount: formattedAmount,
-        confirmText:
-          `Charge ${formattedAmount}`,
-        cancelText: "Cancel"
-      });
-
-
-    if (!confirmed) {
-      return;
-    }
-
-
-    const originalText =
-      button.textContent;
-
-
-    button.disabled = true;
-
-    button.textContent =
-      "Processing Payment...";
-
-
-    try {
-
-      /*
-        IMPORTANT:
-        The dashboard sends ONLY the quote ID.
-
-        The actual payment amount is retrieved
-        by charge-customer.js from Supabase.
-      */
-
-      const response =
-        await fetch(
-          "/.netlify/functions/charge-customer",
+        return json(
           {
-            method: "POST",
+            received: false,
+            error:
+              "Missing SetupIntent."
+          },
+          400
+        );
+      }
 
-            headers: {
-              "Content-Type":
-                "application/json",
 
-              "x-admin-password":
-                adminPassword
+      try {
+
+        /*
+          Retrieve the SetupIntent so we can
+          obtain the saved PaymentMethod ID.
+        */
+
+        const setupIntent =
+          await stripeGet(
+            `setup_intents/${encodeURIComponent(setupIntentId)}`,
+            stripeSecretKey
+          );
+
+
+        const paymentMethodId =
+          setupIntent.payment_method;
+
+
+        if (!paymentMethodId) {
+          throw new Error(
+            "SetupIntent does not contain a payment method."
+          );
+        }
+
+
+        const stripeCustomerId =
+          session.customer ||
+          setupIntent.customer ||
+          null;
+
+
+        /*
+          Save Stripe references in Supabase.
+
+          This is what allows us to charge
+          this exact customer's saved card later.
+        */
+
+        const updatedQuote =
+          await updateQuote(
+            quoteId,
+
+            {
+              stripe_customer_id:
+                stripeCustomerId,
+
+              stripe_payment_method_id:
+                paymentMethodId,
+
+              stripe_setup_session_id:
+                session.id,
+
+              card_saved_at:
+                new Date().toISOString(),
+
+              status:
+                "card_saved"
             },
 
-            body:
-              JSON.stringify({
-                quote_id: quoteId
-              })
-          }
+            supabaseUrl,
+            serviceRoleKey
+          );
+
+
+        console.log(
+          "Card saved successfully for quote:",
+          quoteId
         );
 
 
-      const data =
-        await response
-          .json()
-          .catch(() => null);
+        return json({
+          received: true,
+          processed: true,
+          payment_type:
+            "card_setup",
+          quote_id:
+            quoteId,
+          status:
+            updatedQuote?.status ||
+            "card_saved"
+        });
 
 
-      if (
-        !response.ok ||
-        !data ||
-        !data.ok
-      ) {
+      } catch (error) {
+
+        console.error(
+          "Could not process completed setup Checkout Session:",
+          error.message
+        );
+
 
         /*
-          Stripe succeeded but database
-          update failed.
-
-          DO NOT retry the charge.
+          Return 500 so Stripe knows processing
+          failed and can retry the webhook.
         */
 
-        if (
-          data &&
-          data.payment_succeeded
-        ) {
-
-          await showMessageModal({
-            type: "warning",
-            eyebrow: "Payment needs review",
-            title: "Do not charge again",
-            message:
-              "Stripe successfully charged the customer, " +
-              "but the booking record could not be updated. " +
-              "Do NOT retry this payment.",
-            referenceLabel:
-              "Stripe Payment ID",
-            referenceValue:
-              data.payment_intent_id ||
-              "Unknown",
-            buttonText:
-              "I Understand"
-          });
+        return json(
+          {
+            received: false,
+            error:
+              "Could not save payment information.",
+            detail:
+              error.message
+          },
+          500
+        );
+      }
+    }
 
 
-          button.disabled = true;
+    /*
+      ========================================
+      RECOVERY PAYMENT FLOW
+      ========================================
 
-          button.textContent =
-            "Payment Needs Review";
+      Only process PAYMENT-mode sessions that
+      were explicitly created by our recovery
+      function.
+    */
 
-          return;
+    if (
+      session.mode === "payment" &&
+      session.metadata?.payment_type ===
+        "recovery"
+    ) {
+
+      const quoteId =
+        session.metadata?.quote_id;
+
+
+      if (!quoteId) {
+        console.error(
+          "Recovery Checkout Session has no quote_id metadata."
+        );
+
+        return json(
+          {
+            received: false,
+            error:
+              "Missing recovery quote metadata."
+          },
+          400
+        );
+      }
+
+
+      const paymentIntentId =
+        session.payment_intent;
+
+
+      if (!paymentIntentId) {
+        console.error(
+          "Recovery Checkout Session has no PaymentIntent."
+        );
+
+        return json(
+          {
+            received: false,
+            error:
+              "Missing recovery PaymentIntent."
+          },
+          400
+        );
+      }
+
+
+      try {
+
+        /*
+          Retrieve BOTH authoritative records:
+
+          1. PaymentIntent from Stripe
+          2. Quote from Supabase
+
+          We verify them against each other
+          before changing the booking status.
+        */
+
+        const paymentIntent =
+          await stripeGet(
+            `payment_intents/${encodeURIComponent(paymentIntentId)}`,
+            stripeSecretKey
+          );
+
+
+        const quote =
+          await getQuote(
+            quoteId,
+            supabaseUrl,
+            serviceRoleKey
+          );
+
+
+        if (!quote) {
+          throw new Error(
+            "Recovery quote does not exist."
+          );
         }
 
 
         /*
-          The saved payment method could not
-          complete the off-session payment.
+          WEBHOOK IDEMPOTENCY
 
-          Give the owner a secure customer link
-          so the customer can authenticate or
-          use another card through Stripe.
+          Stripe can deliver the same webhook
+          more than once.
+
+          If this exact PaymentIntent already
+          marked the quote charged, acknowledge
+          it without changing anything.
         */
 
         if (
-          data &&
-          data.customer_action_required
+          quote.status === "charged" &&
+          quote.stripe_payment_intent_id ===
+            paymentIntent.id
         ) {
 
-          const customerMessage =
-            data.customer_message ||
-            "The saved payment method could not be charged. Send the customer the secure payment link so they can authenticate or use another card.";
+          console.log(
+            "Recovery payment already processed:",
+            quoteId,
+            paymentIntent.id
+          );
 
-
-          prepareModal({
-            type: "error",
-            eyebrow: "Payment failed",
-            title: "Customer action required",
-            message: customerMessage,
-            amount: formattedAmount,
-            referenceLabel:
-              "Secure Payment Link",
-            referenceValue:
-              recoveryLink
+          return json({
+            received: true,
+            processed: true,
+            already_processed: true,
+            payment_type:
+              "recovery",
+            quote_id:
+              quoteId,
+            status:
+              "charged",
+            payment_intent_id:
+              paymentIntent.id
           });
-
-
-          modalResolver = null;
-
-
-          const closeButton =
-            document.createElement("button");
-
-          closeButton.className =
-            "modal-button secondary";
-
-          closeButton.textContent =
-            "Close";
-
-          closeButton.addEventListener(
-            "click",
-            () => closeModal(false)
-          );
-
-
-          const copyButton =
-            document.createElement("button");
-
-          copyButton.className =
-            "modal-button primary-modal";
-
-          copyButton.textContent =
-            "Copy Payment Link";
-
-          copyButton.addEventListener(
-            "click",
-            async () => {
-
-              try {
-
-                await navigator
-                  .clipboard
-                  .writeText(
-                    recoveryLink
-                  );
-
-                copyButton.textContent =
-                  "Copied ✓";
-
-                setTimeout(
-                  () => {
-
-                    copyButton.textContent =
-                      "Copy Payment Link";
-
-                  },
-                  1500
-                );
-
-              } catch {
-
-                copyButton.textContent =
-                  "Copy the link above";
-              }
-            }
-          );
-
-
-          modalActions.appendChild(
-            closeButton
-          );
-
-          modalActions.appendChild(
-            copyButton
-          );
-
-
-          button.disabled = false;
-
-          button.textContent =
-            originalText;
-
-          return;
         }
 
 
-        const detail =
-          data?.detail
-            ? ` ${data.detail}`
-            : "";
+        /*
+          If the quote is already charged by
+          some OTHER PaymentIntent, never allow
+          this webhook to overwrite it.
+        */
+
+        if (quote.status === "charged") {
+
+          console.error(
+            "Quote is already charged by another payment:",
+            quoteId
+          );
+
+          return json({
+            received: true,
+            processed: false,
+            payment_type:
+              "recovery",
+            quote_id:
+              quoteId,
+            status:
+              "charged",
+            reason:
+              "Quote already charged."
+          });
+        }
 
 
-        throw new Error(
-          (
-            data?.error ||
-            "Could not charge customer."
-          ) +
-          detail
+        /*
+          Recovery payment is only valid after
+          the cleaning has been completed.
+        */
+
+        if (quote.status !== "completed") {
+          throw new Error(
+            `Recovery payment cannot be applied while quote status is "${quote.status}".`
+          );
+        }
+
+
+        /*
+          Verify the locked Supabase price.
+          quoted_price is stored in cents.
+        */
+
+        const expectedAmount =
+          Number(
+            quote.quoted_price
+          );
+
+
+        if (
+          !Number.isInteger(expectedAmount) ||
+          expectedAmount <= 0
+        ) {
+          throw new Error(
+            "Quote has an invalid locked payment amount."
+          );
+        }
+
+
+        /*
+          Verify Stripe actually completed
+          the payment.
+        */
+
+        if (
+          paymentIntent.status !==
+          "succeeded"
+        ) {
+
+          console.log(
+            "Recovery PaymentIntent is not succeeded:",
+            paymentIntent.status
+          );
+
+          return json({
+            received: true,
+            processed: false,
+            payment_type:
+              "recovery",
+            quote_id:
+              quoteId,
+            payment_status:
+              paymentIntent.status
+          });
+        }
+
+
+        /*
+          SECURITY CHECK:
+          Stripe amount MUST exactly equal
+          the locked Supabase quoted price.
+        */
+
+        if (
+          Number(paymentIntent.amount_received) !==
+          expectedAmount
+        ) {
+          throw new Error(
+            "Recovery payment amount does not match the locked quote price."
+          );
+        }
+
+
+        /*
+          Also verify the Checkout Session's
+          amount matches the same locked price.
+        */
+
+        if (
+          Number(session.amount_total) !==
+          expectedAmount
+        ) {
+          throw new Error(
+            "Checkout Session amount does not match the locked quote price."
+          );
+        }
+
+
+        /*
+          SECURITY CHECK:
+          Currency must be USD everywhere.
+        */
+
+        const paymentCurrency =
+          String(
+            paymentIntent.currency || ""
+          ).toLowerCase();
+
+
+        const sessionCurrency =
+          String(
+            session.currency || ""
+          ).toLowerCase();
+
+
+        if (
+          paymentCurrency !== "usd" ||
+          sessionCurrency !== "usd"
+        ) {
+          throw new Error(
+            "Recovery payment currency verification failed."
+          );
+        }
+
+
+        /*
+          Verify PaymentIntent metadata still
+          points to this same quote.
+        */
+
+        if (
+          String(
+            paymentIntent.metadata?.quote_id || ""
+          ) !== String(quoteId)
+        ) {
+          throw new Error(
+            "PaymentIntent quote metadata does not match."
+          );
+        }
+
+
+        /*
+          Verify Stripe customer identity.
+
+          The recovery payment must belong to
+          the same Stripe customer originally
+          saved on this quote.
+        */
+
+        const expectedCustomerId =
+          String(
+            quote.stripe_customer_id || ""
+          );
+
+
+        const paymentCustomerId =
+          String(
+            paymentIntent.customer || ""
+          );
+
+
+        const sessionCustomerId =
+          String(
+            session.customer || ""
+          );
+
+
+        if (!expectedCustomerId) {
+          throw new Error(
+            "Quote does not contain a Stripe customer."
+          );
+        }
+
+
+        if (
+          paymentCustomerId !==
+          expectedCustomerId
+        ) {
+          throw new Error(
+            "PaymentIntent customer does not match the booking."
+          );
+        }
+
+
+        if (
+          sessionCustomerId !==
+          expectedCustomerId
+        ) {
+          throw new Error(
+            "Checkout Session customer does not match the booking."
+          );
+        }
+
+
+        /*
+          Because recovery Checkout uses
+          setup_future_usage=off_session,
+          Stripe may provide a new PaymentMethod.
+
+          Save it so future authorized payments
+          use the most recently successful method.
+        */
+
+        const paymentMethodId =
+          paymentIntent.payment_method ||
+          null;
+
+
+        const chargedAt =
+          new Date().toISOString();
+
+
+        const updateValues = {
+          status:
+            "charged",
+
+          stripe_payment_intent_id:
+            paymentIntent.id,
+
+          charged_at:
+            chargedAt,
+
+          stripe_customer_id:
+            expectedCustomerId
+        };
+
+
+        if (paymentMethodId) {
+          updateValues.stripe_payment_method_id =
+            paymentMethodId;
+        }
+
+
+        /*
+          Update Supabase ONLY after every
+          verification above has passed.
+        */
+
+        const updatedQuote =
+          await updateQuote(
+            quoteId,
+            updateValues,
+            supabaseUrl,
+            serviceRoleKey
+          );
+
+
+        console.log(
+          "Verified recovery payment completed for quote:",
+          quoteId,
+          paymentIntent.id,
+          expectedAmount,
+          "usd"
+        );
+
+
+        return json({
+          received: true,
+          processed: true,
+          payment_type:
+            "recovery",
+          quote_id:
+            quoteId,
+          status:
+            updatedQuote?.status ||
+            "charged",
+          payment_intent_id:
+            paymentIntent.id
+        });
+
+
+      } catch (error) {
+
+        console.error(
+          "Could not process recovery payment:",
+          error.message
+        );
+
+
+        /*
+          Return 500 so Stripe retries.
+
+          IMPORTANT:
+          Stripe may already have received
+          the customer's money at this point.
+
+          We NEVER create another charge
+          from inside this webhook.
+        */
+
+        return json(
+          {
+            received: false,
+            error:
+              "Could not record recovery payment.",
+            detail:
+              error.message
+          },
+          500
         );
       }
-
-
-      /*
-        Refresh the dashboard FIRST so the
-        booking behind the modal already says
-        CHARGED when the user closes it.
-      */
-
-      await loadQuotes();
-
-
-      await showMessageModal({
-        type: "success",
-        eyebrow: "Payment complete",
-        title: "Payment successful",
-        message:
-          "The customer's saved payment method was charged successfully.",
-        amount:
-          data.amount_formatted ||
-          formattedAmount,
-        referenceLabel:
-          "Payment reference",
-        referenceValue:
-          data.payment_intent_id ||
-          "—",
-        buttonText:
-          "Done"
-      });
-
-
-    } catch (error) {
-
-      await showMessageModal({
-        type: "error",
-        eyebrow: "Payment failed",
-        title: "Could not charge customer",
-        message:
-          error.message ||
-          "Could not charge customer."
-      });
-
-
-      button.disabled = false;
-
-      button.textContent =
-        originalText;
     }
-  }
 
 
-  function logout() {
+    /*
+      Checkout completed, but it was neither
+      our setup flow nor our recovery flow.
+    */
 
-    adminPassword = "";
-
-    dashboard.classList.add("hidden");
-
-    loginPage.classList.remove("hidden");
-
-    quotesContainer.innerHTML = "";
-  }
-
-
-  loginButton.addEventListener(
-    "click",
-    login
-  );
-
-
-  passwordInput.addEventListener(
-    "keydown",
-    event => {
-
-      if (event.key === "Enter") {
-        login();
-      }
-    }
-  );
-
-
-  document
-    .getElementById(
-      "refreshButton"
-    )
-    .addEventListener(
-      "click",
-      loadQuotes
+    console.log(
+      "Ignoring unrelated Checkout Session."
     );
 
 
-  document
-    .getElementById(
-      "logoutButton"
-    )
-    .addEventListener(
-      "click",
-      logout
-    );
+    return json({
+      received: true
+    });
+  }
 
-</script>
 
-</body>
-</html>
+  /*
+    Other Stripe events can safely be acknowledged.
+  */
+
+  return json({
+    received: true
+  });
+};
