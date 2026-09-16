@@ -176,6 +176,55 @@ async function stripeGet(
 
 
 /*
+  Retrieve the authoritative quote
+  directly from Supabase.
+*/
+
+async function getQuote(
+  quoteId,
+  supabaseUrl,
+  serviceRoleKey
+) {
+  const endpoint =
+    `${supabaseUrl.replace(/\/$/, "")}` +
+    `/rest/v1/quotes` +
+    `?id=eq.${encodeURIComponent(quoteId)}` +
+    `&select=*`;
+
+  const response =
+    await fetch(
+      endpoint,
+      {
+        headers: {
+          apikey:
+            serviceRoleKey,
+
+          Authorization:
+            `Bearer ${serviceRoleKey}`
+        }
+      }
+    );
+
+  const data =
+    await response
+      .json()
+      .catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(
+      data?.message ||
+      data?.error ||
+      "Could not retrieve quote from Supabase."
+    );
+  }
+
+  return Array.isArray(data)
+    ? data[0]
+    : null;
+}
+
+
+/*
   Update a quote in Supabase.
 */
 
@@ -598,11 +647,13 @@ export default async (request) => {
       try {
 
         /*
-          Retrieve the PaymentIntent directly
-          from Stripe.
+          Retrieve BOTH authoritative records:
 
-          We do NOT trust the Checkout event
-          alone for the final payment status.
+          1. PaymentIntent from Stripe
+          2. Quote from Supabase
+
+          We verify them against each other
+          before changing the booking status.
         */
 
         const paymentIntent =
@@ -612,9 +663,124 @@ export default async (request) => {
           );
 
 
+        const quote =
+          await getQuote(
+            quoteId,
+            supabaseUrl,
+            serviceRoleKey
+          );
+
+
+        if (!quote) {
+          throw new Error(
+            "Recovery quote does not exist."
+          );
+        }
+
+
         /*
-          Never mark the quote charged unless
-          Stripe explicitly says succeeded.
+          WEBHOOK IDEMPOTENCY
+
+          Stripe can deliver the same webhook
+          more than once.
+
+          If this exact PaymentIntent already
+          marked the quote charged, acknowledge
+          it without changing anything.
+        */
+
+        if (
+          quote.status === "charged" &&
+          quote.stripe_payment_intent_id ===
+            paymentIntent.id
+        ) {
+
+          console.log(
+            "Recovery payment already processed:",
+            quoteId,
+            paymentIntent.id
+          );
+
+          return json({
+            received: true,
+            processed: true,
+            already_processed: true,
+            payment_type:
+              "recovery",
+            quote_id:
+              quoteId,
+            status:
+              "charged",
+            payment_intent_id:
+              paymentIntent.id
+          });
+        }
+
+
+        /*
+          If the quote is already charged by
+          some OTHER PaymentIntent, never allow
+          this webhook to overwrite it.
+        */
+
+        if (quote.status === "charged") {
+
+          console.error(
+            "Quote is already charged by another payment:",
+            quoteId
+          );
+
+          return json({
+            received: true,
+            processed: false,
+            payment_type:
+              "recovery",
+            quote_id:
+              quoteId,
+            status:
+              "charged",
+            reason:
+              "Quote already charged."
+          });
+        }
+
+
+        /*
+          Recovery payment is only valid after
+          the cleaning has been completed.
+        */
+
+        if (quote.status !== "completed") {
+          throw new Error(
+            `Recovery payment cannot be applied while quote status is "${quote.status}".`
+          );
+        }
+
+
+        /*
+          Verify the locked Supabase price.
+          quoted_price is stored in cents.
+        */
+
+        const expectedAmount =
+          Number(
+            quote.quoted_price
+          );
+
+
+        if (
+          !Number.isInteger(expectedAmount) ||
+          expectedAmount <= 0
+        ) {
+          throw new Error(
+            "Quote has an invalid locked payment amount."
+          );
+        }
+
+
+        /*
+          Verify Stripe actually completed
+          the payment.
         */
 
         if (
@@ -626,15 +792,6 @@ export default async (request) => {
             "Recovery PaymentIntent is not succeeded:",
             paymentIntent.status
           );
-
-
-          /*
-            Acknowledge the webhook without
-            changing the quote.
-
-            Another Stripe event may arrive
-            after payment completion.
-          */
 
           return json({
             received: true,
@@ -650,22 +807,143 @@ export default async (request) => {
 
 
         /*
+          SECURITY CHECK:
+          Stripe amount MUST exactly equal
+          the locked Supabase quoted price.
+        */
+
+        if (
+          Number(paymentIntent.amount_received) !==
+          expectedAmount
+        ) {
+          throw new Error(
+            "Recovery payment amount does not match the locked quote price."
+          );
+        }
+
+
+        /*
+          Also verify the Checkout Session's
+          amount matches the same locked price.
+        */
+
+        if (
+          Number(session.amount_total) !==
+          expectedAmount
+        ) {
+          throw new Error(
+            "Checkout Session amount does not match the locked quote price."
+          );
+        }
+
+
+        /*
+          SECURITY CHECK:
+          Currency must be USD everywhere.
+        */
+
+        const paymentCurrency =
+          String(
+            paymentIntent.currency || ""
+          ).toLowerCase();
+
+
+        const sessionCurrency =
+          String(
+            session.currency || ""
+          ).toLowerCase();
+
+
+        if (
+          paymentCurrency !== "usd" ||
+          sessionCurrency !== "usd"
+        ) {
+          throw new Error(
+            "Recovery payment currency verification failed."
+          );
+        }
+
+
+        /*
+          Verify PaymentIntent metadata still
+          points to this same quote.
+        */
+
+        if (
+          String(
+            paymentIntent.metadata?.quote_id || ""
+          ) !== String(quoteId)
+        ) {
+          throw new Error(
+            "PaymentIntent quote metadata does not match."
+          );
+        }
+
+
+        /*
+          Verify Stripe customer identity.
+
+          The recovery payment must belong to
+          the same Stripe customer originally
+          saved on this quote.
+        */
+
+        const expectedCustomerId =
+          String(
+            quote.stripe_customer_id || ""
+          );
+
+
+        const paymentCustomerId =
+          String(
+            paymentIntent.customer || ""
+          );
+
+
+        const sessionCustomerId =
+          String(
+            session.customer || ""
+          );
+
+
+        if (!expectedCustomerId) {
+          throw new Error(
+            "Quote does not contain a Stripe customer."
+          );
+        }
+
+
+        if (
+          paymentCustomerId !==
+          expectedCustomerId
+        ) {
+          throw new Error(
+            "PaymentIntent customer does not match the booking."
+          );
+        }
+
+
+        if (
+          sessionCustomerId !==
+          expectedCustomerId
+        ) {
+          throw new Error(
+            "Checkout Session customer does not match the booking."
+          );
+        }
+
+
+        /*
           Because recovery Checkout uses
           setup_future_usage=off_session,
           Stripe may provide a new PaymentMethod.
 
-          Save it so the customer record uses
-          the most recently successful method.
+          Save it so future authorized payments
+          use the most recently successful method.
         */
 
         const paymentMethodId =
           paymentIntent.payment_method ||
-          null;
-
-
-        const stripeCustomerId =
-          session.customer ||
-          paymentIntent.customer ||
           null;
 
 
@@ -681,7 +959,10 @@ export default async (request) => {
             paymentIntent.id,
 
           charged_at:
-            chargedAt
+            chargedAt,
+
+          stripe_customer_id:
+            expectedCustomerId
         };
 
 
@@ -691,15 +972,9 @@ export default async (request) => {
         }
 
 
-        if (stripeCustomerId) {
-          updateValues.stripe_customer_id =
-            stripeCustomerId;
-        }
-
-
         /*
-          Update Supabase only AFTER Stripe
-          confirms payment succeeded.
+          Update Supabase ONLY after every
+          verification above has passed.
         */
 
         const updatedQuote =
@@ -712,9 +987,11 @@ export default async (request) => {
 
 
         console.log(
-          "Recovery payment completed for quote:",
+          "Verified recovery payment completed for quote:",
           quoteId,
-          paymentIntent.id
+          paymentIntent.id,
+          expectedAmount,
+          "usd"
         );
 
 
@@ -746,9 +1023,10 @@ export default async (request) => {
 
           IMPORTANT:
           Stripe may already have received
-          the customer's money at this point,
-          so we never create another charge
-          from inside the webhook.
+          the customer's money at this point.
+
+          We NEVER create another charge
+          from inside this webhook.
         */
 
         return json(
