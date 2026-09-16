@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta name="robots" content="noindex,nofollow">
+
+  <title>
+    Complete Payment | The Fresh Standard Co.
+  </title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --green: #17352b;
+      --sage: #829381;
+      --cream: #f4f1e9;
+      --paper: #fffdf8;
+      --line: #dedfd8;
+      --muted: #6e7772;
+      --red: #9d4141;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--cream);
+      color: var(--green);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 20px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 540px;
+      background: var(--paper);
+      border-radius: 28px;
+      padding: 48px 42px;
+      box-shadow:
+        0 20px 70px rgba(23, 53, 43, 0.10);
+      border: 1px solid rgba(23, 53, 43, 0.06);
+      text-align: center;
+    }
+
+    .brand-main {
+      font-family: Georgia, serif;
+      font-size: 25px;
+      letter-spacing: 2px;
+    }
+
+    .brand-sub {
+      margin-top: 6px;
+      color: var(--sage);
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+
+    .divider {
+      width: 45px;
+      height: 1px;
+      background: var(--sage);
+      margin: 32px auto;
+    }
+
+    .eyebrow {
+      color: var(--sage);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: Georgia, serif;
+      font-size: 39px;
+      line-height: 1.15;
+      font-weight: 400;
+    }
+
+    .description {
+      margin: 18px auto 0;
+      max-width: 420px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .secure-box {
+      margin-top: 28px;
+      padding: 20px;
+      border-radius: 16px;
+      background: #eef2ed;
+    }
+
+    .secure-title {
+      font-family: Georgia, serif;
+      font-size: 19px;
+      margin-bottom: 7px;
+    }
+
+    .secure-text {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .button {
+      width: 100%;
+      margin-top: 26px;
+      border: 0;
+      border-radius: 999px;
+      padding: 17px 20px;
+      background: var(--green);
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .button:hover {
+      opacity: 0.94;
+    }
+
+    .button:disabled {
+      opacity: 0.55;
+      cursor: wait;
+    }
+
+    .footer-note {
+      margin-top: 19px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .error {
+      margin-top: 25px;
+      padding: 16px;
+      border-radius: 14px;
+      background: #f5e8e8;
+      color: var(--red);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 550px) {
+      .card {
+        padding: 40px 24px;
+      }
+
+      h1 {
+        font-size: 34px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="page">
+
+    <section class="card">
+
+      <div class="brand-main">
+        THE FRESH
+      </div>
+
+      <div class="brand-sub">
+        Standard Co.
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="eyebrow">
+        Secure Payment
+      </div>
+
+      <h1>
+        Complete your payment.
+      </h1>
+
+      <div class="description">
+        Your cleaning service has been completed,
+        but your original payment method could not
+        be processed. Please use the secure payment
+        button below to complete your payment.
+      </div>
+
+      <div class="secure-box">
+
+        <div class="secure-title">
+          Secure Stripe Checkout
+        </div>
+
+        <div class="secure-text">
+          Payment information is securely handled
+          by Stripe. The Fresh Standard Co. does not
+          receive or store your full card number.
+        </div>
+
+      </div>
+
+      <button
+        id="paymentButton"
+        class="button"
+        type="button"
+      >
+        Continue to Secure Payment
+      </button>
+
+      <div
+        id="errorBox"
+        class="error hidden"
+      ></div>
+
+      <div class="footer-note">
+        The amount due is the price previously
+        agreed for your cleaning service.
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <script>
+    const paymentButton =
+      document.getElementById(
+        "paymentButton"
+      );
+
+    const errorBox =
+      document.getElementById(
+        "errorBox"
+      );
+
+
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
+
+    const token =
+      String(
+        params.get("token") || ""
+      ).trim();
+
+
+    function showError(message) {
+      errorBox.textContent =
+        message;
+
+      errorBox.classList.remove(
+        "hidden"
+      );
+    }
+
+
+    if (!token) {
+      paymentButton.disabled = true;
+
+      showError(
+        "This payment link is invalid or incomplete."
+      );
+    }
+
+
+    paymentButton.addEventListener(
+      "click",
+      async () => {
+
+        if (!token) {
+          return;
+        }
+
+
+        paymentButton.disabled = true;
+
+        paymentButton.textContent =
+          "Opening Secure Payment...";
+
+        errorBox.classList.add(
+          "hidden"
+        );
+
+
+        try {
+
+          /*
+            IMPORTANT:
+
+            The customer-facing page does NOT
+            create the recovery session itself.
+
+            Recovery Checkout links are created
+            from the private owner dashboard.
+
+            This page expects the Stripe Checkout
+            URL to be supplied as a secure URL
+            parameter after the owner generates it.
+          */
+
+          const checkoutUrl =
+            sessionStorage.getItem(
+              `fresh-payment-${token}`
+            );
+
+
+          if (!checkoutUrl) {
+            throw new Error(
+              "This payment session is no longer available. Please request a new secure payment link."
+            );
+          }
+
+
+          sessionStorage.removeItem(
+            `fresh-payment-${token}`
+          );
+
+
+          window.location.href =
+            checkoutUrl;
+
+
+        } catch (error) {
+
+          showError(
+            error.message ||
+            "Secure payment could not be opened."
+          );
+
+
+          paymentButton.disabled = false;
+
+          paymentButton.textContent =
+            "Continue to Secure Payment";
+        }
+      }
+    );
+  </script>
+
+</body>
+</html>
