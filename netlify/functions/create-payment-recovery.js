@@ -57,15 +57,15 @@ async function stripePost(
 }
 
 
-async function getQuote(
-  quoteId,
+async function getQuoteByToken(
+  token,
   supabaseUrl,
   serviceRoleKey
 ) {
   const endpoint =
     `${supabaseUrl.replace(/\/$/, "")}` +
     `/rest/v1/quotes` +
-    `?id=eq.${encodeURIComponent(quoteId)}` +
+    `?quote_token=eq.${encodeURIComponent(token)}` +
     `&select=*`;
 
   const response =
@@ -74,7 +74,6 @@ async function getQuote(
       {
         headers: {
           apikey: serviceRoleKey,
-
           Authorization:
             `Bearer ${serviceRoleKey}`
         }
@@ -102,13 +101,13 @@ async function getQuote(
 export default async (request) => {
 
   /*
-    OWNER-ONLY ENDPOINT.
+    CUSTOMER PAYMENT RECOVERY ENDPOINT.
 
-    This creates a secure Stripe Checkout
-    payment link after the normal saved-card
-    charge could not be completed.
+    The customer supplies ONLY the secure
+    quote token.
 
-    The browser NEVER supplies the amount.
+    The amount, customer, quote ID and status
+    are all retrieved directly from Supabase.
   */
 
   if (request.method !== "POST") {
@@ -122,9 +121,6 @@ export default async (request) => {
   }
 
 
-  const adminPassword =
-    process.env.ADMIN_PASSWORD;
-
   const supabaseUrl =
     process.env.SUPABASE_URL;
 
@@ -136,7 +132,6 @@ export default async (request) => {
 
 
   if (
-    !adminPassword ||
     !supabaseUrl ||
     !serviceRoleKey ||
     !stripeSecretKey
@@ -151,34 +146,6 @@ export default async (request) => {
     );
   }
 
-
-  /*
-    Require owner authentication.
-  */
-
-  const suppliedPassword =
-    request.headers.get(
-      "x-admin-password"
-    );
-
-
-  if (
-    !suppliedPassword ||
-    suppliedPassword !== adminPassword
-  ) {
-    return json(
-      {
-        ok: false,
-        error: "Unauthorized."
-      },
-      401
-    );
-  }
-
-
-  /*
-    Read ONLY the quote ID from the dashboard.
-  */
 
   let body;
 
@@ -196,17 +163,18 @@ export default async (request) => {
   }
 
 
-  const quoteId =
+  const token =
     String(
-      body.quote_id || ""
+      body.token || ""
     ).trim();
 
 
-  if (!quoteId) {
+  if (!token) {
     return json(
       {
         ok: false,
-        error: "Quote ID is required."
+        error:
+          "Secure payment token is required."
       },
       400
     );
@@ -214,25 +182,26 @@ export default async (request) => {
 
 
   /*
-    Retrieve the authoritative quote
-    directly from Supabase.
+    Retrieve booking using the secure
+    customer token.
   */
 
   let quote;
 
   try {
+
     quote =
-      await getQuote(
-        quoteId,
+      await getQuoteByToken(
+        token,
         supabaseUrl,
         serviceRoleKey
       );
 
   } catch (error) {
+
     return json(
       {
         ok: false,
-
         error:
           error.message ||
           "Could not retrieve booking."
@@ -246,7 +215,8 @@ export default async (request) => {
     return json(
       {
         ok: false,
-        error: "Booking not found."
+        error:
+          "This payment link is invalid."
       },
       404
     );
@@ -254,33 +224,34 @@ export default async (request) => {
 
 
   /*
-    Recovery payment is ONLY allowed after
-    the cleaning has been marked completed.
-
-    If it is already charged, absolutely
-    no new Checkout Session is created.
+    Never create another payment for an
+    already-charged booking.
   */
 
   if (quote.status === "charged") {
     return json(
       {
         ok: false,
-
+        already_paid: true,
         error:
-          "This customer has already been charged."
+          "This booking has already been paid."
       },
       409
     );
   }
 
 
+  /*
+    Recovery payment is available ONLY after
+    the cleaning has actually been completed.
+  */
+
   if (quote.status !== "completed") {
     return json(
       {
         ok: false,
-
         error:
-          `A recovery payment cannot be created while this booking is "${quote.status}".`
+          "This booking is not currently available for payment."
       },
       400
     );
@@ -288,9 +259,7 @@ export default async (request) => {
 
 
   /*
-    Validate the SERVER-SIDE locked price.
-
-    quoted_price is stored in cents.
+    Validate locked SERVER-SIDE amount.
   */
 
   const amount =
@@ -306,7 +275,6 @@ export default async (request) => {
     return json(
       {
         ok: false,
-
         error:
           "This booking does not have a valid payment amount."
       },
@@ -316,9 +284,8 @@ export default async (request) => {
 
 
   /*
-    This quote should already have a Stripe
-    customer because the customer previously
-    saved a card during booking.
+    Customer must already exist in Stripe
+    from the original card-saving flow.
   */
 
   const stripeCustomerId =
@@ -331,36 +298,8 @@ export default async (request) => {
     return json(
       {
         ok: false,
-
         error:
-          "This booking does not have a Stripe customer."
-      },
-      400
-    );
-  }
-
-
-  /*
-    The existing quote token becomes the
-    customer-facing recovery authorization.
-
-    We do NOT expose the quote ID alone in
-    the recovery URL.
-  */
-
-  const quoteToken =
-    String(
-      quote.quote_token || ""
-    ).trim();
-
-
-  if (!quoteToken) {
-    return json(
-      {
-        ok: false,
-
-        error:
-          "This booking does not have a secure customer token."
+          "Payment information is unavailable for this booking."
       },
       400
     );
@@ -370,12 +309,12 @@ export default async (request) => {
   /*
     Create Stripe Checkout in PAYMENT mode.
 
-    Unlike the original booking Checkout,
-    this actually charges the customer.
+    This Checkout can handle:
+    - customer authentication
+    - 3D Secure
+    - entering another card
 
-    Stripe hosts the card/authentication UI,
-    so 3DS and replacement-card entry happen
-    securely on Stripe's side.
+    Stripe handles the sensitive card UI.
   */
 
   const params =
@@ -399,10 +338,6 @@ export default async (request) => {
     "card"
   );
 
-
-  /*
-    Charge the exact server-side amount.
-  */
 
   params.set(
     "line_items[0][price_data][currency]",
@@ -435,9 +370,8 @@ export default async (request) => {
 
 
   /*
-    Save the newly used payment method to
-    the existing Stripe customer for future
-    permitted payments.
+    Save the successfully used payment
+    method to the Stripe customer.
   */
 
   params.set(
@@ -446,11 +380,6 @@ export default async (request) => {
   );
 
 
-  /*
-    Customer returns to our branded page
-    after successful payment.
-  */
-
   params.set(
     "success_url",
     "https://thefreshstandardco.com/payment/success/" +
@@ -458,22 +387,17 @@ export default async (request) => {
   );
 
 
-  /*
-    If the customer cancels Stripe Checkout,
-    return them to our recovery page.
-  */
-
   params.set(
     "cancel_url",
     "https://thefreshstandardco.com/payment/" +
     "?token=" +
-    encodeURIComponent(quoteToken)
+    encodeURIComponent(token)
   );
 
 
   /*
-    Metadata allows the Stripe webhook to
-    connect this payment back to the quote.
+    Metadata used by our verified Stripe
+    webhook after successful payment.
   */
 
   params.set(
@@ -490,7 +414,7 @@ export default async (request) => {
 
   params.set(
     "metadata[quote_token]",
-    quoteToken
+    token
   );
 
 
@@ -518,14 +442,6 @@ export default async (request) => {
   );
 
 
-  /*
-    Create the Stripe Checkout Session.
-
-    The idempotency key prevents accidental
-    duplicate session creation from rapid
-    repeated dashboard clicks.
-  */
-
   let session;
 
   try {
@@ -534,8 +450,7 @@ export default async (request) => {
       await stripePost(
         "checkout/sessions",
         stripeSecretKey,
-        params,
-        `fresh-standard-recovery-${quote.id}-${amount}`
+        params
       );
 
   } catch (error) {
@@ -549,10 +464,8 @@ export default async (request) => {
     return json(
       {
         ok: false,
-
         error:
-          "Could not create the secure payment link.",
-
+          "Secure payment could not be opened.",
         detail:
           error.message
       },
@@ -561,22 +474,8 @@ export default async (request) => {
   }
 
 
-  /*
-    Return the Stripe-hosted URL to the
-    OWNER dashboard.
-
-    The dashboard can then copy/send it
-    to the customer.
-  */
-
   return json({
     ok: true,
-
-    quote_id:
-      quote.id,
-
-    quote_number:
-      quote.quote_number || null,
 
     amount:
       amount,
@@ -590,9 +489,6 @@ export default async (request) => {
             currency: "USD"
           }
         ),
-
-    checkout_session_id:
-      session.id,
 
     checkout_url:
       session.url
