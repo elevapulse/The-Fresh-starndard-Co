@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 
+
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
@@ -350,11 +351,18 @@ export default async (request) => {
 
 
   /*
-    We currently care about successful
-    Stripe Checkout completion.
+    CHECKOUT SESSION COMPLETED
 
-    Our Checkout Session uses mode=setup,
-    meaning the card is SAVED but NOT charged.
+    We support two Checkout flows:
+
+    1. mode=setup
+       Original booking flow.
+       Saves the customer's card.
+
+    2. mode=payment + payment_type=recovery
+       Recovery flow after an off-session
+       payment could not be completed.
+       This actually charges the customer.
   */
 
   if (
@@ -374,166 +382,402 @@ export default async (request) => {
 
 
     /*
-      Only process our card-saving
-      Checkout Sessions.
+      ========================================
+      ORIGINAL CARD-SAVING FLOW
+      ========================================
     */
 
-    if (session.mode !== "setup") {
-      console.log(
-        "Ignoring non-setup Checkout Session."
-      );
+    if (session.mode === "setup") {
 
-      return json({
-        received: true
-      });
-    }
+      const quoteId =
+        session.metadata?.quote_id;
 
 
-    const quoteId =
-      session.metadata?.quote_id;
-
-
-    if (!quoteId) {
-      console.error(
-        "Checkout Session has no quote_id metadata."
-      );
-
-      return json(
-        {
-          received: false,
-          error:
-            "Missing quote metadata."
-        },
-        400
-      );
-    }
-
-
-    const setupIntentId =
-      session.setup_intent;
-
-
-    if (!setupIntentId) {
-      console.error(
-        "Checkout Session has no SetupIntent."
-      );
-
-      return json(
-        {
-          received: false,
-          error:
-            "Missing SetupIntent."
-        },
-        400
-      );
-    }
-
-
-    try {
-
-      /*
-        Retrieve the SetupIntent so we can
-        obtain the saved PaymentMethod ID.
-      */
-
-      const setupIntent =
-        await stripeGet(
-          `setup_intents/${encodeURIComponent(setupIntentId)}`,
-          stripeSecretKey
+      if (!quoteId) {
+        console.error(
+          "Setup Checkout Session has no quote_id metadata."
         );
 
-
-      const paymentMethodId =
-        setupIntent.payment_method;
-
-
-      if (!paymentMethodId) {
-        throw new Error(
-          "SetupIntent does not contain a payment method."
+        return json(
+          {
+            received: false,
+            error:
+              "Missing quote metadata."
+          },
+          400
         );
       }
 
 
-      const stripeCustomerId =
-        session.customer ||
-        setupIntent.customer ||
-        null;
+      const setupIntentId =
+        session.setup_intent;
 
 
-      /*
-        Save Stripe references in Supabase.
+      if (!setupIntentId) {
+        console.error(
+          "Checkout Session has no SetupIntent."
+        );
 
-        This is what allows us to charge
-        this exact customer's saved card later.
-      */
-
-      const updatedQuote =
-        await updateQuote(
-          quoteId,
-
+        return json(
           {
-            stripe_customer_id:
-              stripeCustomerId,
-
-            stripe_payment_method_id:
-              paymentMethodId,
-
-            stripe_setup_session_id:
-              session.id,
-
-            card_saved_at:
-              new Date().toISOString(),
-
-            status:
-              "card_saved"
+            received: false,
+            error:
+              "Missing SetupIntent."
           },
+          400
+        );
+      }
 
-          supabaseUrl,
-          serviceRoleKey
+
+      try {
+
+        /*
+          Retrieve the SetupIntent so we can
+          obtain the saved PaymentMethod ID.
+        */
+
+        const setupIntent =
+          await stripeGet(
+            `setup_intents/${encodeURIComponent(setupIntentId)}`,
+            stripeSecretKey
+          );
+
+
+        const paymentMethodId =
+          setupIntent.payment_method;
+
+
+        if (!paymentMethodId) {
+          throw new Error(
+            "SetupIntent does not contain a payment method."
+          );
+        }
+
+
+        const stripeCustomerId =
+          session.customer ||
+          setupIntent.customer ||
+          null;
+
+
+        /*
+          Save Stripe references in Supabase.
+
+          This is what allows us to charge
+          this exact customer's saved card later.
+        */
+
+        const updatedQuote =
+          await updateQuote(
+            quoteId,
+
+            {
+              stripe_customer_id:
+                stripeCustomerId,
+
+              stripe_payment_method_id:
+                paymentMethodId,
+
+              stripe_setup_session_id:
+                session.id,
+
+              card_saved_at:
+                new Date().toISOString(),
+
+              status:
+                "card_saved"
+            },
+
+            supabaseUrl,
+            serviceRoleKey
+          );
+
+
+        console.log(
+          "Card saved successfully for quote:",
+          quoteId
         );
 
 
-      console.log(
-        "Card saved successfully for quote:",
-        quoteId
-      );
+        return json({
+          received: true,
+          processed: true,
+          payment_type:
+            "card_setup",
+          quote_id:
+            quoteId,
+          status:
+            updatedQuote?.status ||
+            "card_saved"
+        });
 
 
-      return json({
-        received: true,
-        processed: true,
-        quote_id:
-          quoteId,
-        status:
-          updatedQuote?.status ||
-          "card_saved"
-      });
+      } catch (error) {
+
+        console.error(
+          "Could not process completed setup Checkout Session:",
+          error.message
+        );
 
 
-    } catch (error) {
+        /*
+          Return 500 so Stripe knows processing
+          failed and can retry the webhook.
+        */
 
-      console.error(
-        "Could not process completed Checkout Session:",
-        error.message
-      );
-
-
-      /*
-        Return 500 so Stripe knows processing
-        failed and can retry the webhook.
-      */
-
-      return json(
-        {
-          received: false,
-          error:
-            "Could not save payment information.",
-          detail:
-            error.message
-        },
-        500
-      );
+        return json(
+          {
+            received: false,
+            error:
+              "Could not save payment information.",
+            detail:
+              error.message
+          },
+          500
+        );
+      }
     }
+
+
+    /*
+      ========================================
+      RECOVERY PAYMENT FLOW
+      ========================================
+
+      Only process PAYMENT-mode sessions that
+      were explicitly created by our recovery
+      function.
+    */
+
+    if (
+      session.mode === "payment" &&
+      session.metadata?.payment_type ===
+        "recovery"
+    ) {
+
+      const quoteId =
+        session.metadata?.quote_id;
+
+
+      if (!quoteId) {
+        console.error(
+          "Recovery Checkout Session has no quote_id metadata."
+        );
+
+        return json(
+          {
+            received: false,
+            error:
+              "Missing recovery quote metadata."
+          },
+          400
+        );
+      }
+
+
+      const paymentIntentId =
+        session.payment_intent;
+
+
+      if (!paymentIntentId) {
+        console.error(
+          "Recovery Checkout Session has no PaymentIntent."
+        );
+
+        return json(
+          {
+            received: false,
+            error:
+              "Missing recovery PaymentIntent."
+          },
+          400
+        );
+      }
+
+
+      try {
+
+        /*
+          Retrieve the PaymentIntent directly
+          from Stripe.
+
+          We do NOT trust the Checkout event
+          alone for the final payment status.
+        */
+
+        const paymentIntent =
+          await stripeGet(
+            `payment_intents/${encodeURIComponent(paymentIntentId)}`,
+            stripeSecretKey
+          );
+
+
+        /*
+          Never mark the quote charged unless
+          Stripe explicitly says succeeded.
+        */
+
+        if (
+          paymentIntent.status !==
+          "succeeded"
+        ) {
+
+          console.log(
+            "Recovery PaymentIntent is not succeeded:",
+            paymentIntent.status
+          );
+
+
+          /*
+            Acknowledge the webhook without
+            changing the quote.
+
+            Another Stripe event may arrive
+            after payment completion.
+          */
+
+          return json({
+            received: true,
+            processed: false,
+            payment_type:
+              "recovery",
+            quote_id:
+              quoteId,
+            payment_status:
+              paymentIntent.status
+          });
+        }
+
+
+        /*
+          Because recovery Checkout uses
+          setup_future_usage=off_session,
+          Stripe may provide a new PaymentMethod.
+
+          Save it so the customer record uses
+          the most recently successful method.
+        */
+
+        const paymentMethodId =
+          paymentIntent.payment_method ||
+          null;
+
+
+        const stripeCustomerId =
+          session.customer ||
+          paymentIntent.customer ||
+          null;
+
+
+        const chargedAt =
+          new Date().toISOString();
+
+
+        const updateValues = {
+          status:
+            "charged",
+
+          stripe_payment_intent_id:
+            paymentIntent.id,
+
+          charged_at:
+            chargedAt
+        };
+
+
+        if (paymentMethodId) {
+          updateValues.stripe_payment_method_id =
+            paymentMethodId;
+        }
+
+
+        if (stripeCustomerId) {
+          updateValues.stripe_customer_id =
+            stripeCustomerId;
+        }
+
+
+        /*
+          Update Supabase only AFTER Stripe
+          confirms payment succeeded.
+        */
+
+        const updatedQuote =
+          await updateQuote(
+            quoteId,
+            updateValues,
+            supabaseUrl,
+            serviceRoleKey
+          );
+
+
+        console.log(
+          "Recovery payment completed for quote:",
+          quoteId,
+          paymentIntent.id
+        );
+
+
+        return json({
+          received: true,
+          processed: true,
+          payment_type:
+            "recovery",
+          quote_id:
+            quoteId,
+          status:
+            updatedQuote?.status ||
+            "charged",
+          payment_intent_id:
+            paymentIntent.id
+        });
+
+
+      } catch (error) {
+
+        console.error(
+          "Could not process recovery payment:",
+          error.message
+        );
+
+
+        /*
+          Return 500 so Stripe retries.
+
+          IMPORTANT:
+          Stripe may already have received
+          the customer's money at this point,
+          so we never create another charge
+          from inside the webhook.
+        */
+
+        return json(
+          {
+            received: false,
+            error:
+              "Could not record recovery payment.",
+            detail:
+              error.message
+          },
+          500
+        );
+      }
+    }
+
+
+    /*
+      Checkout completed, but it was neither
+      our setup flow nor our recovery flow.
+    */
+
+    console.log(
+      "Ignoring unrelated Checkout Session."
+    );
+
+
+    return json({
+      received: true
+    });
   }
 
 
