@@ -108,7 +108,7 @@
 
     .price-section {
       text-align: center;
-      padding: 38px 0 32px;
+      padding: 38px 0 28px;
     }
 
     .price-label {
@@ -130,6 +130,28 @@
       margin-top: 13px;
       color: #7a827e;
       font-size: 13px;
+    }
+
+    .authorization {
+      margin: 0 0 22px;
+      padding: 20px;
+      border: 1px solid #e1e5de;
+      border-radius: 16px;
+      background: #f7f7f2;
+    }
+
+    .authorization-title {
+      margin-bottom: 8px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 19px;
+      color: #17352b;
+    }
+
+    .authorization-text {
+      margin: 0;
+      color: #69736e;
+      font-size: 13px;
+      line-height: 1.65;
     }
 
     button {
@@ -161,7 +183,14 @@
       color: #7a827e;
       line-height: 1.6;
       margin: 18px auto 0;
-      max-width: 480px;
+      max-width: 500px;
+    }
+
+    .terms a {
+      color: #17352b;
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 2px;
     }
 
     .status {
@@ -283,14 +312,37 @@
 
       </div>
 
+      <div class="authorization">
+
+        <div class="authorization-title">
+          Payment Authorization
+        </div>
+
+        <p class="authorization-text">
+          By confirming this booking, you agree to the quoted price
+          and authorize The Fresh Standard Co. to securely save your
+          payment method through Stripe. Your card will not be charged
+          when you confirm your booking. After your cleaning service
+          has been completed, you authorize The Fresh Standard Co. to
+          charge the agreed quoted amount to your saved payment method.
+        </p>
+
+      </div>
+
       <button id="acceptButton">
-        Accept &amp; Book
+        Confirm Booking &amp; Secure Card
       </button>
 
       <div class="terms">
-        By continuing, you agree to The Fresh Standard Co.'s booking,
-        cancellation and payment terms. Your payment method will be
-        securely collected through Stripe.
+        By continuing, you agree to our
+        <a href="/terms/" target="_blank" rel="noopener">
+          Terms of Service
+        </a>
+        and
+        <a href="/privacy/" target="_blank" rel="noopener">
+          Privacy Policy
+        </a>.
+        Your payment information is securely processed through Stripe.
       </div>
 
     </div>
@@ -459,7 +511,8 @@
       );
 
       acceptButton.disabled = false;
-      acceptButton.textContent = "Accept & Book";
+      acceptButton.textContent =
+        "Confirm Booking & Secure Card";
     }
   });
 
