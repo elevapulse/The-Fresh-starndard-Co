@@ -442,6 +442,30 @@ export default async (request) => {
   );
 
 
+  /*
+    DUPLICATE PAYMENT PROTECTION.
+
+    Every recovery Checkout creation for this
+    quote uses the same Stripe idempotency key.
+
+    If the customer:
+    - double-clicks
+    - opens multiple tabs
+    - uses multiple devices
+    - sends simultaneous requests
+
+    Stripe will return the same Checkout
+    Session instead of creating separate
+    payment sessions for the same booking.
+
+    The quote price is already locked before
+    this recovery flow can be reached.
+  */
+
+  const recoveryIdempotencyKey =
+    `fresh-standard-recovery-${quote.id}`;
+
+
   let session;
 
   try {
@@ -450,7 +474,8 @@ export default async (request) => {
       await stripePost(
         "checkout/sessions",
         stripeSecretKey,
-        params
+        params,
+        recoveryIdempotencyKey
       );
 
   } catch (error) {
@@ -473,6 +498,13 @@ export default async (request) => {
     );
   }
 
+
+  /*
+    Return ONLY the server-created Checkout
+    URL and server-controlled amount.
+
+    The browser never controls the price.
+  */
 
   return json({
     ok: true,
