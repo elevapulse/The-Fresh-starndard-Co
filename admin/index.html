@@ -1043,6 +1043,16 @@
   }
 
 
+  function paymentUrl(q) {
+    if (!q.quote_token) return "";
+
+    return (
+      "https://thefreshstandardco.com/payment/?token=" +
+      encodeURIComponent(q.quote_token)
+    );
+  }
+
+
   function closeModal(result) {
     modalOverlay.classList.add("hidden");
 
@@ -1392,7 +1402,8 @@
                 id="charge-${q.id}"
                 onclick="chargeCustomer(
                   '${q.id}',
-                  ${Number(q.quoted_price) || 0}
+                  ${Number(q.quoted_price) || 0},
+                  '${paymentUrl(q)}'
                 )"
               >
                 Charge Customer — ${money(q.quoted_price)}
@@ -2107,7 +2118,8 @@
 
   async function chargeCustomer(
     quoteId,
-    displayedAmount
+    displayedAmount,
+    recoveryLink
   ) {
 
     const button =
@@ -2232,6 +2244,112 @@
 
           button.textContent =
             "Payment Needs Review";
+
+          return;
+        }
+
+
+        /*
+          The saved payment method failed
+          and the backend confirmed that
+          customer action is required.
+
+          Give the owner a secure recovery
+          link to send to the customer.
+        */
+
+        if (
+          data &&
+          data.customer_action_required === true &&
+          recoveryLink
+        ) {
+
+          prepareModal({
+            type: "warning",
+            eyebrow: "Payment failed",
+            title: "Customer action required",
+            message:
+              data.customer_message ||
+              "The saved payment method could not be charged. Send the customer the secure payment link so they can use another payment method.",
+            amount: formattedAmount,
+            referenceLabel:
+              "Secure Payment Link",
+            referenceValue:
+              recoveryLink
+          });
+
+
+          const closeButton =
+            document.createElement("button");
+
+          closeButton.className =
+            "modal-button secondary";
+
+          closeButton.textContent =
+            "Close";
+
+          closeButton.addEventListener(
+            "click",
+            () => closeModal(true)
+          );
+
+
+          const copyButton =
+            document.createElement("button");
+
+          copyButton.className =
+            "modal-button primary-modal";
+
+          copyButton.textContent =
+            "Copy Payment Link";
+
+          copyButton.addEventListener(
+            "click",
+            async () => {
+
+              try {
+
+                await navigator
+                  .clipboard
+                  .writeText(
+                    recoveryLink
+                  );
+
+                copyButton.textContent =
+                  "Copied ✓";
+
+                setTimeout(
+                  () => {
+
+                    copyButton.textContent =
+                      "Copy Payment Link";
+
+                  },
+                  1500
+                );
+
+              } catch {
+
+                modalReferenceValue.textContent =
+                  recoveryLink;
+              }
+            }
+          );
+
+
+          modalActions.appendChild(
+            closeButton
+          );
+
+          modalActions.appendChild(
+            copyButton
+          );
+
+
+          button.disabled = false;
+
+          button.textContent =
+            originalText;
 
           return;
         }
