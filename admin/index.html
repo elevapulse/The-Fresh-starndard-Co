@@ -2,749 +2,745 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-
 <title>Owner Dashboard | The Fresh Standard Co.</title>
 
 <style>
-* {
-  box-sizing: border-box;
-}
+*{box-sizing:border-box}
 
-:root {
-  --green: #17352b;
-  --sage: #829381;
-  --cream: #f4f1e9;
-  --paper: #fffdf8;
-  --line: #dedfd8;
-  --muted: #6e7772;
-  --red: #9d4141;
+:root{
+  --green:#17352b;
+  --sage:#829381;
+  --cream:#f4f1e9;
+  --paper:#fffdf8;
+  --line:#dedfd8;
+  --muted:#6e7772;
+  --red:#9d4141;
 }
 
-body {
-  margin: 0;
-  background: var(--cream);
-  color: var(--green);
-  font-family: Arial, Helvetica, sans-serif;
+body{
+  margin:0;
+  background:var(--cream);
+  color:var(--green);
+  font-family:Arial,Helvetica,sans-serif;
 }
 
-button,
-input {
-  font: inherit;
-}
+button,input{font:inherit}
+.hidden{display:none!important}
 
-.hidden {
-  display: none !important;
+.login-page{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:25px;
 }
 
-/* LOGIN */
+.login-card{
+  width:100%;
+  max-width:430px;
+  background:var(--paper);
+  padding:45px;
+  border-radius:24px;
+  box-shadow:0 20px 60px rgba(23,53,43,.10);
+}
 
-.login-page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 25px;
+.brand{
+  text-align:center;
+  margin-bottom:35px;
 }
 
-.login-card {
-  width: 100%;
-  max-width: 430px;
-  background: var(--paper);
-  padding: 45px;
-  border-radius: 24px;
-  box-shadow: 0 20px 60px rgba(23, 53, 43, 0.10);
+.brand-main{
+  font-family:Georgia,serif;
+  font-size:27px;
+  letter-spacing:2px;
 }
 
-.brand {
-  text-align: center;
-  margin-bottom: 35px;
+.brand-sub{
+  margin-top:6px;
+  font-size:10px;
+  letter-spacing:4px;
+  text-transform:uppercase;
+  color:var(--sage);
 }
 
-.brand-main {
-  font-family: Georgia, serif;
-  font-size: 27px;
-  letter-spacing: 2px;
+h1,h2,h3{
+  font-family:Georgia,serif;
+  font-weight:400;
 }
 
-.brand-sub {
-  margin-top: 6px;
-  font-size: 10px;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  color: var(--sage);
+.login-card h1{
+  text-align:center;
+  margin-bottom:8px;
 }
 
-h1,
-h2,
-h3 {
-  font-family: Georgia, serif;
-  font-weight: 400;
+.login-description{
+  text-align:center;
+  color:var(--muted);
+  margin-bottom:30px;
+  line-height:1.6;
 }
 
-.login-card h1 {
-  text-align: center;
-  margin-bottom: 8px;
+input{
+  width:100%;
+  padding:15px 17px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:white;
+  color:var(--green);
+  outline:none;
 }
 
-.login-description {
-  text-align: center;
-  color: var(--muted);
-  margin-bottom: 30px;
-  line-height: 1.6;
+input:focus{
+  border-color:var(--sage);
 }
 
-input {
-  width: 100%;
-  padding: 15px 17px;
-  border-radius: 12px;
-  border: 1px solid var(--line);
-  background: white;
-  color: var(--green);
-  outline: none;
+.primary{
+  width:100%;
+  border:0;
+  background:var(--green);
+  color:white;
+  padding:16px;
+  border-radius:999px;
+  font-weight:700;
+  cursor:pointer;
 }
 
-input:focus {
-  border-color: var(--sage);
+.primary:disabled{
+  opacity:.55;
+  cursor:not-allowed;
 }
 
-.primary {
-  width: 100%;
-  border: 0;
-  background: var(--green);
-  color: white;
-  padding: 16px;
-  border-radius: 999px;
-  font-weight: 700;
-  cursor: pointer;
+.login-button{margin-top:14px}
+
+.login-error{
+  color:var(--red);
+  text-align:center;
+  font-size:13px;
+  margin-top:15px;
 }
 
-.primary:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
+header{
+  background:var(--green);
+  color:white;
+  padding:25px 32px;
 }
 
-.login-button {
-  margin-top: 14px;
+.header-inner{
+  max-width:1250px;
+  margin:auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:25px;
 }
 
-.login-error {
-  color: var(--red);
-  text-align: center;
-  font-size: 13px;
-  margin-top: 15px;
+.header-brand{
+  font-family:Georgia,serif;
+  font-size:22px;
+  letter-spacing:1px;
 }
 
-/* DASHBOARD */
+.header-label{
+  margin-top:5px;
+  color:#cbd6cf;
+  font-size:12px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
 
-header {
-  background: var(--green);
-  color: white;
-  padding: 25px 32px;
+.logout{
+  border:1px solid rgba(255,255,255,.35);
+  color:white;
+  background:transparent;
+  border-radius:999px;
+  padding:10px 18px;
+  cursor:pointer;
 }
 
-.header-inner {
-  max-width: 1250px;
-  margin: auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 25px;
+main{
+  max-width:1250px;
+  margin:auto;
+  padding:45px 25px 80px;
 }
 
-.header-brand {
-  font-family: Georgia, serif;
-  font-size: 22px;
-  letter-spacing: 1px;
+.top{
+  display:flex;
+  justify-content:space-between;
+  gap:25px;
+  align-items:flex-end;
+  margin-bottom:30px;
 }
 
-.header-label {
-  margin-top: 5px;
-  color: #cbd6cf;
-  font-size: 12px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
+.top h1{
+  font-size:40px;
+  margin:0;
 }
 
-.logout {
-  border: 1px solid rgba(255,255,255,.35);
-  color: white;
-  background: transparent;
-  border-radius: 999px;
-  padding: 10px 18px;
-  cursor: pointer;
+.top p{
+  color:var(--muted);
+  margin:8px 0 0;
 }
 
-main {
-  max-width: 1250px;
-  margin: auto;
-  padding: 45px 25px 80px;
+.refresh{
+  border:1px solid var(--line);
+  background:var(--paper);
+  color:var(--green);
+  padding:11px 18px;
+  border-radius:999px;
+  cursor:pointer;
 }
 
-.top {
-  display: flex;
-  justify-content: space-between;
-  gap: 25px;
-  align-items: flex-end;
-  margin-bottom: 30px;
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+  margin-bottom:30px;
 }
 
-.top h1 {
-  font-size: 40px;
-  margin: 0;
+.stat{
+  background:var(--paper);
+  border-radius:18px;
+  padding:20px;
+  border:1px solid rgba(23,53,43,.05);
 }
 
-.top p {
-  color: var(--muted);
-  margin: 8px 0 0;
+.stat-label{
+  color:var(--muted);
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:1px;
 }
 
-.refresh {
-  border: 1px solid var(--line);
-  background: var(--paper);
-  color: var(--green);
-  padding: 11px 18px;
-  border-radius: 999px;
-  cursor: pointer;
+.stat-value{
+  font-family:Georgia,serif;
+  font-size:31px;
+  margin-top:7px;
 }
 
-.stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 15px;
-  margin-bottom: 30px;
+.quotes{
+  display:grid;
+  gap:18px;
 }
 
-.stat {
-  background: var(--paper);
-  border-radius: 18px;
-  padding: 20px;
-  border: 1px solid rgba(23,53,43,.05);
+.quote-card{
+  background:var(--paper);
+  border-radius:22px;
+  padding:26px;
+  border:1px solid rgba(23,53,43,.06);
+  box-shadow:0 10px 35px rgba(23,53,43,.05);
 }
 
-.stat-label {
-  color: var(--muted);
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+.quote-head{
+  display:flex;
+  justify-content:space-between;
+  gap:25px;
+  margin-bottom:22px;
 }
 
-.stat-value {
-  font-family: Georgia, serif;
-  font-size: 31px;
-  margin-top: 7px;
+.quote-number{
+  color:var(--sage);
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:1px;
 }
 
-.quotes {
-  display: grid;
-  gap: 18px;
+.customer{
+  font-family:Georgia,serif;
+  font-size:26px;
+  margin-top:5px;
 }
 
-.quote-card {
-  background: var(--paper);
-  border-radius: 22px;
-  padding: 26px;
-  border: 1px solid rgba(23,53,43,.06);
-  box-shadow: 0 10px 35px rgba(23,53,43,.05);
+.status-badge{
+  align-self:flex-start;
+  padding:8px 12px;
+  border-radius:999px;
+  background:#edf1ec;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  font-weight:700;
 }
 
-.quote-head {
-  display: flex;
-  justify-content: space-between;
-  gap: 25px;
-  margin-bottom: 22px;
+.quote-grid{
+  display:grid;
+  grid-template-columns:1.2fr 1fr;
+  gap:30px;
 }
 
-.quote-number {
-  color: var(--sage);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 1px;
+.details{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:15px 25px;
 }
 
-.customer {
-  font-family: Georgia, serif;
-  font-size: 26px;
-  margin-top: 5px;
+.detail-label{
+  color:var(--muted);
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  margin-bottom:4px;
 }
 
-.status-badge {
-  align-self: flex-start;
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: #edf1ec;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight: 700;
+.detail-value{
+  line-height:1.5;
+  word-break:break-word;
 }
 
-.quote-grid {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 30px;
+.notes{
+  grid-column:1/-1;
+  background:#f6f4ee;
+  padding:14px;
+  border-radius:12px;
 }
 
-.details {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px 25px;
+.pricing{
+  border-left:1px solid var(--line);
+  padding-left:30px;
 }
 
-.detail-label {
-  color: var(--muted);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 4px;
+.pricing h3{
+  margin:0 0 15px;
+  font-size:22px;
 }
 
-.detail-value {
-  line-height: 1.5;
-  word-break: break-word;
+.price-wrap{
+  position:relative;
+  margin-bottom:12px;
 }
 
-.notes {
-  grid-column: 1 / -1;
-  background: #f6f4ee;
-  padding: 14px;
-  border-radius: 12px;
+.dollar{
+  position:absolute;
+  left:17px;
+  top:50%;
+  transform:translateY(-50%);
+  font-weight:700;
 }
 
-.pricing {
-  border-left: 1px solid var(--line);
-  padding-left: 30px;
+.price-input{
+  padding-left:34px;
+  font-size:18px;
+  font-weight:700;
 }
 
-.pricing h3 {
-  margin: 0 0 15px;
-  font-size: 22px;
+.price-input:disabled{
+  background:#eeece5;
+  color:var(--green);
+  opacity:1;
+  cursor:not-allowed;
 }
 
-.price-wrap {
-  position: relative;
-  margin-bottom: 12px;
+.locked-note{
+  margin-top:9px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.5;
 }
 
-.dollar {
-  position: absolute;
-  left: 17px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-weight: 700;
+.locked-button{
+  width:100%;
+  border:1px solid var(--line);
+  background:#e9e7e0;
+  color:var(--muted);
+  padding:16px;
+  border-radius:999px;
+  font-weight:700;
+  cursor:not-allowed;
 }
 
-.price-input {
-  padding-left: 34px;
-  font-size: 18px;
-  font-weight: 700;
+.offer-result{
+  margin-top:15px;
+  padding:15px;
+  border-radius:12px;
+  background:#eef2ed;
 }
 
-.price-input:disabled {
-  background: #eeece5;
-  color: var(--green);
-  opacity: 1;
-  cursor: not-allowed;
+.offer-price{
+  font-family:Georgia,serif;
+  font-size:25px;
+  margin-bottom:10px;
 }
 
-.locked-note {
-  margin-top: 9px;
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.5;
+.copy{
+  width:100%;
+  border:1px solid var(--green);
+  color:var(--green);
+  background:transparent;
+  padding:12px;
+  border-radius:999px;
+  cursor:pointer;
+  font-weight:700;
 }
 
-.locked-button {
-  width: 100%;
-  border: 1px solid var(--line);
-  background: #e9e7e0;
-  color: var(--muted);
-  padding: 16px;
-  border-radius: 999px;
-  font-weight: 700;
-  cursor: not-allowed;
+.existing-offer{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:10px;
+  line-height:1.5;
 }
 
-.offer-result {
-  margin-top: 15px;
-  padding: 15px;
-  border-radius: 12px;
-  background: #eef2ed;
+.booking-action{
+  margin-top:18px;
+  padding:18px;
+  background:#f3f4ef;
+  border-radius:14px;
 }
 
-.offer-price {
-  font-family: Georgia, serif;
-  font-size: 25px;
-  margin-bottom: 10px;
+.booking-action-title{
+  font-family:Georgia,serif;
+  font-size:20px;
+  margin-bottom:7px;
 }
 
-.copy {
-  width: 100%;
-  border: 1px solid var(--green);
-  color: var(--green);
-  background: transparent;
-  padding: 12px;
-  border-radius: 999px;
-  cursor: pointer;
-  font-weight: 700;
+.booking-action-text{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.5;
+  margin-bottom:14px;
 }
 
-.existing-offer {
-  color: var(--muted);
-  font-size: 12px;
-  margin-top: 10px;
-  line-height: 1.5;
+.schedule-display{
+  margin-bottom:14px;
+  padding:12px 14px;
+  border-radius:12px;
+  background:#fff;
+  border:1px solid var(--line);
 }
 
-/* BOOKING ACTIONS */
+.schedule-label{
+  color:var(--muted);
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  margin-bottom:5px;
+}
 
-.booking-action {
-  margin-top: 18px;
-  padding: 18px;
-  background: #f3f4ef;
-  border-radius: 14px;
+.schedule-value{
+  font-weight:700;
+  line-height:1.4;
 }
 
-.booking-action-title {
-  font-family: Georgia, serif;
-  font-size: 20px;
-  margin-bottom: 7px;
+.complete-button{
+  width:100%;
+  border:0;
+  background:var(--sage);
+  color:white;
+  padding:14px;
+  border-radius:999px;
+  cursor:pointer;
+  font-weight:700;
 }
 
-.booking-action-text {
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.5;
-  margin-bottom: 14px;
+.complete-button:disabled{
+  opacity:.55;
+  cursor:wait;
 }
 
-.complete-button {
-  width: 100%;
-  border: 0;
-  background: var(--sage);
-  color: white;
-  padding: 14px;
-  border-radius: 999px;
-  cursor: pointer;
-  font-weight: 700;
+.reschedule-button{
+  width:100%;
+  margin-top:10px;
+  border:1px solid var(--green);
+  background:transparent;
+  color:var(--green);
+  padding:13px;
+  border-radius:999px;
+  cursor:pointer;
+  font-weight:700;
 }
 
-.complete-button:disabled {
-  opacity: 0.55;
-  cursor: wait;
+.reschedule-button:hover{
+  background:#eef2ed;
 }
 
-.cancel-button {
-  width: 100%;
-  margin-top: 10px;
-  border: 1px solid var(--red);
-  background: transparent;
-  color: var(--red);
-  padding: 13px;
-  border-radius: 999px;
-  cursor: pointer;
-  font-weight: 700;
+.reschedule-button:disabled{
+  opacity:.55;
+  cursor:wait;
 }
 
-.cancel-button:hover {
-  background: #f7eded;
+.cancel-button{
+  width:100%;
+  margin-top:10px;
+  border:1px solid var(--red);
+  background:transparent;
+  color:var(--red);
+  padding:13px;
+  border-radius:999px;
+  cursor:pointer;
+  font-weight:700;
 }
 
-.cancel-button:disabled {
-  opacity: 0.55;
-  cursor: wait;
+.cancel-button:hover{
+  background:#f7eded;
 }
 
-.cancelled-box {
-  margin-top: 18px;
-  padding: 18px;
-  background: #f5eaea;
-  border-radius: 14px;
+.cancel-button:disabled{
+  opacity:.55;
+  cursor:wait;
 }
 
-.cancelled-title {
-  font-family: Georgia, serif;
-  font-size: 20px;
-  margin-bottom: 6px;
-  color: var(--red);
+.cancelled-box{
+  margin-top:18px;
+  padding:18px;
+  background:#f5eaea;
+  border-radius:14px;
 }
 
-.cancelled-text {
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.5;
+.cancelled-title{
+  font-family:Georgia,serif;
+  font-size:20px;
+  margin-bottom:6px;
+  color:var(--red);
 }
 
-.completed-box {
-  margin-top: 18px;
-  padding: 18px;
-  background: #e8efe9;
-  border-radius: 14px;
+.cancelled-text{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.5;
 }
 
-.completed-title {
-  font-family: Georgia, serif;
-  font-size: 20px;
-  margin-bottom: 6px;
+.completed-box{
+  margin-top:18px;
+  padding:18px;
+  background:#e8efe9;
+  border-radius:14px;
 }
 
-.completed-text {
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.5;
+.completed-title{
+  font-family:Georgia,serif;
+  font-size:20px;
+  margin-bottom:6px;
 }
 
-.amount-due {
-  margin-top: 15px;
-  padding-top: 15px;
-  border-top: 1px solid rgba(23,53,43,.12);
+.completed-text{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.5;
 }
 
-.amount-label {
-  color: var(--muted);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 4px;
+.amount-due{
+  margin-top:15px;
+  padding-top:15px;
+  border-top:1px solid rgba(23,53,43,.12);
 }
 
-.amount-value {
-  font-family: Georgia, serif;
-  font-size: 28px;
+.amount-label{
+  color:var(--muted);
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  margin-bottom:4px;
 }
 
-.charge-button {
-  width: 100%;
-  margin-top: 15px;
-  border: 0;
-  background: var(--green);
-  color: white;
-  padding: 15px;
-  border-radius: 999px;
-  cursor: pointer;
-  font-weight: 700;
+.amount-value{
+  font-family:Georgia,serif;
+  font-size:28px;
 }
 
-.charge-button:disabled {
-  opacity: 0.55;
-  cursor: wait;
+.charge-button{
+  width:100%;
+  margin-top:15px;
+  border:0;
+  background:var(--green);
+  color:white;
+  padding:15px;
+  border-radius:999px;
+  cursor:pointer;
+  font-weight:700;
 }
 
-.payment-id {
-  margin-top: 10px;
-  color: var(--muted);
-  font-size: 11px;
-  line-height: 1.5;
-  word-break: break-all;
+.charge-button:disabled{
+  opacity:.55;
+  cursor:wait;
 }
 
-/* MODAL */
+.payment-id{
+  margin-top:10px;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.5;
+  word-break:break-all;
+}
 
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  background: rgba(12, 30, 24, 0.52);
-  backdrop-filter: blur(8px);
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:rgba(12,30,24,.52);
+  backdrop-filter:blur(8px);
 }
 
-.modal-card {
-  width: 100%;
-  max-width: 470px;
-  background: var(--paper);
-  border-radius: 26px;
-  padding: 34px;
-  box-shadow: 0 28px 80px rgba(10, 30, 23, 0.28);
-  border: 1px solid rgba(23,53,43,.08);
-  text-align: center;
+.modal-card{
+  width:100%;
+  max-width:470px;
+  background:var(--paper);
+  border-radius:26px;
+  padding:34px;
+  box-shadow:0 28px 80px rgba(10,30,23,.28);
+  border:1px solid rgba(23,53,43,.08);
+  text-align:center;
 }
 
-.modal-icon {
-  width: 58px;
-  height: 58px;
-  margin: 0 auto 20px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #e7eee8;
-  color: var(--green);
-  font-size: 27px;
-  font-weight: 700;
+.modal-icon{
+  width:58px;
+  height:58px;
+  margin:0 auto 20px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#e7eee8;
+  color:var(--green);
+  font-size:27px;
+  font-weight:700;
 }
 
-.modal-icon.error {
-  background: #f5e8e8;
-  color: var(--red);
+.modal-icon.error{
+  background:#f5e8e8;
+  color:var(--red);
 }
 
-.modal-icon.warning {
-  background: #f3eee1;
-  color: #755f2e;
+.modal-icon.warning{
+  background:#f3eee1;
+  color:#755f2e;
 }
 
-.modal-eyebrow {
-  color: var(--sage);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 8px;
+.modal-eyebrow{
+  color:var(--sage);
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-bottom:8px;
 }
 
-.modal-title {
-  margin: 0;
-  font-family: Georgia, serif;
-  font-size: 31px;
-  font-weight: 400;
+.modal-title{
+  margin:0;
+  font-family:Georgia,serif;
+  font-size:31px;
+  font-weight:400;
 }
 
-.modal-message {
-  margin: 13px auto 0;
-  max-width: 390px;
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 1.65;
+.modal-message{
+  margin:13px auto 0;
+  max-width:390px;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.65;
 }
 
-.modal-amount {
-  margin: 24px 0 0;
-  padding: 18px;
-  border-radius: 16px;
-  background: #eef2ed;
+.modal-amount{
+  margin:24px 0 0;
+  padding:18px;
+  border-radius:16px;
+  background:#eef2ed;
 }
 
-.modal-amount-label {
-  color: var(--muted);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
+.modal-amount-label{
+  color:var(--muted);
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
 }
 
-.modal-amount-value {
-  margin-top: 4px;
-  font-family: Georgia, serif;
-  font-size: 35px;
+.modal-amount-value{
+  margin-top:4px;
+  font-family:Georgia,serif;
+  font-size:35px;
 }
 
-.modal-reference {
-  margin-top: 17px;
-  padding: 14px;
-  background: #f4f2ec;
-  border-radius: 13px;
-  text-align: left;
+.modal-reference{
+  margin-top:17px;
+  padding:14px;
+  background:#f4f2ec;
+  border-radius:13px;
+  text-align:left;
 }
 
-.modal-reference-label {
-  color: var(--muted);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 1.4px;
-  text-transform: uppercase;
-  margin-bottom: 5px;
+.modal-reference-label{
+  color:var(--muted);
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:1.4px;
+  text-transform:uppercase;
+  margin-bottom:5px;
 }
 
-.modal-reference-value {
-  font-size: 12px;
-  line-height: 1.5;
-  word-break: break-all;
+.modal-reference-value{
+  font-size:12px;
+  line-height:1.5;
+  word-break:break-all;
 }
 
-.modal-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 25px;
+.modal-actions{
+  display:flex;
+  gap:10px;
+  margin-top:25px;
 }
 
-.modal-button {
-  flex: 1;
-  border: 0;
-  padding: 14px 17px;
-  border-radius: 999px;
-  font-weight: 700;
-  cursor: pointer;
+.modal-button{
+  flex:1;
+  border:0;
+  padding:14px 17px;
+  border-radius:999px;
+  font-weight:700;
+  cursor:pointer;
 }
 
-.modal-button.secondary {
-  background: #eceae3;
-  color: var(--green);
+.modal-button.secondary{
+  background:#eceae3;
+  color:var(--green);
 }
 
-.modal-button.primary-modal {
-  background: var(--green);
-  color: white;
+.modal-button.primary-modal{
+  background:var(--green);
+  color:white;
 }
 
-.modal-button.danger {
-  background: var(--red);
-  color: white;
+.modal-button.danger{
+  background:var(--red);
+  color:white;
 }
 
-.empty,
-.loading {
-  background: var(--paper);
-  border-radius: 20px;
-  padding: 45px;
-  text-align: center;
-  color: var(--muted);
+.empty,.loading{
+  background:var(--paper);
+  border-radius:20px;
+  padding:45px;
+  text-align:center;
+  color:var(--muted);
 }
 
-@media (max-width: 850px) {
-  .stats {
-    grid-template-columns: repeat(2, 1fr);
+@media(max-width:850px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .quote-grid{grid-template-columns:1fr}
+  .pricing{
+    border-left:0;
+    border-top:1px solid var(--line);
+    padding-left:0;
+    padding-top:25px;
   }
-
-  .quote-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .pricing {
-    border-left: 0;
-    border-top: 1px solid var(--line);
-    padding-left: 0;
-    padding-top: 25px;
-  }
 }
 
-@media (max-width: 550px) {
-  .login-card {
-    padding: 35px 22px;
+@media(max-width:550px){
+  .login-card{padding:35px 22px}
+  header{padding:20px}
+  .top{
+    align-items:flex-start;
+    flex-direction:column;
   }
-
-  header {
-    padding: 20px;
-  }
-
-  .top {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .stats {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .quote-head {
-    flex-direction: column;
-  }
-
-  .details {
-    grid-template-columns: 1fr;
-  }
-
-  .quote-card {
-    padding: 20px;
-  }
-
-  .modal-actions {
-    flex-direction: column-reverse;
-  }
+  .top h1{font-size:34px}
+  .stats{grid-template-columns:1fr 1fr}
+  .quote-head{flex-direction:column}
+  .details{grid-template-columns:1fr}
+  .notes{grid-column:auto}
+  .quote-card{padding:20px}
+  .modal-card{padding:28px 20px}
+  .modal-actions{flex-direction:column-reverse}
 }
 </style>
 </head>
@@ -804,14 +800,11 @@ main {
   </div>
 </header>
 
-
 <main>
 
   <div class="top">
-
     <div>
       <h1>Quote Requests</h1>
-
       <p>
         Review leads, set pricing and create customer booking offers.
       </p>
@@ -820,9 +813,7 @@ main {
     <button id="refreshButton" class="refresh">
       Refresh
     </button>
-
   </div>
-
 
   <div class="stats">
 
@@ -848,30 +839,19 @@ main {
 
   </div>
 
-
   <div id="quotes" class="quotes">
-    <div class="loading">
-      Loading quotes...
-    </div>
+    <div class="loading">Loading quotes...</div>
   </div>
 
 </main>
-
 </section>
 
 
 <div id="modalOverlay" class="modal-overlay hidden">
 
-  <div
-    id="modalCard"
-    class="modal-card"
-    role="dialog"
-    aria-modal="true"
-  >
+  <div class="modal-card" role="dialog" aria-modal="true">
 
-    <div id="modalIcon" class="modal-icon">
-      ✓
-    </div>
+    <div id="modalIcon" class="modal-icon">✓</div>
 
     <div id="modalEyebrow" class="modal-eyebrow"></div>
 
@@ -880,23 +860,11 @@ main {
     <div id="modalMessage" class="modal-message"></div>
 
     <div id="modalAmount" class="modal-amount hidden">
-
-      <div class="modal-amount-label">
-        Amount
-      </div>
-
-      <div
-        id="modalAmountValue"
-        class="modal-amount-value"
-      ></div>
-
+      <div class="modal-amount-label">Amount</div>
+      <div id="modalAmountValue" class="modal-amount-value"></div>
     </div>
 
-    <div
-      id="modalReference"
-      class="modal-reference hidden"
-    >
-
+    <div id="modalReference" class="modal-reference hidden">
       <div
         id="modalReferenceLabel"
         class="modal-reference-label"
@@ -906,7 +874,6 @@ main {
         id="modalReferenceValue"
         class="modal-reference-value"
       ></div>
-
     </div>
 
     <div id="modalActions" class="modal-actions"></div>
@@ -920,7 +887,6 @@ main {
 
 let adminPassword = "";
 let modalResolver = null;
-
 
 const loginPage =
   document.getElementById("loginPage");
@@ -974,29 +940,29 @@ const modalActions =
   document.getElementById("modalActions");
 
 
-function escapeHtml(value) {
+function escapeHtml(value){
   return String(value ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 }
 
 
-function money(cents) {
-  if (!cents) return "";
+function money(cents){
+  if(!cents) return "";
 
-  return (Number(cents) / 100)
-    .toLocaleString("en-US", {
-      style: "currency",
-      currency: "USD"
+  return (Number(cents)/100)
+    .toLocaleString("en-US",{
+      style:"currency",
+      currency:"USD"
     });
 }
 
 
-function offerUrl(q) {
-  if (!q.quote_token) return "";
+function offerUrl(q){
+  if(!q.quote_token) return "";
 
   return (
     "https://thefreshstandardco.com/offer/?token=" +
@@ -1005,8 +971,8 @@ function offerUrl(q) {
 }
 
 
-function paymentUrl(q) {
-  if (!q.quote_token) return "";
+function paymentUrl(q){
+  if(!q.quote_token) return "";
 
   return (
     "https://thefreshstandardco.com/payment/?token=" +
@@ -1015,13 +981,43 @@ function paymentUrl(q) {
 }
 
 
-function closeModal(result) {
+function formatSchedule(value){
+
+  if(!value){
+    return "Not scheduled";
+  }
+
+  const date =
+    new Date(value);
+
+  if(Number.isNaN(date.getTime())){
+    return "Not scheduled";
+  }
+
+  return date.toLocaleString(
+    "en-US",
+    {
+      weekday:"long",
+      month:"long",
+      day:"numeric",
+      year:"numeric",
+      hour:"numeric",
+      minute:"2-digit"
+    }
+  );
+}
+
+
+function closeModal(result){
+
   modalOverlay.classList.add("hidden");
 
   document.body.style.overflow = "";
 
-  if (modalResolver) {
-    const resolver = modalResolver;
+  if(modalResolver){
+
+    const resolver =
+      modalResolver;
 
     modalResolver = null;
 
@@ -1031,54 +1027,62 @@ function closeModal(result) {
 
 
 function prepareModal({
-  type = "success",
-  eyebrow = "",
-  title = "",
-  message = "",
-  amount = "",
-  referenceLabel = "",
-  referenceValue = ""
-}) {
+  type="success",
+  eyebrow="",
+  title="",
+  message="",
+  amount="",
+  referenceLabel="",
+  referenceValue=""
+}){
 
-  modalIcon.className = "modal-icon";
+  modalIcon.className =
+    "modal-icon";
 
-  if (type === "error") {
+  if(type==="error"){
     modalIcon.classList.add("error");
-    modalIcon.textContent = "×";
+    modalIcon.textContent="×";
   }
-
-  else if (type === "warning") {
+  else if(type==="warning"){
     modalIcon.classList.add("warning");
-    modalIcon.textContent = "!";
+    modalIcon.textContent="!";
   }
-
-  else if (type === "confirm") {
+  else if(type==="confirm"){
     modalIcon.classList.add("warning");
-    modalIcon.textContent = "?";
+    modalIcon.textContent="?";
+  }
+  else{
+    modalIcon.textContent="✓";
   }
 
-  else {
-    modalIcon.textContent = "✓";
+  modalEyebrow.textContent =
+    eyebrow;
+
+  modalTitle.textContent =
+    title;
+
+  modalMessage.textContent =
+    message;
+
+  if(amount){
+
+    modalAmountValue.textContent =
+      amount;
+
+    modalAmount.classList.remove(
+      "hidden"
+    );
+
+  }else{
+
+    modalAmountValue.textContent="";
+
+    modalAmount.classList.add(
+      "hidden"
+    );
   }
 
-
-  modalEyebrow.textContent = eyebrow;
-  modalTitle.textContent = title;
-  modalMessage.textContent = message;
-
-
-  if (amount) {
-    modalAmountValue.textContent = amount;
-    modalAmount.classList.remove("hidden");
-  }
-
-  else {
-    modalAmountValue.textContent = "";
-    modalAmount.classList.add("hidden");
-  }
-
-
-  if (referenceValue) {
+  if(referenceValue){
 
     modalReferenceLabel.textContent =
       referenceLabel || "Reference";
@@ -1086,40 +1090,45 @@ function prepareModal({
     modalReferenceValue.textContent =
       referenceValue;
 
-    modalReference.classList.remove("hidden");
+    modalReference.classList.remove(
+      "hidden"
+    );
+
+  }else{
+
+    modalReferenceLabel.textContent="";
+    modalReferenceValue.textContent="";
+
+    modalReference.classList.add(
+      "hidden"
+    );
   }
 
-  else {
+  modalActions.innerHTML="";
 
-    modalReferenceLabel.textContent = "";
-    modalReferenceValue.textContent = "";
+  document.body.style.overflow =
+    "hidden";
 
-    modalReference.classList.add("hidden");
-  }
-
-
-  modalActions.innerHTML = "";
-
-  document.body.style.overflow = "hidden";
-
-  modalOverlay.classList.remove("hidden");
+  modalOverlay.classList.remove(
+    "hidden"
+  );
 }
 
 
 function showMessageModal({
-  type = "success",
-  eyebrow = "",
-  title = "",
-  message = "",
-  amount = "",
-  referenceLabel = "",
-  referenceValue = "",
-  buttonText = "Done"
-}) {
+  type="success",
+  eyebrow="",
+  title="",
+  message="",
+  amount="",
+  referenceLabel="",
+  referenceValue="",
+  buttonText="Done"
+}){
 
-  return new Promise(resolve => {
+  return new Promise(resolve=>{
 
-    modalResolver = resolve;
+    modalResolver=resolve;
 
     prepareModal({
       type,
@@ -1130,7 +1139,6 @@ function showMessageModal({
       referenceLabel,
       referenceValue
     });
-
 
     const button =
       document.createElement("button");
@@ -1143,7 +1151,7 @@ function showMessageModal({
 
     button.addEventListener(
       "click",
-      () => closeModal(true)
+      ()=>closeModal(true)
     );
 
     modalActions.appendChild(button);
@@ -1152,27 +1160,26 @@ function showMessageModal({
 
 
 function showConfirmModal({
-  eyebrow = "",
-  title = "",
-  message = "",
-  amount = "",
-  confirmText = "Confirm",
-  cancelText = "Cancel",
-  danger = false
-}) {
+  eyebrow="",
+  title="",
+  message="",
+  amount="",
+  confirmText="Confirm",
+  cancelText="Cancel",
+  danger=false
+}){
 
-  return new Promise(resolve => {
+  return new Promise(resolve=>{
 
-    modalResolver = resolve;
+    modalResolver=resolve;
 
     prepareModal({
-      type: "confirm",
+      type:"confirm",
       eyebrow,
       title,
       message,
       amount
     });
-
 
     const cancelButton =
       document.createElement("button");
@@ -1185,9 +1192,8 @@ function showConfirmModal({
 
     cancelButton.addEventListener(
       "click",
-      () => closeModal(false)
+      ()=>closeModal(false)
     );
-
 
     const confirmButton =
       document.createElement("button");
@@ -1202,52 +1208,63 @@ function showConfirmModal({
 
     confirmButton.addEventListener(
       "click",
-      () => closeModal(true)
+      ()=>closeModal(true)
     );
 
+    modalActions.appendChild(
+      cancelButton
+    );
 
-    modalActions.appendChild(cancelButton);
-    modalActions.appendChild(confirmButton);
+    modalActions.appendChild(
+      confirmButton
+    );
   });
 }
 
 
-function setStats(quotes) {
+function setStats(quotes){
 
-  document.getElementById("totalCount").textContent =
-    quotes.length;
+  document
+    .getElementById("totalCount")
+    .textContent =
+      quotes.length;
 
-  document.getElementById("newCount").textContent =
-    quotes.filter(
-      q => q.status === "new"
-    ).length;
+  document
+    .getElementById("newCount")
+    .textContent =
+      quotes.filter(
+        q=>q.status==="new"
+      ).length;
 
-  document.getElementById("quotedCount").textContent =
-    quotes.filter(
-      q => q.status === "quoted"
-    ).length;
+  document
+    .getElementById("quotedCount")
+    .textContent =
+      quotes.filter(
+        q=>q.status==="quoted"
+      ).length;
 
-  document.getElementById("bookedCount").textContent =
-    quotes.filter(q =>
-      [
-        "accepted",
-        "card_saved",
-        "booked",
-        "completed",
-        "charged"
-      ].includes(q.status)
-    ).length;
+  document
+    .getElementById("bookedCount")
+    .textContent =
+      quotes.filter(q=>
+        [
+          "accepted",
+          "card_saved",
+          "booked",
+          "completed",
+          "charged"
+        ].includes(q.status)
+      ).length;
 }
 
 
-function renderQuotes(quotes) {
+function renderQuotes(quotes){
 
   setStats(quotes);
 
+  if(!quotes.length){
 
-  if (!quotes.length) {
-
-    quotesContainer.innerHTML = `
+    quotesContainer.innerHTML=`
       <div class="empty">
         No quote requests yet.
       </div>
@@ -1258,7 +1275,7 @@ function renderQuotes(quotes) {
 
 
   quotesContainer.innerHTML =
-    quotes.map(q => {
+    quotes.map(q=>{
 
       const propertyDetails = [
 
@@ -1293,7 +1310,8 @@ function renderQuotes(quotes) {
 
 
       const existingOffer =
-        q.quoted_price && q.quote_token
+        q.quoted_price &&
+        q.quote_token
           ? `
             <div
               class="offer-result"
@@ -1316,13 +1334,11 @@ function renderQuotes(quotes) {
               </button>
 
               <div class="existing-offer">
-
                 ${
                   priceLocked
                     ? "Customer offer accepted. Price is now locked."
                     : "Offer already created. You can update the price and generate it again."
                 }
-
               </div>
 
             </div>
@@ -1332,15 +1348,15 @@ function renderQuotes(quotes) {
           `;
 
 
-      let bookingAction = "";
+      let bookingAction="";
 
 
-      if (
-        ["card_saved", "booked"]
+      if(
+        ["card_saved","booked"]
           .includes(q.status)
-      ) {
+      ){
 
-        bookingAction = `
+        bookingAction=`
           <div
             class="booking-action"
             id="booking-action-${q.id}"
@@ -1357,12 +1373,36 @@ function renderQuotes(quotes) {
               This will NOT charge the customer.
             </div>
 
+            <div class="schedule-display">
+
+              <div class="schedule-label">
+                Cleaning Schedule
+              </div>
+
+              <div class="schedule-value">
+                ${escapeHtml(
+                  formatSchedule(
+                    q.scheduled_for
+                  )
+                )}
+              </div>
+
+            </div>
+
             <button
               class="complete-button"
               id="complete-${q.id}"
               onclick="markCleaningComplete('${q.id}')"
             >
               Mark Cleaning Complete
+            </button>
+
+            <button
+              class="reschedule-button"
+              id="reschedule-${q.id}"
+              onclick="rescheduleBooking('${q.id}')"
+            >
+              Reschedule Booking
             </button>
 
             <button
@@ -1378,9 +1418,9 @@ function renderQuotes(quotes) {
       }
 
 
-      else if (q.status === "completed") {
+      else if(q.status==="completed"){
 
-        bookingAction = `
+        bookingAction=`
           <div class="completed-box">
 
             <div class="completed-title">
@@ -1391,6 +1431,28 @@ function renderQuotes(quotes) {
               This cleaning has been marked complete.
               The customer's card has not been charged yet.
             </div>
+
+            ${
+              q.scheduled_for
+                ? `
+                  <div class="schedule-display">
+
+                    <div class="schedule-label">
+                      Cleaning Schedule
+                    </div>
+
+                    <div class="schedule-value">
+                      ${escapeHtml(
+                        formatSchedule(
+                          q.scheduled_for
+                        )
+                      )}
+                    </div>
+
+                  </div>
+                `
+                : ""
+            }
 
             <div class="amount-due">
 
@@ -1409,7 +1471,7 @@ function renderQuotes(quotes) {
               id="charge-${q.id}"
               onclick="chargeCustomer(
                 '${q.id}',
-                ${Number(q.quoted_price) || 0},
+                ${Number(q.quoted_price)||0},
                 '${paymentUrl(q)}'
               )"
             >
@@ -1421,9 +1483,9 @@ function renderQuotes(quotes) {
       }
 
 
-      else if (q.status === "charged") {
+      else if(q.status==="charged"){
 
-        bookingAction = `
+        bookingAction=`
           <div class="completed-box">
 
             <div class="completed-title">
@@ -1433,6 +1495,28 @@ function renderQuotes(quotes) {
             <div class="completed-text">
               This booking has been successfully charged.
             </div>
+
+            ${
+              q.scheduled_for
+                ? `
+                  <div class="schedule-display">
+
+                    <div class="schedule-label">
+                      Cleaning Schedule
+                    </div>
+
+                    <div class="schedule-value">
+                      ${escapeHtml(
+                        formatSchedule(
+                          q.scheduled_for
+                        )
+                      )}
+                    </div>
+
+                  </div>
+                `
+                : ""
+            }
 
             <div class="amount-due">
 
@@ -1464,9 +1548,9 @@ function renderQuotes(quotes) {
       }
 
 
-      else if (q.status === "cancelled") {
+      else if(q.status==="cancelled"){
 
-        bookingAction = `
+        bookingAction=`
           <div class="cancelled-box">
 
             <div class="cancelled-title">
@@ -1498,7 +1582,7 @@ function renderQuotes(quotes) {
                 type="number"
                 value="${
                   q.quoted_price
-                    ? Number(q.quoted_price) / 100
+                    ? Number(q.quoted_price)/100
                     : ""
                 }"
                 disabled
@@ -1515,13 +1599,11 @@ function renderQuotes(quotes) {
             </button>
 
             <div class="locked-note">
-
               ${
-                q.status === "cancelled"
+                q.status==="cancelled"
                   ? "This booking has been cancelled. The quote price can no longer be edited."
                   : "The customer has already accepted this offer and secured a payment method. The agreed price can no longer be edited."
               }
-
             </div>
           `
           : `
@@ -1540,7 +1622,7 @@ function renderQuotes(quotes) {
                 placeholder="150.00"
                 value="${
                   q.quoted_price
-                    ? Number(q.quoted_price) / 100
+                    ? Number(q.quoted_price)/100
                     : ""
                 }"
               >
@@ -1552,13 +1634,11 @@ function renderQuotes(quotes) {
               id="create-${q.id}"
               onclick="createOffer('${q.id}')"
             >
-
               ${
                 q.quoted_price
                   ? "Update Customer Offer"
                   : "Create Customer Offer"
               }
-
             </button>
           `;
 
@@ -1581,7 +1661,7 @@ function renderQuotes(quotes) {
             </div>
 
             <div class="status-badge">
-              ${escapeHtml(q.status || "new")}
+              ${escapeHtml(q.status||"new")}
             </div>
 
           </div>
@@ -1592,94 +1672,117 @@ function renderQuotes(quotes) {
             <div class="details">
 
               <div>
-
                 <div class="detail-label">
                   Service
                 </div>
 
                 <div class="detail-value">
-                  ${escapeHtml(q.service_type || "—")}
+                  ${escapeHtml(
+                    q.service_type||"—"
+                  )}
                 </div>
-
               </div>
 
 
               <div>
-
                 <div class="detail-label">
                   Property
                 </div>
 
                 <div class="detail-value">
-                  ${escapeHtml(q.property_type || "—")}
+                  ${escapeHtml(
+                    q.property_type||"—"
+                  )}
                 </div>
-
               </div>
 
 
               <div>
-
                 <div class="detail-label">
                   Frequency
                 </div>
 
                 <div class="detail-value">
-                  ${escapeHtml(q.frequency || "—")}
+                  ${escapeHtml(
+                    q.frequency||"—"
+                  )}
                 </div>
-
               </div>
 
 
               <div>
-
                 <div class="detail-label">
                   Property Details
                 </div>
 
                 <div class="detail-value">
-                  ${escapeHtml(propertyDetails || "—")}
+                  ${escapeHtml(
+                    propertyDetails||"—"
+                  )}
                 </div>
-
               </div>
 
 
               <div>
-
                 <div class="detail-label">
                   ZIP
                 </div>
 
                 <div class="detail-value">
-                  ${escapeHtml(q.zip_code || "—")}
+                  ${escapeHtml(
+                    q.zip_code||"—"
+                  )}
                 </div>
-
               </div>
 
 
               <div>
-
                 <div class="detail-label">
                   Phone
                 </div>
 
                 <div class="detail-value">
-                  ${escapeHtml(q.customer_phone || "—")}
+                  ${escapeHtml(
+                    q.customer_phone||"—"
+                  )}
                 </div>
-
               </div>
 
 
               <div>
-
                 <div class="detail-label">
                   Email
                 </div>
 
                 <div class="detail-value">
-                  ${escapeHtml(q.customer_email || "—")}
+                  ${escapeHtml(
+                    q.customer_email||"—"
+                  )}
                 </div>
-
               </div>
+
+
+              ${
+                q.scheduled_for
+                  ? `
+                    <div>
+
+                      <div class="detail-label">
+                        Scheduled For
+                      </div>
+
+                      <div class="detail-value">
+                        ${escapeHtml(
+                          formatSchedule(
+                            q.scheduled_for
+                          )
+                        )}
+                      </div>
+
+                    </div>
+                  `
+                  : ""
+              }
 
 
               ${
@@ -1722,145 +1825,139 @@ function renderQuotes(quotes) {
 }
 
 
-async function login() {
+async function login(){
 
   const password =
     passwordInput.value;
 
-
-  if (!password) {
+  if(!password){
 
     loginError.textContent =
       "Enter your admin password.";
 
-    loginError.classList.remove("hidden");
+    loginError.classList.remove(
+      "hidden"
+    );
 
     return;
   }
 
+  loginButton.disabled=true;
 
-  loginButton.disabled = true;
-
-  loginButton.textContent =
+  loginButton.textContent=
     "Signing In...";
 
-  loginError.classList.add("hidden");
+  loginError.classList.add(
+    "hidden"
+  );
 
-
-  try {
+  try{
 
     const response =
       await fetch(
         "/.netlify/functions/admin-auth",
         {
-          method: "POST",
+          method:"POST",
 
-          headers: {
+          headers:{
             "Content-Type":
               "application/json"
           },
 
           body:
             JSON.stringify({
-              password: password
+              password
             })
         }
       );
 
-
     const data =
       await response.json();
 
-
-    if (!response.ok || !data.ok) {
+    if(!response.ok||!data.ok){
 
       throw new Error(
-        data.error ||
+        data.error||
         "Sign in failed."
       );
     }
 
+    adminPassword=password;
 
-    adminPassword =
-      password;
+    passwordInput.value="";
 
-    passwordInput.value = "";
+    loginPage.classList.add(
+      "hidden"
+    );
 
-    loginPage.classList.add("hidden");
-
-    dashboard.classList.remove("hidden");
+    dashboard.classList.remove(
+      "hidden"
+    );
 
     await loadQuotes();
 
-  }
-
-  catch (error) {
+  }catch(error){
 
     loginError.textContent =
-      error.message ||
+      error.message||
       "Sign in failed.";
 
-    loginError.classList.remove("hidden");
-  }
+    loginError.classList.remove(
+      "hidden"
+    );
 
-  finally {
+  }finally{
 
-    loginButton.disabled = false;
+    loginButton.disabled=false;
 
-    loginButton.textContent =
+    loginButton.textContent=
       "Sign In";
   }
 }
 
 
-async function loadQuotes() {
+async function loadQuotes(){
 
-  quotesContainer.innerHTML = `
+  quotesContainer.innerHTML=`
     <div class="loading">
       Loading quotes...
     </div>
   `;
 
-
-  try {
+  try{
 
     const response =
       await fetch(
         "/.netlify/functions/admin-quotes",
         {
-          headers: {
+          headers:{
             "x-admin-password":
               adminPassword
           }
         }
       );
 
-
     const data =
       await response.json();
 
-
-    if (!response.ok || !data.ok) {
+    if(!response.ok||!data.ok){
 
       throw new Error(
-        data.error ||
+        data.error||
         "Could not load quotes."
       );
     }
 
-
     renderQuotes(
-      data.quotes || []
+      data.quotes||[]
     );
 
-  }
+  }catch(error){
 
-  catch (error) {
-
-    quotesContainer.innerHTML = `
+    quotesContainer.innerHTML=`
       <div class="empty">
         ${escapeHtml(
-          error.message ||
+          error.message||
           "Could not load quotes."
         )}
       </div>
@@ -1869,7 +1966,7 @@ async function loadQuotes() {
 }
 
 
-async function createOffer(quoteId) {
+async function createOffer(quoteId){
 
   const input =
     document.getElementById(
@@ -1886,16 +1983,12 @@ async function createOffer(quoteId) {
       `result-${quoteId}`
     );
 
-
-  if (
-    !input ||
-    !button
-  ) {
+  if(!input||!button){
 
     await showMessageModal({
-      type: "error",
-      eyebrow: "Price locked",
-      title: "This offer cannot be changed",
+      type:"error",
+      eyebrow:"Price locked",
+      title:"This offer cannot be changed",
       message:
         "The customer has already accepted this offer and secured a payment method."
     });
@@ -1903,20 +1996,18 @@ async function createOffer(quoteId) {
     return;
   }
 
-
   const price =
     Number(input.value);
 
-
-  if (
-    !Number.isFinite(price) ||
-    price <= 0
-  ) {
+  if(
+    !Number.isFinite(price)||
+    price<=0
+  ){
 
     await showMessageModal({
-      type: "error",
-      eyebrow: "Quote price",
-      title: "Enter a valid price",
+      type:"error",
+      eyebrow:"Quote price",
+      title:"Enter a valid price",
       message:
         "The quote price must be greater than $0."
     });
@@ -1924,22 +2015,20 @@ async function createOffer(quoteId) {
     return;
   }
 
+  button.disabled=true;
 
-  button.disabled = true;
-
-  button.textContent =
+  button.textContent=
     "Creating Offer...";
 
-
-  try {
+  try{
 
     const response =
       await fetch(
         "/.netlify/functions/set-quote-price",
         {
-          method: "POST",
+          method:"POST",
 
-          headers: {
+          headers:{
             "Content-Type":
               "application/json",
 
@@ -1949,31 +2038,27 @@ async function createOffer(quoteId) {
 
           body:
             JSON.stringify({
-              quote_id: quoteId,
-              price: price
+              quote_id:quoteId,
+              price
             })
         }
       );
 
-
     const data =
       await response.json();
 
-
-    if (!response.ok || !data.ok) {
+    if(!response.ok||!data.ok){
 
       throw new Error(
-        data.error ||
+        data.error||
         "Could not create offer."
       );
     }
 
-
-    result.className =
+    result.className=
       "offer-result";
 
-
-    result.innerHTML = `
+    result.innerHTML=`
       <div class="offer-price">
         ${money(data.quoted_price)}
       </div>
@@ -1990,15 +2075,13 @@ async function createOffer(quoteId) {
       </div>
     `;
 
-
     document
       .getElementById(
         `copy-${quoteId}`
       )
       .addEventListener(
         "click",
-        () => {
-
+        ()=>{
           copyOffer(
             quoteId,
             data.offer_url
@@ -2006,35 +2089,29 @@ async function createOffer(quoteId) {
         }
       );
 
-
-    button.textContent =
+    button.textContent=
       "Update Customer Offer";
 
-  }
-
-  catch (error) {
+  }catch(error){
 
     await showMessageModal({
-      type: "error",
-      eyebrow: "Offer error",
-      title: "Could not create offer",
+      type:"error",
+      eyebrow:"Offer error",
+      title:"Could not create offer",
       message:
-        error.message ||
+        error.message||
         "Could not create offer."
     });
-  }
 
-  finally {
+  }finally{
 
-    button.disabled = false;
+    button.disabled=false;
 
-
-    if (
-      button.textContent ===
+    if(
+      button.textContent===
       "Creating Offer..."
-    ) {
-
-      button.textContent =
+    ){
+      button.textContent=
         "Create Customer Offer";
     }
   }
@@ -2044,95 +2121,266 @@ async function createOffer(quoteId) {
 async function copyOffer(
   quoteId,
   url
-) {
+){
 
-  try {
+  try{
 
     await navigator
       .clipboard
       .writeText(url);
-
 
     const button =
       document.getElementById(
         `copy-${quoteId}`
       );
 
-
-    if (button) {
+    if(button){
 
       const original =
         button.textContent;
 
-      button.textContent =
+      button.textContent=
         "Copied ✓";
 
-
       setTimeout(
-        () => {
-
-          button.textContent =
+        ()=>{
+          button.textContent=
             original;
-
         },
         1500
       );
     }
-  }
 
-  catch {
+  }catch{
 
     await showMessageModal({
-      type: "warning",
-      eyebrow: "Customer link",
-      title: "Copy this link",
-      message: url,
-      buttonText: "Done"
+      type:"warning",
+      eyebrow:"Customer link",
+      title:"Copy this link",
+      message:url,
+      buttonText:"Done"
     });
   }
 }
 
 
 /*
-  CANCEL BOOKING
-
-  This calls the secure server-side
-  cancel-booking function.
-
-  No Stripe charge is performed.
+  RESCHEDULE BOOKING
 */
 
-async function cancelBooking(
+async function rescheduleBooking(
   quoteId
-) {
+){
 
   const button =
     document.getElementById(
-      `cancel-${quoteId}`
+      `reschedule-${quoteId}`
     );
 
-
-  if (!button) {
+  if(!button){
     return;
   }
 
 
+  const date =
+    window.prompt(
+      "Enter the new cleaning date (YYYY-MM-DD):"
+    );
+
+  if(!date){
+    return;
+  }
+
+
+  const time =
+    window.prompt(
+      "Enter the new cleaning time (example: 10:00 AM):"
+    );
+
+  if(!time){
+    return;
+  }
+
+
+  const dateMatch =
+    date.trim().match(
+      /^(\d{4})-(\d{2})-(\d{2})$/
+    );
+
+  if(!dateMatch){
+
+    await showMessageModal({
+      type:"error",
+      eyebrow:"Invalid date",
+      title:"Check the cleaning date",
+      message:
+        "Enter the date as YYYY-MM-DD. Example: 2026-10-05."
+    });
+
+    return;
+  }
+
+
+  const timeMatch =
+    time.trim().match(
+      /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i
+    );
+
+  if(!timeMatch){
+
+    await showMessageModal({
+      type:"error",
+      eyebrow:"Invalid time",
+      title:"Check the cleaning time",
+      message:
+        "Enter the time like 10:00 AM or 2:30 PM."
+    });
+
+    return;
+  }
+
+
+  const year =
+    Number(dateMatch[1]);
+
+  const month =
+    Number(dateMatch[2]);
+
+  const day =
+    Number(dateMatch[3]);
+
+
+  let hour =
+    Number(timeMatch[1]);
+
+  const minute =
+    Number(timeMatch[2]);
+
+  const period =
+    timeMatch[3]
+      .toUpperCase();
+
+
+  if(
+    hour<1||
+    hour>12||
+    minute<0||
+    minute>59
+  ){
+
+    await showMessageModal({
+      type:"error",
+      eyebrow:"Invalid time",
+      title:"Check the cleaning time",
+      message:
+        "Enter a valid time like 10:00 AM or 2:30 PM."
+    });
+
+    return;
+  }
+
+
+  if(
+    period==="AM" &&
+    hour===12
+  ){
+    hour=0;
+  }
+
+
+  if(
+    period==="PM" &&
+    hour!==12
+  ){
+    hour+=12;
+  }
+
+
+  const scheduledDate =
+    new Date(
+      year,
+      month-1,
+      day,
+      hour,
+      minute,
+      0,
+      0
+    );
+
+
+  if(
+    Number.isNaN(
+      scheduledDate.getTime()
+    ) ||
+    scheduledDate.getFullYear()!==year ||
+    scheduledDate.getMonth()!==month-1 ||
+    scheduledDate.getDate()!==day
+  ){
+
+    await showMessageModal({
+      type:"error",
+      eyebrow:"Invalid date",
+      title:"Check the cleaning date",
+      message:
+        "Enter a valid calendar date."
+    });
+
+    return;
+  }
+
+
+  if(
+    scheduledDate.getTime()<=
+    Date.now()
+  ){
+
+    await showMessageModal({
+      type:"error",
+      eyebrow:"Invalid date",
+      title:"Choose a future date",
+      message:
+        "The cleaning must be scheduled for a future date and time."
+    });
+
+    return;
+  }
+
+
+  const displayDate =
+    scheduledDate.toLocaleString(
+      "en-US",
+      {
+        weekday:"long",
+        month:"long",
+        day:"numeric",
+        year:"numeric",
+        hour:"numeric",
+        minute:"2-digit"
+      }
+    );
+
+
   const confirmed =
     await showConfirmModal({
-      eyebrow: "Booking cancellation",
-      title: "Cancel this booking?",
+      eyebrow:
+        "Booking schedule",
+
+      title:
+        "Reschedule this booking?",
+
       message:
-        "This will cancel the booking. " +
-        "The customer's saved payment method will NOT be charged.",
+        `New cleaning date: ${displayDate}. ` +
+        "The quote price and saved payment method will not change.",
+
       confirmText:
-        "Cancel Booking",
+        "Reschedule Booking",
+
       cancelText:
-        "Keep Booking",
-      danger: true
+        "Keep Current Schedule"
     });
 
 
-  if (!confirmed) {
+  if(!confirmed){
     return;
   }
 
@@ -2140,22 +2388,21 @@ async function cancelBooking(
   const originalText =
     button.textContent;
 
+  button.disabled=true;
 
-  button.disabled = true;
-
-  button.textContent =
-    "Cancelling...";
+  button.textContent=
+    "Rescheduling...";
 
 
-  try {
+  try{
 
     const response =
       await fetch(
-        "/.netlify/functions/cancel-booking",
+        "/.netlify/functions/reschedule-booking",
         {
-          method: "POST",
+          method:"POST",
 
-          headers: {
+          headers:{
             "Content-Type":
               "application/json",
 
@@ -2165,7 +2412,11 @@ async function cancelBooking(
 
           body:
             JSON.stringify({
-              quote_id: quoteId
+              quote_id:
+                quoteId,
+
+              scheduled_for:
+                scheduledDate.toISOString()
             })
         }
       );
@@ -2174,17 +2425,145 @@ async function cancelBooking(
     const data =
       await response
         .json()
-        .catch(() => null);
+        .catch(()=>null);
 
 
-    if (
-      !response.ok ||
-      !data ||
+    if(
+      !response.ok||
+      !data||
       !data.ok
-    ) {
+    ){
 
       throw new Error(
-        data?.error ||
+        data?.error||
+        "Could not reschedule booking."
+      );
+    }
+
+
+    await loadQuotes();
+
+
+    await showMessageModal({
+      type:"success",
+      eyebrow:
+        "Booking rescheduled",
+      title:
+        "Schedule updated",
+      message:
+        `The cleaning has been rescheduled to ${displayDate}. ` +
+        "The quote price and saved payment method were not changed."
+    });
+
+
+  }catch(error){
+
+    await showMessageModal({
+      type:"error",
+      eyebrow:
+        "Reschedule error",
+      title:
+        "Could not reschedule booking",
+      message:
+        error.message||
+        "Could not reschedule booking."
+    });
+
+    button.disabled=false;
+
+    button.textContent=
+      originalText;
+  }
+}
+
+
+/*
+  CANCEL BOOKING
+*/
+
+async function cancelBooking(
+  quoteId
+){
+
+  const button =
+    document.getElementById(
+      `cancel-${quoteId}`
+    );
+
+  if(!button){
+    return;
+  }
+
+
+  const confirmed =
+    await showConfirmModal({
+      eyebrow:
+        "Booking cancellation",
+      title:
+        "Cancel this booking?",
+      message:
+        "This will cancel the booking. " +
+        "The customer's saved payment method will NOT be charged.",
+      confirmText:
+        "Cancel Booking",
+      cancelText:
+        "Keep Booking",
+      danger:true
+    });
+
+
+  if(!confirmed){
+    return;
+  }
+
+
+  const originalText =
+    button.textContent;
+
+  button.disabled=true;
+
+  button.textContent=
+    "Cancelling...";
+
+
+  try{
+
+    const response =
+      await fetch(
+        "/.netlify/functions/cancel-booking",
+        {
+          method:"POST",
+
+          headers:{
+            "Content-Type":
+              "application/json",
+
+            "x-admin-password":
+              adminPassword
+          },
+
+          body:
+            JSON.stringify({
+              quote_id:quoteId
+            })
+        }
+      );
+
+
+    const data =
+      await response
+        .json()
+        .catch(()=>null);
+
+
+    if(
+      !response.ok||
+      !data||
+      !data.ok
+    ){
+
+      throw new Error(
+        data?.error||
         "Could not cancel booking."
       );
     }
@@ -2194,31 +2573,33 @@ async function cancelBooking(
 
 
     await showMessageModal({
-      type: "success",
-      eyebrow: "Booking cancelled",
-      title: "Booking cancelled",
+      type:"success",
+      eyebrow:
+        "Booking cancelled",
+      title:
+        "Booking cancelled",
       message:
         "The booking has been cancelled successfully. " +
         "No payment was processed."
     });
 
-  }
 
-  catch (error) {
+  }catch(error){
 
     await showMessageModal({
-      type: "error",
-      eyebrow: "Cancellation error",
-      title: "Could not cancel booking",
+      type:"error",
+      eyebrow:
+        "Cancellation error",
+      title:
+        "Could not cancel booking",
       message:
-        error.message ||
+        error.message||
         "Could not cancel booking."
     });
 
+    button.disabled=false;
 
-    button.disabled = false;
-
-    button.textContent =
+    button.textContent=
       originalText;
   }
 }
@@ -2226,30 +2607,26 @@ async function cancelBooking(
 
 /*
   MARK CLEANING COMPLETE
-
-  This changes the booking status only.
-  It does NOT charge the customer.
 */
 
 async function markCleaningComplete(
   quoteId
-) {
+){
 
   const button =
     document.getElementById(
       `complete-${quoteId}`
     );
 
-
-  if (!button) {
+  if(!button){
     return;
   }
 
 
   const confirmed =
     await showConfirmModal({
-      eyebrow: "Service status",
-      title: "Mark cleaning complete?",
+      eyebrow:"Service status",
+      title:"Mark cleaning complete?",
       message:
         "This confirms the cleaning has been completed. " +
         "The customer will NOT be charged yet.",
@@ -2260,7 +2637,7 @@ async function markCleaningComplete(
     });
 
 
-  if (!confirmed) {
+  if(!confirmed){
     return;
   }
 
@@ -2268,22 +2645,21 @@ async function markCleaningComplete(
   const originalText =
     button.textContent;
 
+  button.disabled=true;
 
-  button.disabled = true;
-
-  button.textContent =
+  button.textContent=
     "Marking Complete...";
 
 
-  try {
+  try{
 
     const response =
       await fetch(
         "/.netlify/functions/mark-cleaning-complete",
         {
-          method: "POST",
+          method:"POST",
 
-          headers: {
+          headers:{
             "Content-Type":
               "application/json",
 
@@ -2293,7 +2669,7 @@ async function markCleaningComplete(
 
           body:
             JSON.stringify({
-              quote_id: quoteId
+              quote_id:quoteId
             })
         }
       );
@@ -2303,13 +2679,13 @@ async function markCleaningComplete(
       await response.json();
 
 
-    if (
-      !response.ok ||
+    if(
+      !response.ok||
       !data.ok
-    ) {
+    ){
 
       throw new Error(
-        data.error ||
+        data.error||
         "Could not mark cleaning complete."
       );
     }
@@ -2319,31 +2695,33 @@ async function markCleaningComplete(
 
 
     await showMessageModal({
-      type: "success",
-      eyebrow: "Service completed",
-      title: "Cleaning marked complete",
+      type:"success",
+      eyebrow:
+        "Service completed",
+      title:
+        "Cleaning marked complete",
       message:
         "The service is now marked complete. " +
         "The customer has NOT been charged."
     });
 
-  }
 
-  catch (error) {
+  }catch(error){
 
     await showMessageModal({
-      type: "error",
-      eyebrow: "Completion error",
-      title: "Could not update booking",
+      type:"error",
+      eyebrow:
+        "Completion error",
+      title:
+        "Could not update booking",
       message:
-        error.message ||
+        error.message||
         "Could not mark cleaning complete."
     });
 
+    button.disabled=false;
 
-    button.disabled = false;
-
-    button.textContent =
+    button.textContent=
       originalText;
   }
 }
@@ -2357,15 +2735,14 @@ async function chargeCustomer(
   quoteId,
   displayedAmount,
   recoveryLink
-) {
+){
 
   const button =
     document.getElementById(
       `charge-${quoteId}`
     );
 
-
-  if (!button) {
+  if(!button){
     return;
   }
 
@@ -2376,8 +2753,10 @@ async function chargeCustomer(
 
   const confirmed =
     await showConfirmModal({
-      eyebrow: "Payment authorization",
-      title: "Charge customer?",
+      eyebrow:
+        "Payment authorization",
+      title:
+        "Charge customer?",
       message:
         "The cleaning is marked complete. " +
         "This will charge the customer's saved payment method.",
@@ -2390,7 +2769,7 @@ async function chargeCustomer(
     });
 
 
-  if (!confirmed) {
+  if(!confirmed){
     return;
   }
 
@@ -2398,29 +2777,21 @@ async function chargeCustomer(
   const originalText =
     button.textContent;
 
+  button.disabled=true;
 
-  button.disabled = true;
-
-  button.textContent =
+  button.textContent=
     "Processing Payment...";
 
 
-  try {
-
-    /*
-      The browser sends ONLY the quote ID.
-
-      charge-customer.js retrieves the
-      authoritative amount from Supabase.
-    */
+  try{
 
     const response =
       await fetch(
         "/.netlify/functions/charge-customer",
         {
-          method: "POST",
+          method:"POST",
 
-          headers: {
+          headers:{
             "Content-Type":
               "application/json",
 
@@ -2430,7 +2801,7 @@ async function chargeCustomer(
 
           body:
             JSON.stringify({
-              quote_id: quoteId
+              quote_id:quoteId
             })
         }
       );
@@ -2439,29 +2810,29 @@ async function chargeCustomer(
     const data =
       await response
         .json()
-        .catch(() => null);
+        .catch(()=>null);
 
 
-    if (
-      !response.ok ||
-      !data ||
+    if(
+      !response.ok||
+      !data||
       !data.ok
-    ) {
+    ){
 
       /*
         Stripe charged successfully but
         database update failed.
 
-        NEVER attempt another charge.
+        NEVER charge again.
       */
 
-      if (
+      if(
         data &&
         data.payment_succeeded
-      ) {
+      ){
 
         await showMessageModal({
-          type: "warning",
+          type:"warning",
           eyebrow:
             "Payment needs review",
           title:
@@ -2473,16 +2844,15 @@ async function chargeCustomer(
           referenceLabel:
             "Stripe Payment ID",
           referenceValue:
-            data.payment_intent_id ||
+            data.payment_intent_id||
             "Unknown",
           buttonText:
             "I Understand"
         });
 
+        button.disabled=true;
 
-        button.disabled = true;
-
-        button.textContent =
+        button.textContent=
           "Payment Needs Review";
 
         return;
@@ -2490,26 +2860,24 @@ async function chargeCustomer(
 
 
       /*
-        Card failed and customer action
-        is required.
-
-        Give owner the recovery link.
+        Saved payment failed.
+        Show secure recovery link.
       */
 
-      if (
+      if(
         data &&
-        data.customer_action_required === true &&
+        data.customer_action_required===true &&
         recoveryLink
-      ) {
+      ){
 
         prepareModal({
-          type: "warning",
+          type:"warning",
           eyebrow:
             "Payment failed",
           title:
             "Customer action required",
           message:
-            data.customer_message ||
+            data.customer_message||
             "The saved payment method could not be charged. Send the customer the secure payment link so they can use another payment method.",
           amount:
             formattedAmount,
@@ -2533,7 +2901,7 @@ async function chargeCustomer(
 
         closeButton.addEventListener(
           "click",
-          () => closeModal(true)
+          ()=>closeModal(true)
         );
 
 
@@ -2551,9 +2919,9 @@ async function chargeCustomer(
 
         copyButton.addEventListener(
           "click",
-          async () => {
+          async()=>{
 
-            try {
+            try{
 
               await navigator
                 .clipboard
@@ -2561,27 +2929,22 @@ async function chargeCustomer(
                   recoveryLink
                 );
 
-
               copyButton.textContent =
                 "Copied ✓";
 
-
               setTimeout(
-                () => {
-
+                ()=>{
                   copyButton.textContent =
                     "Copy Payment Link";
-
                 },
                 1500
               );
 
-            }
+            }catch{
 
-            catch {
-
-              modalReferenceValue.textContent =
-                recoveryLink;
+              modalReferenceValue
+                .textContent =
+                  recoveryLink;
             }
           }
         );
@@ -2596,9 +2959,9 @@ async function chargeCustomer(
         );
 
 
-        button.disabled = false;
+        button.disabled=false;
 
-        button.textContent =
+        button.textContent=
           originalText;
 
         return;
@@ -2613,24 +2976,19 @@ async function chargeCustomer(
 
       throw new Error(
         (
-          data?.error ||
+          data?.error||
           "Could not charge customer."
-        ) +
+        )+
         detail
       );
     }
 
 
-    /*
-      Refresh dashboard before showing
-      payment success.
-    */
-
     await loadQuotes();
 
 
     await showMessageModal({
-      type: "success",
+      type:"success",
       eyebrow:
         "Payment complete",
       title:
@@ -2638,44 +2996,42 @@ async function chargeCustomer(
       message:
         "The customer's saved payment method was charged successfully.",
       amount:
-        data.amount_formatted ||
+        data.amount_formatted||
         formattedAmount,
       referenceLabel:
         "Payment reference",
       referenceValue:
-        data.payment_intent_id ||
+        data.payment_intent_id||
         "—",
       buttonText:
         "Done"
     });
 
-  }
 
-  catch (error) {
+  }catch(error){
 
     await showMessageModal({
-      type: "error",
+      type:"error",
       eyebrow:
         "Payment failed",
       title:
         "Could not charge customer",
       message:
-        error.message ||
+        error.message||
         "Could not charge customer."
     });
 
+    button.disabled=false;
 
-    button.disabled = false;
-
-    button.textContent =
+    button.textContent=
       originalText;
   }
 }
 
 
-function logout() {
+function logout(){
 
-  adminPassword = "";
+  adminPassword="";
 
   dashboard.classList.add(
     "hidden"
@@ -2685,7 +3041,7 @@ function logout() {
     "hidden"
   );
 
-  quotesContainer.innerHTML = "";
+  quotesContainer.innerHTML="";
 }
 
 
@@ -2697,9 +3053,9 @@ loginButton.addEventListener(
 
 passwordInput.addEventListener(
   "keydown",
-  event => {
+  event=>{
 
-    if (event.key === "Enter") {
+    if(event.key==="Enter"){
       login();
     }
   }
