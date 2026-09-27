@@ -1,3 +1,5 @@
+import crypto from "node:crypto";
+
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
@@ -56,7 +58,12 @@ async function sendResend(apiKey, fromEmail, lead) {
   };
 }
 
-async function sendTwilio(accountSid, authToken, fromNumber, lead) {
+async function sendTwilio(
+  accountSid,
+  authToken,
+  fromNumber,
+  lead
+) {
   if (!accountSid || !authToken || !fromNumber) {
     return {
       ok: false,
@@ -111,14 +118,18 @@ export default async (request) => {
     );
   }
 
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const supabaseUrl =
+    process.env.SUPABASE_URL;
+
+  const serviceRoleKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !serviceRoleKey) {
     return json(
       {
         ok: false,
-        error: "Database environment variables are missing."
+        error:
+          "Database environment variables are missing."
       },
       500
     );
@@ -149,40 +160,66 @@ export default async (request) => {
   const lead = {
     quote_number: quoteNumber,
 
-    customer_name: clean(body.name, 120),
+    customer_name:
+      clean(body.name, 120),
 
-    customer_email: clean(body.email, 320).toLowerCase(),
+    customer_email:
+      clean(
+        body.email,
+        320
+      ).toLowerCase(),
 
-    customer_phone: clean(body.phone, 50),
+    customer_phone:
+      clean(body.phone, 50),
 
-    service_type: clean(
-      body.service || body.service_type,
-      160
-    ),
+    service_type:
+      clean(
+        body.service ||
+          body.service_type,
+        160
+      ),
 
-    property_type: clean(
-      body.property || body.property_type,
-      120
-    ),
+    property_type:
+      clean(
+        body.property ||
+          body.property_type,
+        120
+      ),
 
-    frequency: clean(body.frequency, 120),
+    frequency:
+      clean(
+        body.frequency,
+        120
+      ),
 
-    bedrooms: toInt(body.bedrooms),
+    bedrooms:
+      toInt(body.bedrooms),
 
-    bathrooms: Number.isFinite(Number(body.bathrooms))
-      ? Number(body.bathrooms)
-      : null,
+    bathrooms:
+      Number.isFinite(
+        Number(body.bathrooms)
+      )
+        ? Number(body.bathrooms)
+        : null,
 
-    square_feet: toInt(
-      body.sqft || body.square_feet
-    ),
+    square_feet:
+      toInt(
+        body.sqft ||
+          body.square_feet
+      ),
 
-    zip_code: clean(
-      body.zip || body.zip_code,
-      20
-    ),
+    zip_code:
+      clean(
+        body.zip ||
+          body.zip_code,
+        20
+      ),
 
-    notes: clean(body.notes, 2000),
+    notes:
+      clean(
+        body.notes,
+        2000
+      ),
 
     status: "new"
   };
@@ -195,7 +232,8 @@ export default async (request) => {
     return json(
       {
         ok: false,
-        error: "Name, email, and service are required."
+        error:
+          "Name, email, and service are required."
       },
       400
     );
@@ -205,24 +243,36 @@ export default async (request) => {
     `${supabaseUrl.replace(/\/$/, "")}/rest/v1/quotes`,
     {
       method: "POST",
+
       headers: {
-        apikey: serviceRoleKey,
-        Authorization: `Bearer ${serviceRoleKey}`,
-        "content-type": "application/json",
-        Prefer: "return=representation"
+        apikey:
+          serviceRoleKey,
+
+        Authorization:
+          `Bearer ${serviceRoleKey}`,
+
+        "content-type":
+          "application/json",
+
+        Prefer:
+          "return=representation"
       },
-      body: JSON.stringify(lead)
+
+      body:
+        JSON.stringify(lead)
     }
   );
 
-  const dbData = await dbRes
-    .json()
-    .catch(() => null);
+  const dbData =
+    await dbRes
+      .json()
+      .catch(() => null);
 
   if (!dbRes.ok) {
     return json(
       {
         ok: false,
+
         error:
           dbData?.message ||
           dbData?.error ||
@@ -232,9 +282,10 @@ export default async (request) => {
     );
   }
 
-  const saved = Array.isArray(dbData)
-    ? dbData[0]
-    : dbData;
+  const saved =
+    Array.isArray(dbData)
+      ? dbData[0]
+      : dbData;
 
   let emailResult = {
     ok: false,
@@ -247,29 +298,35 @@ export default async (request) => {
   };
 
   try {
-    emailResult = await sendResend(
-      process.env.RESEND_API_KEY,
-      process.env.FROM_EMAIL,
-      lead
-    );
+    emailResult =
+      await sendResend(
+        process.env.RESEND_API_KEY,
+        process.env.FROM_EMAIL,
+        lead
+      );
   } catch (error) {
     emailResult = {
       ok: false,
-      error: error?.message || "Resend request failed"
+      error:
+        error?.message ||
+        "Resend request failed"
     };
   }
 
   try {
-    smsResult = await sendTwilio(
-      process.env.TWILIO_ACCOUNT_SID,
-      process.env.TWILIO_AUTH_TOKEN,
-      process.env.TWILIO_FROM_NUMBER,
-      lead
-    );
+    smsResult =
+      await sendTwilio(
+        process.env.TWILIO_ACCOUNT_SID,
+        process.env.TWILIO_AUTH_TOKEN,
+        process.env.TWILIO_FROM_NUMBER,
+        lead
+      );
   } catch (error) {
     smsResult = {
       ok: false,
-      error: error?.message || "Twilio request failed"
+      error:
+        error?.message ||
+        "Twilio request failed"
     };
   }
 
@@ -277,10 +334,12 @@ export default async (request) => {
     ok: true,
 
     quote_number:
-      saved?.quote_number || quoteNumber,
+      saved?.quote_number ||
+      quoteNumber,
 
     quote_id:
-      saved?.id || null,
+      saved?.id ||
+      null,
 
     email_sent:
       !!emailResult.ok,
@@ -289,9 +348,11 @@ export default async (request) => {
       !!smsResult.ok,
 
     sms_status:
-      smsResult.status || null,
+      smsResult.status ||
+      null,
 
     sms_error:
-      smsResult.error || null
+      smsResult.error ||
+      null
   });
 };
