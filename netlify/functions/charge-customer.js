@@ -168,6 +168,355 @@ async function updateQuote(
 
 
 /*
+  Payment confirmation email helpers.
+*/
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+
+function formatUsd(cents) {
+  const amount =
+    Number(cents);
+
+  if (
+    !Number.isInteger(amount) ||
+    amount <= 0
+  ) {
+    return null;
+  }
+
+  return (
+    amount / 100
+  ).toLocaleString(
+    "en-US",
+    {
+      style: "currency",
+      currency: "USD"
+    }
+  );
+}
+
+
+/*
+  Send payment confirmation AFTER:
+  1. Stripe confirms the charge succeeded.
+  2. Supabase is updated to "charged".
+
+  IMPORTANT:
+  Email failure is NON-FATAL.
+
+  The customer has already been charged at
+  this point, so an email problem must never
+  cause another payment attempt.
+*/
+
+async function sendPaymentConfirmation(
+  quote,
+  paymentIntent,
+  resendApiKey,
+  fromEmail
+) {
+  if (
+    !resendApiKey ||
+    !fromEmail
+  ) {
+    console.error(
+      "Payment confirmation skipped: Resend configuration is incomplete."
+    );
+
+    return {
+      ok: false,
+      skipped: true
+    };
+  }
+
+
+  const customerEmail =
+    String(
+      quote?.customer_email || ""
+    ).trim();
+
+
+  if (!customerEmail) {
+    console.error(
+      "Payment confirmation skipped: booking has no customer email."
+    );
+
+    return {
+      ok: false,
+      skipped: true
+    };
+  }
+
+
+  const customerName =
+    String(
+      quote?.customer_name || ""
+    ).trim();
+
+
+  const firstName =
+    customerName
+      ? customerName.split(/\s+/)[0]
+      : "there";
+
+
+  const quoteNumber =
+    quote?.quote_number ||
+    "—";
+
+
+  const service =
+    quote?.service_type ||
+    "Cleaning Service";
+
+
+  const property =
+    quote?.property_type ||
+    "—";
+
+
+  const amount =
+    formatUsd(
+      quote?.quoted_price
+    ) || "—";
+
+
+  const paymentReference =
+    paymentIntent?.id ||
+    "—";
+
+
+  const subject =
+    `Payment Received — ${quoteNumber} — The Fresh Standard Co.`;
+
+
+  const plainText = [
+    `Hi ${firstName},`,
+    "",
+    "Payment complete.",
+    "",
+    "Your payment for your cleaning service with The Fresh Standard Co. was processed successfully.",
+    "",
+    `Quote: ${quoteNumber}`,
+    `Service: ${service}`,
+    `Property: ${property}`,
+    `Amount Paid: ${amount}`,
+    `Payment Reference: ${paymentReference}`,
+    "",
+    "No further payment is required for this cleaning service.",
+    "",
+    "Your payment was processed securely through Stripe.",
+    "",
+    "If you have any questions, contact us:",
+    "",
+    "954-379-6765",
+    "thefreshstandardco@outlook.com",
+    "",
+    "Thank you for choosing The Fresh Standard Co."
+  ].join("\n");
+
+
+  const html = `
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+
+<body style="margin:0;padding:0;background:#f4f1e9;font-family:Arial,Helvetica,sans-serif;color:#17352b;">
+
+  <div style="max-width:620px;margin:0 auto;padding:40px 20px;">
+
+    <div style="background:#fffdf8;border-radius:24px;padding:42px;">
+
+      <div style="text-align:center;margin-bottom:34px;">
+
+        <div style="font-family:Georgia,'Times New Roman',serif;font-size:25px;letter-spacing:2px;font-weight:600;color:#17352b;">
+          THE FRESH
+        </div>
+
+        <div style="margin-top:6px;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#758b78;">
+          Standard Co.
+        </div>
+
+      </div>
+
+
+      <div style="width:54px;height:54px;border-radius:50%;background:#17352b;color:#ffffff;margin:0 auto 22px;line-height:54px;text-align:center;font-size:26px;font-weight:700;">
+        ✓
+      </div>
+
+
+      <div style="text-align:center;text-transform:uppercase;letter-spacing:3px;font-size:11px;font-weight:700;color:#758b78;margin-bottom:12px;">
+        Payment Complete
+      </div>
+
+
+      <h1 style="font-family:Georgia,'Times New Roman',serif;font-size:36px;font-weight:400;text-align:center;margin:0 0 16px;color:#17352b;">
+        Thank you.
+      </h1>
+
+
+      <p style="font-size:16px;line-height:1.7;color:#64716b;text-align:center;margin:0 0 34px;">
+        Hi ${escapeHtml(firstName)}, your payment has been completed successfully.
+        No further payment is required for this cleaning service.
+      </p>
+
+
+      <div style="border-top:1px solid #e6e5df;border-bottom:1px solid #e6e5df;padding:22px 0;margin-bottom:30px;">
+
+        <p style="margin:8px 0;font-size:15px;color:#64716b;">
+          <strong style="color:#17352b;">
+            Quote:
+          </strong>
+          ${escapeHtml(quoteNumber)}
+        </p>
+
+
+        <p style="margin:8px 0;font-size:15px;color:#64716b;">
+          <strong style="color:#17352b;">
+            Service:
+          </strong>
+          ${escapeHtml(service)}
+        </p>
+
+
+        <p style="margin:8px 0;font-size:15px;color:#64716b;">
+          <strong style="color:#17352b;">
+            Property:
+          </strong>
+          ${escapeHtml(property)}
+        </p>
+
+
+        <p style="margin:8px 0;font-size:15px;color:#64716b;">
+          <strong style="color:#17352b;">
+            Amount Paid:
+          </strong>
+          ${escapeHtml(amount)}
+        </p>
+
+
+        <p style="margin:8px 0;font-size:15px;color:#64716b;">
+          <strong style="color:#17352b;">
+            Payment Reference:
+          </strong>
+          ${escapeHtml(paymentReference)}
+        </p>
+
+      </div>
+
+
+      <div style="background:#f7f7f2;border:1px solid #e1e5de;border-radius:16px;padding:20px;margin-bottom:28px;">
+
+        <div style="font-family:Georgia,'Times New Roman',serif;font-size:18px;margin-bottom:8px;color:#17352b;">
+          Payment received
+        </div>
+
+
+        <p style="font-size:14px;line-height:1.65;color:#69736e;margin:0;">
+          Your payment was processed securely through Stripe.
+          Thank you for choosing The Fresh Standard Co.
+        </p>
+
+      </div>
+
+
+      <p style="font-size:14px;line-height:1.7;color:#69736e;text-align:center;margin:0;">
+
+        Questions about your service or payment?
+
+        <br>
+
+        <a href="tel:+19543796765" style="color:#17352b;font-weight:600;text-decoration:none;">
+          954-379-6765
+        </a>
+
+        <br>
+
+        <a href="mailto:thefreshstandardco@outlook.com" style="color:#17352b;font-weight:600;text-decoration:none;">
+          thefreshstandardco@outlook.com
+        </a>
+
+      </p>
+
+    </div>
+
+  </div>
+
+</body>
+</html>
+  `.trim();
+
+
+  const response =
+    await fetch(
+      "https://api.resend.com/emails",
+      {
+        method: "POST",
+
+        headers: {
+          Authorization:
+            `Bearer ${resendApiKey}`,
+
+          "content-type":
+            "application/json"
+        },
+
+        body:
+          JSON.stringify({
+            from:
+              fromEmail,
+
+            to: [
+              customerEmail
+            ],
+
+            subject,
+
+            text:
+              plainText,
+
+            html
+          })
+      }
+    );
+
+
+  const data =
+    await response
+      .json()
+      .catch(() => null);
+
+
+  if (!response.ok) {
+    throw new Error(
+      data?.message ||
+      data?.error ||
+      `Resend returned status ${response.status}.`
+    );
+  }
+
+
+  return {
+    ok: true,
+
+    email_id:
+      data?.id || null
+  };
+}
+
+
+/*
   Classify Stripe failures.
 
   Any failure that requires the customer to
@@ -862,6 +1211,54 @@ export default async (request) => {
   }
 
 
+  /*
+    PAYMENT CONFIRMATION EMAIL
+
+    Stripe has succeeded AND Supabase has
+    recorded the booking as charged.
+
+    Email delivery is intentionally non-fatal.
+    We must never retry or reverse a successful
+    payment merely because an email fails.
+  */
+
+  let paymentEmailSent =
+    false;
+
+
+  try {
+
+    const emailResult =
+      await sendPaymentConfirmation(
+        updatedQuote || quote,
+        paymentIntent,
+        process.env.RESEND_API_KEY,
+        process.env.FROM_EMAIL
+      );
+
+
+    paymentEmailSent =
+      !!emailResult?.ok;
+
+
+    if (paymentEmailSent) {
+      console.log(
+        "Payment confirmation email sent:",
+        quoteId,
+        emailResult?.email_id || null
+      );
+    }
+
+  } catch (emailError) {
+
+    console.error(
+      "Payment confirmation email failed:",
+      quoteId,
+      emailError.message
+    );
+  }
+
+
   return json({
     ok: true,
 
@@ -896,6 +1293,9 @@ export default async (request) => {
 
     charged_at:
       updatedQuote?.charged_at ||
-      chargedAt
+      chargedAt,
+
+    payment_confirmation_email_sent:
+      paymentEmailSent
   });
 };
