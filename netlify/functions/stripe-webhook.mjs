@@ -13,11 +13,7 @@ function json(data, status = 200) {
 
 
 /*
-  Verify Stripe's webhook signature.
-
-  IMPORTANT:
-  STRIPE_WEBHOOK_SECRET must contain the whsec_...
-  secret from the Stripe webhook endpoint.
+  Verify Stripe webhook signature.
 */
 
 function verifyStripeSignature(
@@ -35,6 +31,7 @@ function verifyStripeSignature(
     signatureHeader.split(",");
 
   let timestamp = null;
+
   const signatures = [];
 
   for (const part of parts) {
@@ -101,7 +98,6 @@ function verifyStripeSignature(
           break;
         }
       }
-
     } catch {
       // Ignore malformed signatures.
     }
@@ -113,21 +109,19 @@ function verifyStripeSignature(
     );
   }
 
-
-  /*
-    Reject very old webhook requests.
-    Stripe commonly recommends a tolerance window.
-  */
-
   const eventTime =
     Number(timestamp);
 
   const currentTime =
-    Math.floor(Date.now() / 1000);
+    Math.floor(
+      Date.now() / 1000
+    );
 
   if (
     !Number.isFinite(eventTime) ||
-    Math.abs(currentTime - eventTime) > 300
+    Math.abs(
+      currentTime - eventTime
+    ) > 300
   ) {
     throw new Error(
       "Stripe webhook timestamp is outside tolerance."
@@ -174,8 +168,7 @@ async function stripeGet(
 
 
 /*
-  Retrieve the authoritative quote
-  directly from Supabase.
+  Retrieve quote from Supabase.
 */
 
 async function getQuote(
@@ -223,7 +216,7 @@ async function getQuote(
 
 
 /*
-  Update a quote in Supabase.
+  Update quote in Supabase.
 */
 
 async function updateQuote(
@@ -281,6 +274,294 @@ async function updateQuote(
 
 
 /*
+  Email helpers.
+*/
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+
+function formatUsd(cents) {
+  const amount =
+    Number(cents);
+
+  if (
+    !Number.isInteger(amount) ||
+    amount <= 0
+  ) {
+    return null;
+  }
+
+  return (
+    amount / 100
+  ).toLocaleString(
+    "en-US",
+    {
+      style: "currency",
+      currency: "USD"
+    }
+  );
+}
+
+
+/*
+  Send booking confirmation.
+
+  IMPORTANT:
+  Email failure must NOT cause Stripe
+  to retry an otherwise successful
+  card-saving webhook.
+*/
+
+async function sendBookingConfirmation(
+  quote,
+  resendApiKey,
+  fromEmail
+) {
+  if (
+    !resendApiKey ||
+    !fromEmail
+  ) {
+    console.error(
+      "Booking confirmation skipped: Resend configuration is incomplete."
+    );
+
+    return {
+      ok: false,
+      skipped: true
+    };
+  }
+
+  const customerEmail =
+    String(
+      quote?.customer_email || ""
+    ).trim();
+
+  if (!customerEmail) {
+    console.error(
+      "Booking confirmation skipped: quote has no customer email."
+    );
+
+    return {
+      ok: false,
+      skipped: true
+    };
+  }
+
+  const customerName =
+    String(
+      quote?.customer_name || ""
+    ).trim();
+
+  const firstName =
+    customerName
+      ? customerName.split(/\s+/)[0]
+      : "there";
+
+  const quoteNumber =
+    quote?.quote_number ||
+    "—";
+
+  const service =
+    quote?.service_type ||
+    "Cleaning Service";
+
+  const property =
+    quote?.property_type ||
+    "—";
+
+  const price =
+    formatUsd(
+      quote?.quoted_price
+    ) || "—";
+
+  const subject =
+    "Booking Confirmed — The Fresh Standard Co.";
+
+  const plainText = [
+    `Hi ${firstName},`,
+    "",
+    "Your cleaning booking with The Fresh Standard Co. has been confirmed.",
+    "",
+    `Quote: ${quoteNumber}`,
+    `Service: ${service}`,
+    `Property: ${property}`,
+    `Quoted Price: ${price}`,
+    "",
+    "Your payment method has been securely saved through Stripe.",
+    "",
+    "You have not been charged at this time.",
+    "",
+    "After your cleaning service is completed, The Fresh Standard Co. will charge the agreed quoted amount to your saved payment method in accordance with the payment authorization you accepted when confirming your booking.",
+    "",
+    "If you have any questions or need to make changes to your booking, contact us:",
+    "",
+    "954-379-6765",
+    "thefreshstandardco@outlook.com",
+    "",
+    "Thank you for choosing The Fresh Standard Co."
+  ].join("\n");
+
+  const html = `
+<!doctype html>
+<html>
+<body style="margin:0;padding:0;background:#f4f1e9;font-family:Arial,Helvetica,sans-serif;color:#17352b;">
+
+<div style="max-width:620px;margin:0 auto;padding:40px 20px;">
+
+<div style="background:#fffdf8;border-radius:24px;padding:42px;">
+
+<div style="text-align:center;margin-bottom:34px;">
+
+<div style="font-family:Georgia,'Times New Roman',serif;font-size:25px;letter-spacing:2px;font-weight:600;">
+THE FRESH
+</div>
+
+<div style="margin-top:6px;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#758b78;">
+Standard Co.
+</div>
+
+</div>
+
+<div style="text-align:center;text-transform:uppercase;letter-spacing:3px;font-size:11px;font-weight:700;color:#758b78;margin-bottom:12px;">
+Booking Confirmed
+</div>
+
+<h1 style="font-family:Georgia,'Times New Roman',serif;font-size:36px;font-weight:400;text-align:center;margin:0 0 16px;color:#17352b;">
+You're all set.
+</h1>
+
+<p style="font-size:16px;line-height:1.7;color:#64716b;text-align:center;margin:0 0 34px;">
+Hi ${escapeHtml(firstName)}, your cleaning booking with
+The Fresh Standard Co. has been confirmed.
+</p>
+
+<div style="border-top:1px solid #e6e5df;border-bottom:1px solid #e6e5df;padding:22px 0;margin-bottom:30px;">
+
+<p style="margin:8px 0;font-size:15px;color:#64716b;">
+<strong style="color:#17352b;">Quote:</strong>
+${escapeHtml(quoteNumber)}
+</p>
+
+<p style="margin:8px 0;font-size:15px;color:#64716b;">
+<strong style="color:#17352b;">Service:</strong>
+${escapeHtml(service)}
+</p>
+
+<p style="margin:8px 0;font-size:15px;color:#64716b;">
+<strong style="color:#17352b;">Property:</strong>
+${escapeHtml(property)}
+</p>
+
+<p style="margin:8px 0;font-size:15px;color:#64716b;">
+<strong style="color:#17352b;">Quoted Price:</strong>
+${escapeHtml(price)}
+</p>
+
+</div>
+
+<div style="background:#f7f7f2;border:1px solid #e1e5de;border-radius:16px;padding:20px;margin-bottom:28px;">
+
+<div style="font-family:Georgia,'Times New Roman',serif;font-size:18px;margin-bottom:8px;color:#17352b;">
+Payment secured
+</div>
+
+<p style="font-size:14px;line-height:1.65;color:#69736e;margin:0;">
+Your payment method has been securely saved through Stripe.
+You have not been charged at this time. After your cleaning
+service is completed, The Fresh Standard Co. will charge the
+agreed quoted amount to your saved payment method in accordance
+with the payment authorization you accepted when confirming
+your booking.
+</p>
+
+</div>
+
+<p style="font-size:14px;line-height:1.7;color:#69736e;text-align:center;margin:0;">
+Need to make a change or have a question?<br>
+
+<a href="tel:+19543796765" style="color:#17352b;font-weight:600;text-decoration:none;">
+954-379-6765
+</a>
+
+<br>
+
+<a href="mailto:thefreshstandardco@outlook.com" style="color:#17352b;font-weight:600;text-decoration:none;">
+thefreshstandardco@outlook.com
+</a>
+
+</p>
+
+</div>
+
+</div>
+
+</body>
+</html>
+  `.trim();
+
+  const response =
+    await fetch(
+      "https://api.resend.com/emails",
+      {
+        method: "POST",
+
+        headers: {
+          Authorization:
+            `Bearer ${resendApiKey}`,
+
+          "content-type":
+            "application/json"
+        },
+
+        body:
+          JSON.stringify({
+            from:
+              fromEmail,
+
+            to: [
+              customerEmail
+            ],
+
+            subject,
+
+            text:
+              plainText,
+
+            html
+          })
+      }
+    );
+
+  const data =
+    await response
+      .json()
+      .catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(
+      data?.message ||
+      data?.error ||
+      `Resend returned status ${response.status}.`
+    );
+  }
+
+  return {
+    ok: true,
+
+    email_id:
+      data?.id || null
+  };
+}
+
+
+/*
   Main Netlify Function
 */
 
@@ -290,12 +571,12 @@ export default async (request) => {
     return json(
       {
         ok: false,
-        error: "Method not allowed"
+        error:
+          "Method not allowed"
       },
       405
     );
   }
-
 
   const webhookSecret =
     process.env.STRIPE_WEBHOOK_SECRET;
@@ -308,7 +589,6 @@ export default async (request) => {
 
   const serviceRoleKey =
     process.env.SUPABASE_SERVICE_ROLE_KEY;
-
 
   if (
     !webhookSecret ||
@@ -323,6 +603,7 @@ export default async (request) => {
     return json(
       {
         received: false,
+
         error:
           "Webhook configuration is incomplete."
       },
@@ -332,7 +613,7 @@ export default async (request) => {
 
 
   /*
-    Stripe signature verification MUST use
+    Signature verification MUST use
     the exact raw request body.
   */
 
@@ -344,13 +625,14 @@ export default async (request) => {
       "stripe-signature"
     );
 
-
   try {
+
     verifyStripeSignature(
       rawBody,
       signatureHeader,
       webhookSecret
     );
+
   } catch (error) {
 
     console.error(
@@ -361,6 +643,7 @@ export default async (request) => {
     return json(
       {
         received: false,
+
         error:
           "Invalid webhook signature."
       },
@@ -372,13 +655,16 @@ export default async (request) => {
   let event;
 
   try {
+
     event =
       JSON.parse(rawBody);
+
   } catch {
 
     return json(
       {
         received: false,
+
         error:
           "Invalid webhook payload."
       },
@@ -395,18 +681,7 @@ export default async (request) => {
 
 
   /*
-    CHECKOUT SESSION COMPLETED
-
-    We support two Checkout flows:
-
-    1. mode=setup
-       Original booking flow.
-       Saves the customer's card.
-
-    2. mode=payment + payment_type=recovery
-       Recovery flow after an off-session
-       payment could not be completed.
-       This actually charges the customer.
+    We care about completed Checkout Sessions.
   */
 
   if (
@@ -417,7 +692,6 @@ export default async (request) => {
     const session =
       event.data?.object;
 
-
     if (!session) {
       return json({
         received: true
@@ -426,18 +700,26 @@ export default async (request) => {
 
 
     /*
-      ========================================
-      ORIGINAL CARD-SAVING FLOW
-      ========================================
+      ==================================================
+      CARD-SAVING CHECKOUT
+      ==================================================
+
+      mode=setup
+
+      Customer saves card.
+      Customer is NOT charged here.
     */
 
-    if (session.mode === "setup") {
+    if (
+      session.mode ===
+      "setup"
+    ) {
 
       const quoteId =
         session.metadata?.quote_id;
 
-
       if (!quoteId) {
+
         console.error(
           "Setup Checkout Session has no quote_id metadata."
         );
@@ -445,6 +727,7 @@ export default async (request) => {
         return json(
           {
             received: false,
+
             error:
               "Missing quote metadata."
           },
@@ -456,8 +739,8 @@ export default async (request) => {
       const setupIntentId =
         session.setup_intent;
 
-
       if (!setupIntentId) {
+
         console.error(
           "Checkout Session has no SetupIntent."
         );
@@ -465,6 +748,7 @@ export default async (request) => {
         return json(
           {
             received: false,
+
             error:
               "Missing SetupIntent."
           },
@@ -476,8 +760,7 @@ export default async (request) => {
       try {
 
         /*
-          Retrieve the SetupIntent so we can
-          obtain the saved PaymentMethod ID.
+          Retrieve SetupIntent.
         */
 
         const setupIntent =
@@ -505,10 +788,86 @@ export default async (request) => {
 
 
         /*
-          Save Stripe references in Supabase.
+          Retrieve current quote BEFORE changing it.
 
-          This is what allows us to charge
-          this exact customer's saved card later.
+          Stripe can send the same webhook
+          more than once.
+        */
+
+        const existingQuote =
+          await getQuote(
+            quoteId,
+            supabaseUrl,
+            serviceRoleKey
+          );
+
+
+        if (!existingQuote) {
+          throw new Error(
+            "Setup quote does not exist."
+          );
+        }
+
+
+        /*
+          Duplicate setup protection.
+
+          If this exact Checkout Session was
+          already processed, acknowledge it.
+
+          Do NOT:
+          - rewrite card_saved_at
+          - resend confirmation email
+        */
+
+        if (
+          (
+            existingQuote.status ===
+              "card_saved" ||
+
+            existingQuote.status ===
+              "booked" ||
+
+            existingQuote.status ===
+              "completed" ||
+
+            existingQuote.status ===
+              "charged"
+          ) &&
+
+          existingQuote
+            .stripe_setup_session_id ===
+              session.id
+        ) {
+
+          console.log(
+            "Card setup already processed:",
+            quoteId,
+            session.id
+          );
+
+
+          return json({
+            received: true,
+
+            processed: true,
+
+            already_processed: true,
+
+            payment_type:
+              "card_setup",
+
+            quote_id:
+              quoteId,
+
+            status:
+              existingQuote.status
+          });
+        }
+
+
+        /*
+          Save Stripe references.
         */
 
         const updatedQuote =
@@ -526,7 +885,8 @@ export default async (request) => {
                 session.id,
 
               card_saved_at:
-                new Date().toISOString(),
+                new Date()
+                  .toISOString(),
 
               status:
                 "card_saved"
@@ -543,16 +903,74 @@ export default async (request) => {
         );
 
 
+        /*
+          Send customer confirmation.
+
+          IMPORTANT:
+          This is NON-FATAL.
+
+          If Resend fails, the card was still
+          saved correctly and Stripe receives
+          a successful webhook response.
+        */
+
+        let confirmationEmailSent =
+          false;
+
+
+        try {
+
+          const emailResult =
+            await sendBookingConfirmation(
+              updatedQuote,
+              process.env.RESEND_API_KEY,
+              process.env.FROM_EMAIL
+            );
+
+
+          confirmationEmailSent =
+            !!emailResult?.ok;
+
+
+          if (
+            confirmationEmailSent
+          ) {
+
+            console.log(
+              "Booking confirmation email sent:",
+              quoteId,
+              emailResult?.email_id ||
+                null
+            );
+          }
+
+        } catch (emailError) {
+
+          console.error(
+            "Booking confirmation email failed:",
+            quoteId,
+            emailError.message
+          );
+        }
+
+
         return json({
           received: true,
+
           processed: true,
+
           payment_type:
             "card_setup",
+
           quote_id:
             quoteId,
+
           status:
             updatedQuote?.status ||
-            "card_saved"
+            "card_saved",
+
+          confirmation_email_sent:
+            confirmationEmailSent
         });
 
 
@@ -564,16 +982,13 @@ export default async (request) => {
         );
 
 
-        /*
-          Return 500 so Stripe knows processing
-          failed and can retry the webhook.
-        */
-
         return json(
           {
             received: false,
+
             error:
               "Could not save payment information.",
+
             detail:
               error.message
           },
@@ -584,18 +999,23 @@ export default async (request) => {
 
 
     /*
-      ========================================
-      RECOVERY PAYMENT FLOW
-      ========================================
+      ==================================================
+      RECOVERY PAYMENT CHECKOUT
+      ==================================================
 
-      Only process PAYMENT-mode sessions that
-      were explicitly created by our recovery
-      function.
+      This is the payment page used when
+      the original saved-card charge failed.
+
+      Customer enters another payment method
+      through Stripe Checkout.
     */
 
     if (
-      session.mode === "payment" &&
-      session.metadata?.payment_type ===
+      session.mode ===
+        "payment" &&
+
+      session.metadata
+        ?.payment_type ===
         "recovery"
     ) {
 
@@ -604,13 +1024,16 @@ export default async (request) => {
 
 
       if (!quoteId) {
+
         console.error(
           "Recovery Checkout Session has no quote_id metadata."
         );
 
+
         return json(
           {
             received: false,
+
             error:
               "Missing recovery quote metadata."
           },
@@ -624,13 +1047,16 @@ export default async (request) => {
 
 
       if (!paymentIntentId) {
+
         console.error(
           "Recovery Checkout Session has no PaymentIntent."
         );
 
+
         return json(
           {
             received: false,
+
             error:
               "Missing recovery PaymentIntent."
           },
@@ -642,13 +1068,7 @@ export default async (request) => {
       try {
 
         /*
-          Retrieve BOTH authoritative records:
-
-          1. PaymentIntent from Stripe
-          2. Quote from Supabase
-
-          We verify them against each other
-          before changing the booking status.
+          Retrieve authoritative PaymentIntent.
         */
 
         const paymentIntent =
@@ -657,6 +1077,10 @@ export default async (request) => {
             stripeSecretKey
           );
 
+
+        /*
+          Retrieve authoritative quote.
+        */
 
         const quote =
           await getQuote(
@@ -674,19 +1098,19 @@ export default async (request) => {
 
 
         /*
-          WEBHOOK IDEMPOTENCY
+          Exact duplicate webhook.
 
-          Stripe can deliver the same webhook
-          more than once.
-
-          If this exact PaymentIntent already
-          marked the quote charged, acknowledge
-          it without changing anything.
+          Same quote.
+          Same successful PaymentIntent.
+          Already recorded as charged.
         */
 
         if (
-          quote.status === "charged" &&
-          quote.stripe_payment_intent_id ===
+          quote.status ===
+            "charged" &&
+
+          quote
+            .stripe_payment_intent_id ===
             paymentIntent.id
         ) {
 
@@ -696,16 +1120,23 @@ export default async (request) => {
             paymentIntent.id
           );
 
+
           return json({
             received: true,
+
             processed: true,
+
             already_processed: true,
+
             payment_type:
               "recovery",
+
             quote_id:
               quoteId,
+
             status:
               "charged",
+
             payment_intent_id:
               paymentIntent.id
           });
@@ -713,39 +1144,52 @@ export default async (request) => {
 
 
         /*
-          If the quote is already charged by
-          some OTHER PaymentIntent, never allow
-          this webhook to overwrite it.
+          Quote already paid by a different
+          PaymentIntent.
+
+          Never overwrite it.
         */
 
-        if (quote.status === "charged") {
+        if (
+          quote.status ===
+          "charged"
+        ) {
 
           console.error(
             "Quote is already charged by another payment:",
             quoteId
           );
 
+
           return json({
             received: true,
+
             processed: false,
+
+            already_paid: true,
+
             payment_type:
               "recovery",
+
             quote_id:
               quoteId,
+
             status:
-              "charged",
-            reason:
-              "Quote already charged."
+              "charged"
           });
         }
 
 
         /*
-          Recovery payment is only valid after
-          the cleaning has been completed.
+          Recovery should only complete
+          after service completion.
         */
 
-        if (quote.status !== "completed") {
+        if (
+          quote.status !==
+          "completed"
+        ) {
+
           throw new Error(
             `Recovery payment cannot be applied while quote status is "${quote.status}".`
           );
@@ -753,8 +1197,57 @@ export default async (request) => {
 
 
         /*
-          Verify the locked Supabase price.
-          quoted_price is stored in cents.
+          Confirm Stripe says the payment
+          actually succeeded.
+        */
+
+        if (
+          paymentIntent.status !==
+          "succeeded"
+        ) {
+
+          throw new Error(
+            `Recovery PaymentIntent status is "${paymentIntent.status}", not "succeeded".`
+          );
+        }
+
+
+        /*
+          Confirm payment belongs to the
+          correct Stripe customer.
+        */
+
+        const expectedCustomer =
+          String(
+            quote.stripe_customer_id ||
+            ""
+          ).trim();
+
+
+        const actualCustomer =
+          String(
+            paymentIntent.customer ||
+            session.customer ||
+            ""
+          ).trim();
+
+
+        if (
+          !expectedCustomer ||
+          !actualCustomer ||
+          expectedCustomer !==
+            actualCustomer
+        ) {
+
+          throw new Error(
+            "Recovery payment customer does not match quote customer."
+          );
+        }
+
+
+        /*
+          Confirm amount matches the
+          server-side quote exactly.
         */
 
         const expectedAmount =
@@ -763,213 +1256,127 @@ export default async (request) => {
           );
 
 
+        const paidAmount =
+          Number(
+            paymentIntent
+              .amount_received
+          );
+
+
         if (
-          !Number.isInteger(expectedAmount) ||
+          !Number.isInteger(
+            expectedAmount
+          ) ||
           expectedAmount <= 0
         ) {
+
           throw new Error(
-            "Quote has an invalid locked payment amount."
+            "Quote has an invalid payment amount."
           );
         }
-
-
-        /*
-          Verify Stripe actually completed
-          the payment.
-        */
-
-        if (
-          paymentIntent.status !==
-          "succeeded"
-        ) {
-
-          console.log(
-            "Recovery PaymentIntent is not succeeded:",
-            paymentIntent.status
-          );
-
-          return json({
-            received: true,
-            processed: false,
-            payment_type:
-              "recovery",
-            quote_id:
-              quoteId,
-            payment_status:
-              paymentIntent.status
-          });
-        }
-
-
-        /*
-          SECURITY CHECK:
-          Stripe amount MUST exactly equal
-          the locked Supabase quoted price.
-        */
-
-        if (
-          Number(paymentIntent.amount_received) !==
-          expectedAmount
-        ) {
-          throw new Error(
-            "Recovery payment amount does not match the locked quote price."
-          );
-        }
-
-
-        /*
-          Also verify the Checkout Session's
-          amount matches the same locked price.
-        */
-
-        if (
-          Number(session.amount_total) !==
-          expectedAmount
-        ) {
-          throw new Error(
-            "Checkout Session amount does not match the locked quote price."
-          );
-        }
-
-
-        /*
-          SECURITY CHECK:
-          Currency must be USD everywhere.
-        */
-
-        const paymentCurrency =
-          String(
-            paymentIntent.currency || ""
-          ).toLowerCase();
-
-
-        const sessionCurrency =
-          String(
-            session.currency || ""
-          ).toLowerCase();
 
 
         if (
-          paymentCurrency !== "usd" ||
-          sessionCurrency !== "usd"
+          !Number.isInteger(
+            paidAmount
+          ) ||
+          paidAmount !==
+            expectedAmount
         ) {
+
           throw new Error(
-            "Recovery payment currency verification failed."
+            `Recovery payment amount mismatch. Expected ${expectedAmount}, received ${paidAmount}.`
           );
         }
 
 
         /*
-          Verify PaymentIntent metadata still
-          points to this same quote.
+          Confirm currency.
         */
 
         if (
           String(
-            paymentIntent.metadata?.quote_id || ""
-          ) !== String(quoteId)
+            paymentIntent.currency ||
+            ""
+          ).toLowerCase() !==
+          "usd"
         ) {
+
           throw new Error(
-            "PaymentIntent quote metadata does not match."
+            "Recovery payment currency is not USD."
           );
         }
 
 
         /*
-          Verify Stripe customer identity.
-
-          The recovery payment must belong to
-          the same Stripe customer originally
-          saved on this quote.
+          Confirm PaymentIntent metadata.
         */
 
-        const expectedCustomerId =
-          String(
-            quote.stripe_customer_id || ""
-          );
+        if (
+          paymentIntent.metadata
+            ?.quote_id !==
+          quoteId
+        ) {
 
-
-        const paymentCustomerId =
-          String(
-            paymentIntent.customer || ""
-          );
-
-
-        const sessionCustomerId =
-          String(
-            session.customer || ""
-          );
-
-
-        if (!expectedCustomerId) {
           throw new Error(
-            "Quote does not contain a Stripe customer."
+            "Recovery PaymentIntent quote metadata does not match."
           );
         }
 
 
         if (
-          paymentCustomerId !==
-          expectedCustomerId
+          paymentIntent.metadata
+            ?.payment_type !==
+          "recovery"
         ) {
-          throw new Error(
-            "PaymentIntent customer does not match the booking."
-          );
-        }
 
-
-        if (
-          sessionCustomerId !==
-          expectedCustomerId
-        ) {
           throw new Error(
-            "Checkout Session customer does not match the booking."
+            "Recovery PaymentIntent type metadata does not match."
           );
         }
 
 
         /*
-          Because recovery Checkout uses
-          setup_future_usage=off_session,
-          Stripe may provide a new PaymentMethod.
+          Stripe Checkout can save the
+          newly used payment method.
 
-          Save it so future authorized payments
-          use the most recently successful method.
+          If available, replace the old
+          saved payment method so future
+          authorized charges use the
+          successful method.
         */
 
-        const paymentMethodId =
-          paymentIntent.payment_method ||
+        const successfulPaymentMethodId =
+          paymentIntent
+            .payment_method ||
           null;
 
 
-        const chargedAt =
-          new Date().toISOString();
-
-
         const updateValues = {
-          status:
-            "charged",
-
           stripe_payment_intent_id:
             paymentIntent.id,
 
           charged_at:
-            chargedAt,
+            new Date()
+              .toISOString(),
 
-          stripe_customer_id:
-            expectedCustomerId
+          status:
+            "charged"
         };
 
 
-        if (paymentMethodId) {
-          updateValues.stripe_payment_method_id =
-            paymentMethodId;
+        if (
+          successfulPaymentMethodId
+        ) {
+
+          updateValues
+            .stripe_payment_method_id =
+              successfulPaymentMethodId;
         }
 
 
         /*
-          Update Supabase ONLY after every
-          verification above has passed.
+          Record successful recovery payment.
         */
 
         const updatedQuote =
@@ -982,24 +1389,27 @@ export default async (request) => {
 
 
         console.log(
-          "Verified recovery payment completed for quote:",
+          "Recovery payment recorded successfully:",
           quoteId,
-          paymentIntent.id,
-          expectedAmount,
-          "usd"
+          paymentIntent.id
         );
 
 
         return json({
           received: true,
+
           processed: true,
+
           payment_type:
             "recovery",
+
           quote_id:
             quoteId,
+
           status:
             updatedQuote?.status ||
             "charged",
+
           payment_intent_id:
             paymentIntent.id
         });
@@ -1027,8 +1437,10 @@ export default async (request) => {
         return json(
           {
             received: false,
+
             error:
               "Could not record recovery payment.",
+
             detail:
               error.message
           },
@@ -1055,7 +1467,8 @@ export default async (request) => {
 
 
   /*
-    Other Stripe events can safely be acknowledged.
+    Other Stripe events can safely
+    be acknowledged.
   */
 
   return json({
