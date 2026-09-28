@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Owner Dashboard | The Fresh Standard Co.</title>
-
 <style>
 :root{
   --green:#17352b;
@@ -17,41 +16,18 @@
   --line:#dce2dc;
   --red:#8f3d3d;
 }
-
 *{box-sizing:border-box}
-
-html,body{
-  margin:0;
-  padding:0;
-}
-
+html,body{margin:0;padding:0}
 body{
   background:var(--cream);
   color:var(--ink);
   font-family:Inter,Arial,sans-serif;
 }
-
-.hidden{
-  display:none!important;
-}
-
-button,input{
-  font:inherit;
-}
-
-button{
-  transition:.18s ease;
-}
-
-button:hover:not(:disabled){
-  transform:translateY(-1px);
-}
-
-button:disabled{
-  cursor:not-allowed;
-  opacity:.62;
-}
-
+.hidden{display:none!important}
+button,input{font:inherit}
+button{transition:.18s ease}
+button:hover:not(:disabled){transform:translateY(-1px)}
+button:disabled{cursor:not-allowed;opacity:.62}
 .login-page{
   min-height:100vh;
   display:flex;
@@ -59,7 +35,6 @@ button:disabled{
   justify-content:center;
   padding:28px;
 }
-
 .login-card{
   width:min(470px,100%);
   padding:48px;
@@ -68,25 +43,19 @@ button:disabled{
   border-radius:28px;
   box-shadow:0 25px 80px rgba(23,53,43,.10);
 }
-
-.brand{
-  margin-bottom:38px;
-}
-
+.brand{margin-bottom:38px}
 .brand-main{
   color:var(--green);
   font-family:Georgia,serif;
   font-size:28px;
   letter-spacing:3px;
 }
-
 .brand-sub{
   color:var(--sage);
   font-size:12px;
   letter-spacing:3px;
   text-transform:uppercase;
 }
-
 .login-card h1{
   margin:0 0 12px;
   font-family:Georgia,serif;
@@ -94,13 +63,11 @@ button:disabled{
   font-weight:400;
   color:var(--green);
 }
-
 .login-description{
   margin-bottom:28px;
   color:var(--muted);
   line-height:1.6;
 }
-
 .login-card input{
   width:100%;
   padding:16px 18px;
@@ -110,12 +77,10 @@ button:disabled{
   background:white;
   color:var(--ink);
 }
-
 .login-card input:focus{
   border-color:var(--sage);
   box-shadow:0 0 0 3px rgba(113,134,121,.12);
 }
-
 .primary{
   border:0;
   border-radius:999px;
@@ -124,26 +89,22 @@ button:disabled{
   font-weight:700;
   cursor:pointer;
 }
-
 .login-button{
   width:100%;
   margin-top:14px;
   padding:15px 20px;
 }
-
 .login-error{
   margin-top:14px;
   color:var(--red);
   font-size:13px;
   font-weight:600;
 }
-
 header{
   background:var(--green);
   color:white;
   padding:24px 34px;
 }
-
 .header-inner{
   width:min(1240px,100%);
   margin:auto;
@@ -152,13 +113,11 @@ header{
   justify-content:space-between;
   gap:20px;
 }
-
 .header-brand{
   font-family:Georgia,serif;
   font-size:21px;
   letter-spacing:2px;
 }
-
 .header-label{
   margin-top:4px;
   color:#c8d3cc;
@@ -166,7 +125,6 @@ header{
   letter-spacing:2px;
   text-transform:uppercase;
 }
-
 .logout{
   border:1px solid rgba(255,255,255,.25);
   border-radius:999px;
@@ -175,13 +133,11 @@ header{
   color:white;
   cursor:pointer;
 }
-
 main{
   width:min(1240px,calc(100% - 40px));
   margin:0 auto;
   padding:50px 0 80px;
 }
-
 .top{
   display:flex;
   align-items:flex-end;
@@ -189,7 +145,6 @@ main{
   gap:24px;
   margin-bottom:30px;
 }
-
 .top h1{
   margin:0;
   color:var(--green);
@@ -197,12 +152,10 @@ main{
   font-size:46px;
   font-weight:400;
 }
-
 .top p{
   margin:8px 0 0;
   color:var(--muted);
 }
-
 .refresh{
   padding:12px 20px;
   border:1px solid var(--line);
@@ -212,21 +165,18 @@ main{
   font-weight:700;
   cursor:pointer;
 }
-
 .stats{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:15px;
   margin-bottom:30px;
 }
-
 .stat{
   padding:20px;
   background:var(--paper);
   border:1px solid var(--line);
   border-radius:18px;
 }
-
 .stat-label{
   color:var(--muted);
   font-size:10px;
@@ -234,14 +184,12 @@ main{
   letter-spacing:1.5px;
   text-transform:uppercase;
 }
-
 .stat-value{
   margin-top:6px;
   color:var(--green);
   font-family:Georgia,serif;
   font-size:34px;
 }
-
 .dashboard-tabs{
   display:flex;
   gap:10px;
@@ -253,7 +201,6 @@ main{
   border:1px solid var(--line);
   border-radius:999px;
 }
-
 .dashboard-tab{
   border:0;
   border-radius:999px;
@@ -263,18 +210,15 @@ main{
   font-weight:800;
   cursor:pointer;
 }
-
 .dashboard-tab.active{
   background:var(--green);
   color:white;
   box-shadow:0 6px 18px rgba(23,53,43,.16);
 }
-
 .schedule-board{
   display:grid;
   gap:24px;
 }
-
 .schedule-section{
   background:var(--paper);
   border:1px solid var(--line);
@@ -282,7 +226,6 @@ main{
   overflow:hidden;
   box-shadow:0 14px 45px rgba(23,53,43,.05);
 }
-
 .schedule-section-head{
   display:flex;
   align-items:center;
@@ -292,13 +235,11 @@ main{
   border-bottom:1px solid var(--line);
   background:#faf9f4;
 }
-
 .schedule-section-title{
   color:var(--green);
   font-family:Georgia,serif;
   font-size:24px;
 }
-
 .schedule-count{
   min-width:34px;
   height:34px;
@@ -312,11 +253,7 @@ main{
   font-weight:800;
   font-size:12px;
 }
-
-.schedule-list{
-  display:grid;
-}
-
+.schedule-list{display:grid}
 .schedule-job{
   display:grid;
   grid-template-columns:minmax(190px,.9fr) minmax(220px,1.2fr) minmax(150px,.75fr) minmax(190px,.85fr);
@@ -325,41 +262,32 @@ main{
   padding:20px 24px;
   border-bottom:1px solid var(--line);
 }
-
-.schedule-job:last-child{
-  border-bottom:0;
-}
-
+.schedule-job:last-child{border-bottom:0}
 .schedule-date{
   color:var(--green);
   font-weight:800;
   line-height:1.45;
 }
-
 .schedule-customer{
   color:var(--green);
   font-family:Georgia,serif;
   font-size:21px;
 }
-
 .schedule-meta{
   margin-top:4px;
   color:var(--muted);
   font-size:12px;
   line-height:1.5;
 }
-
 .schedule-price{
   color:var(--green);
   font-family:Georgia,serif;
   font-size:24px;
 }
-
 .schedule-actions{
   display:grid;
   gap:8px;
 }
-
 .schedule-actions button{
   width:100%;
   border:0;
@@ -369,36 +297,21 @@ main{
   font-weight:800;
   cursor:pointer;
 }
-
-.schedule-actions .action-main{
-  background:var(--green);
-  color:white;
-}
-
-.schedule-actions .action-soft{
-  background:#e8eee9;
-  color:var(--green);
-}
-
-.schedule-actions .action-danger{
-  background:#f3e8e8;
-  color:var(--red);
-}
-
+.schedule-actions .action-main{background:var(--green);color:white}
+.schedule-actions .action-soft{background:#e8eee9;color:var(--green)}
+.schedule-actions .action-danger{background:#f3e8e8;color:var(--red)}
 .schedule-empty{
   padding:28px 24px;
   color:var(--muted);
   text-align:center;
   font-size:13px;
 }
-
 .dashboard-tools{
   display:grid;
-  grid-template-columns:minmax(240px,1fr) 210px auto;
+  grid-template-columns:minmax(240px,1fr) 210px 210px auto;
   gap:12px;
   margin:0 0 20px;
 }
-
 .dashboard-tools input,
 .dashboard-tools select{
   width:100%;
@@ -410,13 +323,11 @@ main{
   font:inherit;
   outline:none;
 }
-
 .dashboard-tools input:focus,
 .dashboard-tools select:focus{
   border-color:var(--sage);
   box-shadow:0 0 0 3px rgba(130,147,129,.12);
 }
-
 .clear-filters{
   border:1px solid var(--line);
   border-radius:999px;
@@ -426,18 +337,15 @@ main{
   font-weight:800;
   cursor:pointer;
 }
-
 .filter-summary{
   margin:-8px 0 18px;
   color:var(--muted);
   font-size:12px;
 }
-
 .quotes{
   display:grid;
   gap:20px;
 }
-
 .quote-card{
   padding:28px;
   background:var(--paper);
@@ -445,14 +353,12 @@ main{
   border-radius:24px;
   box-shadow:0 14px 45px rgba(23,53,43,.05);
 }
-
 .quote-head{
   display:flex;
   justify-content:space-between;
   gap:20px;
   margin-bottom:22px;
 }
-
 .quote-number{
   color:var(--sage);
   font-size:10px;
@@ -460,14 +366,12 @@ main{
   letter-spacing:1.5px;
   text-transform:uppercase;
 }
-
 .customer-name{
   margin-top:5px;
   color:var(--green);
   font-family:Georgia,serif;
   font-size:29px;
 }
-
 .status{
   height:max-content;
   padding:7px 11px;
@@ -479,53 +383,33 @@ main{
   letter-spacing:1px;
   text-transform:uppercase;
 }
-
-.status.new{
-  background:#ecebe5;
-}
-
-.status.quoted{
-  background:#e7eee8;
-}
-
+.status.new{background:#ecebe5}
+.status.quoted{background:#e7eee8}
 .status.accepted,
 .status.card_saved,
-.status.booked{
-  background:#e5eee7;
-}
-
-.status.completed{
-  background:#e8eee6;
-}
-
-.status.charged{
-  background:#dce9df;
-}
-
+.status.booked{background:#e5eee7}
+.status.completed{background:#e8eee6}
+.status.charged{background:#dce9df}
 .status.cancelled{
   background:#f2e5e5;
   color:var(--red);
 }
-
 .quote-grid{
   display:grid;
   grid-template-columns:minmax(0,1.45fr) minmax(260px,.55fr);
   gap:28px;
 }
-
 .details{
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
   gap:15px;
 }
-
 .detail{
   padding:14px 15px;
   border:1px solid var(--line);
   border-radius:14px;
   background:#fff;
 }
-
 .detail-label{
   margin-bottom:5px;
   color:var(--muted);
@@ -534,23 +418,17 @@ main{
   letter-spacing:1.3px;
   text-transform:uppercase;
 }
-
 .detail-value{
   color:var(--ink);
   font-size:14px;
   line-height:1.5;
   word-break:break-word;
 }
-
-.notes{
-  grid-column:1/-1;
-}
-
+.notes{grid-column:1/-1}
 .pricing{
   border-left:1px solid var(--line);
   padding-left:28px;
 }
-
 .pricing h3{
   margin:0 0 14px;
   color:var(--green);
@@ -558,12 +436,10 @@ main{
   font-size:24px;
   font-weight:400;
 }
-
 .price-wrap{
   position:relative;
   margin-bottom:11px;
 }
-
 .dollar{
   position:absolute;
   left:16px;
@@ -572,7 +448,6 @@ main{
   color:var(--muted);
   font-weight:700;
 }
-
 .price-input{
   width:100%;
   padding:14px 14px 14px 31px;
@@ -581,12 +456,10 @@ main{
   outline:none;
   background:white;
 }
-
 .price-input:focus{
   border-color:var(--sage);
   box-shadow:0 0 0 3px rgba(113,134,121,.12);
 }
-
 .create-offer,
 .copy,
 .complete-button,
@@ -600,7 +473,6 @@ main{
   padding:13px 16px;
   font-weight:700;
 }
-
 .create-offer,
 .complete-button,
 .charge-button{
@@ -608,33 +480,28 @@ main{
   color:white;
   cursor:pointer;
 }
-
 .copy{
   margin-top:10px;
   background:#e8eee9;
   color:var(--green);
   cursor:pointer;
 }
-
 .reschedule-button{
   margin-top:9px;
   background:#e8eee9;
   color:var(--green);
   cursor:pointer;
 }
-
 .cancel-button{
   margin-top:9px;
   background:#f3e8e8;
   color:var(--red);
   cursor:pointer;
 }
-
 .locked-button{
   background:#ecebe5;
   color:var(--muted);
 }
-
 .locked-note,
 .existing-offer{
   margin-top:9px;
@@ -642,19 +509,16 @@ main{
   font-size:11px;
   line-height:1.5;
 }
-
 .offer-result{
   margin-top:14px;
   padding-top:14px;
   border-top:1px solid var(--line);
 }
-
 .offer-price{
   color:var(--green);
   font-family:Georgia,serif;
   font-size:28px;
 }
-
 .booking-action,
 .completed-box,
 .cancelled-box{
@@ -663,22 +527,14 @@ main{
   border-radius:16px;
   background:#eef2ed;
 }
-
-.cancelled-box{
-  background:#f4eaea;
-}
-
+.cancelled-box{background:#f4eaea}
 .booking-action-title,
 .completed-title,
 .cancelled-title{
   color:var(--green);
   font-weight:800;
 }
-
-.cancelled-title{
-  color:var(--red);
-}
-
+.cancelled-title{color:var(--red)}
 .booking-action-text,
 .completed-text,
 .cancelled-text{
@@ -687,14 +543,12 @@ main{
   font-size:12px;
   line-height:1.55;
 }
-
 .schedule-display{
   margin-top:14px;
   padding:13px;
   border-radius:12px;
   background:rgba(255,255,255,.72);
 }
-
 .schedule-label,
 .amount-label{
   color:var(--muted);
@@ -703,36 +557,26 @@ main{
   letter-spacing:1.3px;
   text-transform:uppercase;
 }
-
 .schedule-value{
   margin-top:5px;
   color:var(--green);
   font-weight:700;
   line-height:1.45;
 }
-
-.complete-button{
-  margin-top:13px;
-}
-
+.complete-button{margin-top:13px}
 .amount-due{
   margin-top:14px;
   padding:13px;
   border-radius:12px;
   background:rgba(255,255,255,.72);
 }
-
 .amount-value{
   margin-top:4px;
   color:var(--green);
   font-family:Georgia,serif;
   font-size:28px;
 }
-
-.charge-button{
-  margin-top:13px;
-}
-
+.charge-button{margin-top:13px}
 .payment-id{
   margin-top:10px;
   color:var(--muted);
@@ -740,7 +584,6 @@ main{
   line-height:1.5;
   word-break:break-all;
 }
-
 .modal-overlay{
   position:fixed;
   inset:0;
@@ -752,7 +595,6 @@ main{
   background:rgba(12,30,24,.52);
   backdrop-filter:blur(8px);
 }
-
 .modal-card{
   width:100%;
   max-width:470px;
@@ -763,7 +605,6 @@ main{
   border:1px solid rgba(23,53,43,.08);
   text-align:center;
 }
-
 .modal-icon{
   width:58px;
   height:58px;
@@ -777,17 +618,8 @@ main{
   font-size:27px;
   font-weight:700;
 }
-
-.modal-icon.error{
-  background:#f5e8e8;
-  color:var(--red);
-}
-
-.modal-icon.warning{
-  background:#f3eee1;
-  color:#755f2e;
-}
-
+.modal-icon.error{background:#f5e8e8;color:var(--red)}
+.modal-icon.warning{background:#f3eee1;color:#755f2e}
 .modal-eyebrow{
   color:var(--sage);
   font-size:10px;
@@ -796,14 +628,12 @@ main{
   text-transform:uppercase;
   margin-bottom:8px;
 }
-
 .modal-title{
   margin:0;
   font-family:Georgia,serif;
   font-size:31px;
   font-weight:400;
 }
-
 .modal-message{
   margin:13px auto 0;
   max-width:390px;
@@ -811,14 +641,12 @@ main{
   font-size:14px;
   line-height:1.65;
 }
-
 .modal-amount{
   margin:24px 0 0;
   padding:18px;
   border-radius:16px;
   background:#eef2ed;
 }
-
 .modal-amount-label{
   color:var(--muted);
   font-size:10px;
@@ -826,13 +654,11 @@ main{
   letter-spacing:1.5px;
   text-transform:uppercase;
 }
-
 .modal-amount-value{
   margin-top:4px;
   font-family:Georgia,serif;
   font-size:35px;
 }
-
 .modal-reference{
   margin-top:17px;
   padding:14px;
@@ -840,7 +666,6 @@ main{
   border-radius:13px;
   text-align:left;
 }
-
 .modal-reference-label{
   color:var(--muted);
   font-size:9px;
@@ -849,26 +674,17 @@ main{
   text-transform:uppercase;
   margin-bottom:5px;
 }
-
 .modal-reference-value{
   font-size:12px;
   line-height:1.5;
   word-break:break-all;
 }
-
 .modal-form{
   margin-top:22px;
   text-align:left;
 }
-
-.modal-field{
-  margin-top:14px;
-}
-
-.modal-field:first-child{
-  margin-top:0;
-}
-
+.modal-field{margin-top:14px}
+.modal-field:first-child{margin-top:0}
 .modal-field label{
   display:block;
   margin-bottom:7px;
@@ -878,7 +694,6 @@ main{
   letter-spacing:1.1px;
   text-transform:uppercase;
 }
-
 .modal-field input{
   width:100%;
   border:1px solid #d8ddd7;
@@ -889,12 +704,10 @@ main{
   font:inherit;
   outline:none;
 }
-
 .modal-field input:focus{
   border-color:var(--sage);
   box-shadow:0 0 0 3px rgba(105,126,112,.12);
 }
-
 .modal-field-error{
   min-height:18px;
   margin-top:8px;
@@ -902,30 +715,18 @@ main{
   font-size:12px;
   font-weight:600;
 }
-
 .modal-card.schedule-modal{
   max-width:520px;
   text-align:left;
 }
-
-.modal-card.schedule-modal .modal-icon{
-  margin-left:0;
-}
-
-.modal-card.schedule-modal .modal-message{
-  margin-left:0;
-}
-
-.modal-card.schedule-modal .modal-actions{
-  margin-top:18px;
-}
-
+.modal-card.schedule-modal .modal-icon{margin-left:0}
+.modal-card.schedule-modal .modal-message{margin-left:0}
+.modal-card.schedule-modal .modal-actions{margin-top:18px}
 .modal-actions{
   display:flex;
   gap:10px;
   margin-top:25px;
 }
-
 .modal-button{
   flex:1;
   border:0;
@@ -934,22 +735,18 @@ main{
   font-weight:700;
   cursor:pointer;
 }
-
 .modal-button.secondary{
   background:#eceae3;
   color:var(--green);
 }
-
 .modal-button.primary-modal{
   background:var(--green);
   color:white;
 }
-
 .modal-button.danger{
   background:var(--red);
   color:white;
 }
-
 .empty,
 .loading{
   background:var(--paper);
@@ -959,101 +756,216 @@ main{
   color:var(--muted);
 }
 
+/* FINAL CONSOLIDATED DASHBOARD */
+.dashboard-tabs{
+  flex-wrap:wrap;
+  width:100%;
+  border-radius:22px;
+}
+.view-panel{display:grid;gap:22px}
+.overview-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:15px;
+}
+.overview-card{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:20px;
+}
+.overview-card-label{
+  color:var(--muted);
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+}
+.overview-card-value{
+  margin-top:7px;
+  color:var(--green);
+  font-family:Georgia,serif;
+  font-size:31px;
+}
+.overview-section,
+.customer-card,
+.payment-card{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:24px;
+  box-shadow:0 14px 45px rgba(23,53,43,.04);
+}
+.overview-section h2{
+  margin:0 0 16px;
+  color:var(--green);
+  font-family:Georgia,serif;
+  font-size:27px;
+  font-weight:400;
+}
+.compact-job{
+  display:grid;
+  grid-template-columns:1fr 1.1fr auto;
+  gap:16px;
+  align-items:center;
+  padding:14px 0;
+  border-top:1px solid var(--line);
+}
+.compact-job:first-of-type{border-top:0}
+.quick-links{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+.quick-link{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:999px;
+  padding:9px 13px;
+  background:#e8eee9;
+  color:var(--green);
+  text-decoration:none;
+  font-size:12px;
+  font-weight:800;
+}
+.customer-grid,
+.payment-grid{
+  display:grid;
+  gap:18px;
+}
+.customer-head,
+.payment-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:18px;
+}
+.customer-title,
+.payment-title{
+  color:var(--green);
+  font-family:Georgia,serif;
+  font-size:25px;
+}
+.customer-meta,
+.payment-meta{
+  margin-top:5px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.6;
+}
+.customer-stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-top:18px;
+}
+.customer-stat{
+  padding:13px;
+  border-radius:14px;
+  background:#f5f5ef;
+}
+.customer-stat-label{
+  color:var(--muted);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+.customer-stat-value{
+  margin-top:4px;
+  color:var(--green);
+  font-weight:800;
+}
+.customer-history{
+  margin-top:18px;
+  border-top:1px solid var(--line);
+}
+.customer-history-row{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr auto;
+  gap:12px;
+  padding:12px 0;
+  border-bottom:1px solid var(--line);
+  font-size:12px;
+  align-items:center;
+}
+.payment-card{
+  display:grid;
+  grid-template-columns:1.2fr .7fr .9fr;
+  gap:20px;
+  align-items:center;
+}
+.payment-amount{
+  color:var(--green);
+  font-family:Georgia,serif;
+  font-size:27px;
+}
+.payment-actions{
+  display:grid;
+  gap:8px;
+}
+.payment-actions button{
+  border:0;
+  border-radius:999px;
+  padding:11px 14px;
+  font-weight:800;
+  cursor:pointer;
+}
+.payment-actions .pay-main{background:var(--green);color:#fff}
+.payment-actions .pay-soft{background:#e8eee9;color:var(--green)}
+@media(max-width:1000px){
+  .overview-grid{grid-template-columns:repeat(2,1fr)}
+  .payment-card{grid-template-columns:1fr}
+}
 @media(max-width:850px){
-  .stats{
-    grid-template-columns:repeat(2,1fr);
-  }
-
-  .quote-grid{
-    grid-template-columns:1fr;
-  }
-
-  .schedule-job{
-    grid-template-columns:1fr 1fr;
-  }
-
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .quote-grid{grid-template-columns:1fr}
+  .schedule-job{grid-template-columns:1fr 1fr}
   .pricing{
     border-left:0;
     border-top:1px solid var(--line);
     padding-left:0;
     padding-top:25px;
   }
+  .customer-stats{grid-template-columns:repeat(2,1fr)}
+  .customer-history-row{grid-template-columns:1fr 1fr}
 }
-
 @media(max-width:760px){
-  .dashboard-tools{
-    grid-template-columns:1fr;
-  }
-
-  .clear-filters{
-    width:100%;
-  }
+  .dashboard-tools{grid-template-columns:1fr}
+  .clear-filters{width:100%}
 }
-
 @media(max-width:550px){
-  .login-card{
-    padding:35px 22px;
-  }
-
-  header{
-    padding:20px;
-  }
-
+  .login-card{padding:35px 22px}
+  header{padding:20px}
   .top{
     align-items:flex-start;
     flex-direction:column;
   }
-
-  .top h1{
-    font-size:34px;
-  }
-
-  .stats{
+  .top h1{font-size:34px}
+  .stats{grid-template-columns:1fr 1fr}
+  .quote-head{flex-direction:column}
+  .details{grid-template-columns:1fr}
+  .notes{grid-column:auto}
+  .quote-card{padding:20px}
+  .dashboard-tabs{
+    display:grid;
     grid-template-columns:1fr 1fr;
   }
-
-  .quote-head{
-    flex-direction:column;
-  }
-
-  .details{
-    grid-template-columns:1fr;
-  }
-
-  .notes{
-    grid-column:auto;
-  }
-
-  .quote-card{
-    padding:20px;
-  }
-
-  .dashboard-tabs{
-    width:100%;
-  }
-
-  .dashboard-tab{
-    flex:1;
-    padding:11px 12px;
-  }
-
-  .schedule-job{
-    grid-template-columns:1fr;
-  }
-
+  .dashboard-tab{padding:11px 12px}
+  .schedule-job{grid-template-columns:1fr}
   .schedule-section-head,
   .schedule-job{
     padding-left:18px;
     padding-right:18px;
   }
-
-  .modal-card{
-    padding:28px 20px;
-  }
-
-  .modal-actions{
-    flex-direction:column-reverse;
-  }
+  .modal-card{padding:28px 20px}
+  .modal-actions{flex-direction:column-reverse}
+  .overview-grid{grid-template-columns:1fr}
+  .customer-stats{grid-template-columns:1fr 1fr}
+  .customer-history-row{grid-template-columns:1fr}
+  .compact-job{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -1064,18 +976,11 @@ main{
   <div class="login-card">
 
     <div class="brand">
-      <div class="brand-main">
-        THE FRESH
-      </div>
-
-      <div class="brand-sub">
-        Standard Co.
-      </div>
+      <div class="brand-main">THE FRESH</div>
+      <div class="brand-sub">Standard Co.</div>
     </div>
 
-    <h1>
-      Owner Dashboard
-    </h1>
+    <h1>Owner Dashboard</h1>
 
     <div class="login-description">
       Sign in to review incoming cleaning requests and create customer offers.
@@ -1088,30 +993,19 @@ main{
       autocomplete="current-password"
     >
 
-    <button
-      id="loginButton"
-      class="primary login-button"
-    >
+    <button id="loginButton" class="primary login-button">
       Sign In
     </button>
 
-    <div
-      id="loginError"
-      class="login-error hidden"
-    ></div>
-
+    <div id="loginError" class="login-error hidden"></div>
   </div>
 </section>
-
 
 <section id="dashboard" class="hidden">
 
 <header>
-
   <div class="header-inner">
-
     <div>
-
       <div class="header-brand">
         THE FRESH STANDARD CO.
       </div>
@@ -1119,137 +1013,62 @@ main{
       <div class="header-label">
         Owner Dashboard
       </div>
-
     </div>
 
-    <button
-      id="logoutButton"
-      class="logout"
-    >
+    <button id="logoutButton" class="logout">
       Sign Out
     </button>
-
   </div>
-
 </header>
-
 
 <main>
 
   <div class="top">
-
     <div>
-
-      <h1>
-        Quote Requests
-      </h1>
-
+      <h1>Quote Requests</h1>
       <p>
         Review leads, set pricing and create customer booking offers.
       </p>
-
     </div>
 
-    <button
-      id="refreshButton"
-      class="refresh"
-    >
+    <button id="refreshButton" class="refresh">
       Refresh
     </button>
-
   </div>
-
 
   <div class="stats">
 
     <div class="stat">
-      <div class="stat-label">
-        Total
-      </div>
-
-      <div
-        id="totalCount"
-        class="stat-value"
-      >
-        0
-      </div>
+      <div class="stat-label">Total</div>
+      <div id="totalCount" class="stat-value">0</div>
     </div>
 
-
     <div class="stat">
-      <div class="stat-label">
-        New
-      </div>
-
-      <div
-        id="newCount"
-        class="stat-value"
-      >
-        0
-      </div>
+      <div class="stat-label">New</div>
+      <div id="newCount" class="stat-value">0</div>
     </div>
 
-
     <div class="stat">
-      <div class="stat-label">
-        Quoted
-      </div>
-
-      <div
-        id="quotedCount"
-        class="stat-value"
-      >
-        0
-      </div>
+      <div class="stat-label">Quoted</div>
+      <div id="quotedCount" class="stat-value">0</div>
     </div>
 
-
     <div class="stat">
-      <div class="stat-label">
-        Booked
-      </div>
-
-      <div
-        id="bookedCount"
-        class="stat-value"
-      >
-        0
-      </div>
+      <div class="stat-label">Booked</div>
+      <div id="bookedCount" class="stat-value">0</div>
     </div>
 
   </div>
 
-
-  <div
-    class="dashboard-tabs"
-    role="tablist"
-    aria-label="Dashboard views"
-  >
-
-    <button
-      id="quotesTab"
-      class="dashboard-tab active"
-      type="button"
-    >
-      Quote Requests
-    </button>
-
-    <button
-      id="scheduleTab"
-      class="dashboard-tab"
-      type="button"
-    >
-      Cleaning Schedule
-    </button>
-
+  <div class="dashboard-tabs" role="tablist" aria-label="Dashboard views">
+    <button id="overviewTab" class="dashboard-tab active" type="button">Overview</button>
+    <button id="quotesTab" class="dashboard-tab" type="button">Quote Requests</button>
+    <button id="scheduleTab" class="dashboard-tab" type="button">Cleaning Schedule</button>
+    <button id="customersTab" class="dashboard-tab" type="button">Customers</button>
+    <button id="paymentsTab" class="dashboard-tab" type="button">Payments</button>
   </div>
 
-
-  <div
-    id="dashboardTools"
-    class="dashboard-tools"
-  >
-
+  <div id="dashboardTools" class="dashboard-tools">
     <input
       id="dashboardSearch"
       type="search"
@@ -1257,171 +1076,73 @@ main{
       autocomplete="off"
     >
 
-    <select
-      id="statusFilter"
-      aria-label="Filter quote status"
-    >
-      <option value="all">
-        All Statuses
-      </option>
-
-      <option value="new">
-        New
-      </option>
-
-      <option value="quoted">
-        Quoted
-      </option>
-
-      <option value="booked">
-        Booked / Secured
-      </option>
-
-      <option value="completed">
-        Completed / Awaiting Payment
-      </option>
-
-      <option value="charged">
-        Paid
-      </option>
-
-      <option value="cancelled">
-        Cancelled
-      </option>
+    <select id="statusFilter" aria-label="Filter quote status">
+      <option value="all">All Statuses</option>
+      <option value="new">New</option>
+      <option value="quoted">Quoted</option>
+      <option value="booked">Booked / Secured</option>
+      <option value="completed">Completed / Awaiting Payment</option>
+      <option value="charged">Paid</option>
+      <option value="cancelled">Cancelled</option>
     </select>
 
-
-    <select
-      id="scheduleFilter"
-      class="hidden"
-      aria-label="Filter schedule"
-    >
-      <option value="all">
-        All Schedule
-      </option>
-
-      <option value="today">
-        Today
-      </option>
-
-      <option value="week">
-        This Week
-      </option>
-
-      <option value="upcoming">
-        Upcoming
-      </option>
-
-      <option value="needs-scheduling">
-        Needs Scheduling
-      </option>
-
-      <option value="completed">
-        Awaiting Payment
-      </option>
-
-      <option value="paid">
-        Paid Jobs
-      </option>
+    <select id="scheduleFilter" class="hidden" aria-label="Filter schedule">
+      <option value="all">All Schedule</option>
+      <option value="today">Today</option>
+      <option value="week">This Week</option>
+      <option value="upcoming">Upcoming</option>
+      <option value="needs-scheduling">Needs Scheduling</option>
+      <option value="completed">Awaiting Payment</option>
+      <option value="paid">Paid Jobs</option>
     </select>
 
+    <select id="sortFilter" aria-label="Sort records">
+      <option value="newest">Newest First</option>
+      <option value="oldest">Oldest First</option>
+      <option value="appointment">Appointment Date</option>
+      <option value="name">Customer Name</option>
+      <option value="price-high">Price: High to Low</option>
+      <option value="price-low">Price: Low to High</option>
+    </select>
 
-    <button
-      id="clearFilters"
-      class="clear-filters"
-      type="button"
-    >
+    <button id="clearFilters" class="clear-filters" type="button">
       Clear Filters
     </button>
-
   </div>
 
+  <div id="filterSummary" class="filter-summary"></div>
 
-  <div
-    id="filterSummary"
-    class="filter-summary"
-  ></div>
+  <div id="overviewBoard" class="view-panel"></div>
 
-
-  <div
-    id="quotes"
-    class="quotes"
-  >
-    <div class="loading">
-      Loading quotes...
-    </div>
+  <div id="quotes" class="quotes hidden">
+    <div class="loading">Loading quotes...</div>
   </div>
 
-
-  <div
-    id="scheduleBoard"
-    class="schedule-board hidden"
-  ></div>
+  <div id="scheduleBoard" class="schedule-board hidden"></div>
+  <div id="customersBoard" class="hidden"></div>
+  <div id="paymentsBoard" class="hidden"></div>
 
 </main>
-
 </section>
 
+<div id="modalOverlay" class="modal-overlay hidden">
 
-<div
-  id="modalOverlay"
-  class="modal-overlay hidden"
->
+  <div class="modal-card" role="dialog" aria-modal="true">
 
-  <div
-    class="modal-card"
-    role="dialog"
-    aria-modal="true"
-  >
+    <div id="modalIcon" class="modal-icon">✓</div>
 
-    <div
-      id="modalIcon"
-      class="modal-icon"
-    >
-      ✓
+    <div id="modalEyebrow" class="modal-eyebrow"></div>
+
+    <h2 id="modalTitle" class="modal-title"></h2>
+
+    <div id="modalMessage" class="modal-message"></div>
+
+    <div id="modalAmount" class="modal-amount hidden">
+      <div class="modal-amount-label">Amount</div>
+      <div id="modalAmountValue" class="modal-amount-value"></div>
     </div>
 
-
-    <div
-      id="modalEyebrow"
-      class="modal-eyebrow"
-    ></div>
-
-
-    <h2
-      id="modalTitle"
-      class="modal-title"
-    ></h2>
-
-
-    <div
-      id="modalMessage"
-      class="modal-message"
-    ></div>
-
-
-    <div
-      id="modalAmount"
-      class="modal-amount hidden"
-    >
-
-      <div class="modal-amount-label">
-        Amount
-      </div>
-
-      <div
-        id="modalAmountValue"
-        class="modal-amount-value"
-      ></div>
-
-    </div>
-
-
-    <div
-      id="modalReference"
-      class="modal-reference hidden"
-    >
-
+    <div id="modalReference" class="modal-reference hidden">
       <div
         id="modalReferenceLabel"
         class="modal-reference-label"
@@ -1431,19 +1152,13 @@ main{
         id="modalReferenceValue"
         class="modal-reference-value"
       ></div>
-
     </div>
 
-
-    <div
-      id="modalActions"
-      class="modal-actions"
-    ></div>
+    <div id="modalActions" class="modal-actions"></div>
 
   </div>
 
 </div>
-
 
 <script>
 
@@ -1452,170 +1167,149 @@ const loginPage =
     "loginPage"
   );
 
-
 const dashboard =
   document.getElementById(
     "dashboard"
   );
-
 
 const passwordInput =
   document.getElementById(
     "password"
   );
 
-
 const loginButton =
   document.getElementById(
     "loginButton"
   );
-
 
 const loginError =
   document.getElementById(
     "loginError"
   );
 
-
 const quotesContainer =
   document.getElementById(
     "quotes"
   );
-
 
 const refreshButton =
   document.getElementById(
     "refreshButton"
   );
 
+const overviewTab = document.getElementById("overviewTab");
+const customersTab = document.getElementById("customersTab");
+const paymentsTab = document.getElementById("paymentsTab");
+const overviewBoard = document.getElementById("overviewBoard");
+const customersBoard = document.getElementById("customersBoard");
+const paymentsBoard = document.getElementById("paymentsBoard");
 
 const quotesTab =
   document.getElementById(
     "quotesTab"
   );
 
-
 const scheduleTab =
   document.getElementById(
     "scheduleTab"
   );
-
 
 const scheduleBoard =
   document.getElementById(
     "scheduleBoard"
   );
 
-
 const dashboardTools =
   document.getElementById(
     "dashboardTools"
   );
-
 
 const dashboardSearch =
   document.getElementById(
     "dashboardSearch"
   );
 
-
 const statusFilter =
   document.getElementById(
     "statusFilter"
   );
-
 
 const scheduleFilter =
   document.getElementById(
     "scheduleFilter"
   );
 
+const sortFilter = document.getElementById("sortFilter");
 
 const clearFiltersButton =
   document.getElementById(
     "clearFilters"
   );
 
-
 const filterSummary =
   document.getElementById(
     "filterSummary"
   );
-
 
 const modalOverlay =
   document.getElementById(
     "modalOverlay"
   );
 
-
 const modalIcon =
   document.getElementById(
     "modalIcon"
   );
-
 
 const modalEyebrow =
   document.getElementById(
     "modalEyebrow"
   );
 
-
 const modalTitle =
   document.getElementById(
     "modalTitle"
   );
-
 
 const modalMessage =
   document.getElementById(
     "modalMessage"
   );
 
-
 const modalAmount =
   document.getElementById(
     "modalAmount"
   );
-
 
 const modalAmountValue =
   document.getElementById(
     "modalAmountValue"
   );
 
-
 const modalReference =
   document.getElementById(
     "modalReference"
   );
-
 
 const modalReferenceLabel =
   document.getElementById(
     "modalReferenceLabel"
   );
 
-
 const modalReferenceValue =
   document.getElementById(
     "modalReferenceValue"
   );
-
 
 const modalActions =
   document.getElementById(
     "modalActions"
   );
 
-
 let adminPassword = "";
-
 let modalResolver = null;
-
 let allQuotes = [];
-
-let currentView = "quotes";
+let currentView = "overview";
 
 
 function escapeHtml(value){
@@ -1691,7 +1385,7 @@ function offerUrl(q){
 
   return (
     `${window.location.origin}` +
-    `/quote/?token=` +
+    `/offer/?token=` +
     encodeURIComponent(
       q.quote_token
     )
@@ -1786,76 +1480,53 @@ function prepareModal({
     "modal-icon";
 
   if(type==="error"){
-
     modalIcon.classList.add(
       "error"
     );
-
     modalIcon.textContent="×";
-
   }
-
   else if(type==="warning"){
-
     modalIcon.classList.add(
       "warning"
     );
-
     modalIcon.textContent="!";
-
   }
-
   else if(type==="confirm"){
-
     modalIcon.classList.add(
       "warning"
     );
-
     modalIcon.textContent="?";
-
   }
-
   else{
-
     modalIcon.textContent="✓";
-
   }
-
 
   modalEyebrow.textContent =
     eyebrow;
 
-
   modalTitle.textContent =
     title;
-
 
   modalMessage.textContent =
     message;
 
-
   if(amount){
-
     modalAmountValue.textContent =
       amount;
 
     modalAmount.classList.remove(
       "hidden"
     );
-
-  }else{
-
+  }
+  else{
     modalAmountValue.textContent="";
 
     modalAmount.classList.add(
       "hidden"
     );
-
   }
 
-
   if(referenceValue){
-
     modalReferenceLabel.textContent =
       referenceLabel ||
       "Reference";
@@ -1866,26 +1537,20 @@ function prepareModal({
     modalReference.classList.remove(
       "hidden"
     );
-
-  }else{
-
+  }
+  else{
     modalReferenceLabel.textContent="";
-
     modalReferenceValue.textContent="";
 
     modalReference.classList.add(
       "hidden"
     );
-
   }
-
 
   modalActions.innerHTML="";
 
-
   document.body.style.overflow =
     "hidden";
-
 
   modalOverlay.classList.remove(
     "hidden"
@@ -1918,26 +1583,21 @@ function showMessageModal({
       referenceValue
     });
 
-
     const button =
       document.createElement(
         "button"
       );
 
-
     button.className =
       "modal-button primary-modal";
 
-
     button.textContent =
       buttonText;
-
 
     button.addEventListener(
       "click",
       ()=>closeModal(true)
     );
-
 
     modalActions.appendChild(
       button
@@ -1961,7 +1621,6 @@ function showConfirmModal({
 
     modalResolver=resolve;
 
-
     prepareModal({
       type:"confirm",
       eyebrow,
@@ -1970,53 +1629,43 @@ function showConfirmModal({
       amount
     });
 
-
     const cancelButton =
       document.createElement(
         "button"
       );
 
-
     cancelButton.className =
       "modal-button secondary";
 
-
     cancelButton.textContent =
       cancelText;
-
 
     cancelButton.addEventListener(
       "click",
       ()=>closeModal(false)
     );
 
-
     const confirmButton =
       document.createElement(
         "button"
       );
-
 
     confirmButton.className =
       danger
         ? "modal-button danger"
         : "modal-button primary-modal";
 
-
     confirmButton.textContent =
       confirmText;
-
 
     confirmButton.addEventListener(
       "click",
       ()=>closeModal(true)
     );
 
-
     modalActions.appendChild(
       cancelButton
     );
-
 
     modalActions.appendChild(
       confirmButton
@@ -2024,444 +1673,210 @@ function showConfirmModal({
 
   });
 }
-
-
-function showScheduleModal(){
+  function showScheduleModal(){
 
   return new Promise(resolve=>{
 
-    modalResolver=null;
-
+    modalResolver=resolve;
 
     prepareModal({
       type:"confirm",
-      eyebrow:"Booking schedule",
-      title:"Choose a new schedule",
+      eyebrow:"Cleaning schedule",
+      title:"Choose the new date",
       message:
-        "Select the new cleaning date and time. " +
-        "The quote price and saved payment method will not change."
+        "Select the new cleaning date and time."
     });
-
 
     const card =
       modalOverlay.querySelector(
         ".modal-card"
       );
 
-
     card.classList.add(
       "schedule-modal"
     );
-
 
     const form =
       document.createElement(
         "div"
       );
 
-
     form.className =
       "modal-form";
 
-
-    const now =
-      new Date();
-
-
-    const year =
-      now.getFullYear();
-
-
-    const month =
-      String(
-        now.getMonth()+1
-      ).padStart(2,"0");
-
-
-    const day =
-      String(
-        now.getDate()
-      ).padStart(2,"0");
-
-
-    const minDate =
-      `${year}-${month}-${day}`;
-
-
     form.innerHTML=`
       <div class="modal-field">
-
         <label for="scheduleDate">
-          Cleaning date
+          Cleaning Date & Time
         </label>
 
         <input
           id="scheduleDate"
-          type="date"
-          min="${minDate}"
-          autocomplete="off"
+          type="datetime-local"
         >
 
+        <div
+          id="scheduleError"
+          class="modal-field-error"
+        ></div>
       </div>
-
-
-      <div class="modal-field">
-
-        <label for="scheduleTime">
-          Cleaning time
-        </label>
-
-        <input
-          id="scheduleTime"
-          type="time"
-          step="900"
-          autocomplete="off"
-        >
-
-      </div>
-
-
-      <div
-        id="scheduleError"
-        class="modal-field-error"
-        aria-live="polite"
-      ></div>
     `;
 
-
-    modalActions.parentNode
-      .insertBefore(
-        form,
-        modalActions
-      );
-
-
-    const finish=value=>{
-
-      form.remove();
-
-
-      card.classList.remove(
-        "schedule-modal"
-      );
-
-
-      modalOverlay.classList.add(
-        "hidden"
-      );
-
-
-      document.body.style.overflow =
-        "";
-
-
-      resolve(value);
-
-    };
-
-
-    const cancel =
-      document.createElement(
-        "button"
-      );
-
-
-    cancel.className =
-      "modal-button secondary";
-
-
-    cancel.textContent =
-      "Keep Current Schedule";
-
-
-    cancel.addEventListener(
-      "click",
-      ()=>finish(null)
+    modalActions.parentNode.insertBefore(
+      form,
+      modalActions
     );
 
+    const input =
+      form.querySelector(
+        "#scheduleDate"
+      );
 
-    const confirm =
+    const errorBox =
+      form.querySelector(
+        "#scheduleError"
+      );
+
+    const now =
+      new Date();
+
+    now.setMinutes(
+      now.getMinutes() -
+      now.getTimezoneOffset()
+    );
+
+    input.min =
+      now
+        .toISOString()
+        .slice(0,16);
+
+    const cancelButton =
       document.createElement(
         "button"
       );
 
+    cancelButton.className =
+      "modal-button secondary";
 
-    confirm.className =
+    cancelButton.textContent =
+      "Cancel";
+
+    cancelButton.addEventListener(
+      "click",
+      ()=>closeModal(null)
+    );
+
+    const confirmButton =
+      document.createElement(
+        "button"
+      );
+
+    confirmButton.className =
       "modal-button primary-modal";
 
-
-    confirm.textContent =
+    confirmButton.textContent =
       "Continue";
 
-
-    confirm.addEventListener(
+    confirmButton.addEventListener(
       "click",
       ()=>{
 
-        const date =
-          form.querySelector(
-            "#scheduleDate"
-          ).value;
+        errorBox.textContent="";
 
+        if(!input.value){
 
-        const time =
-          form.querySelector(
-            "#scheduleTime"
-          ).value;
+          errorBox.textContent =
+            "Choose a cleaning date and time.";
 
-
-        const error =
-          form.querySelector(
-            "#scheduleError"
-          );
-
-
-        error.textContent="";
-
-
-        if(
-          !date ||
-          !time
-        ){
-
-          error.textContent =
-            "Choose both a date and time.";
+          input.focus();
 
           return;
-
         }
 
-
-        const scheduledDate =
+        const selected =
           new Date(
-            `${date}T${time}:00`
+            input.value
           );
-
 
         if(
           Number.isNaN(
-            scheduledDate.getTime()
+            selected.getTime()
           )
         ){
 
-          error.textContent =
-            "Choose a valid date and time.";
+          errorBox.textContent =
+            "Choose a valid cleaning date and time.";
+
+          input.focus();
 
           return;
-
         }
 
-
         if(
-          scheduledDate.getTime() <=
+          selected.getTime() <=
           Date.now()
         ){
 
-          error.textContent =
-            "The cleaning must be scheduled for a future date and time.";
+          errorBox.textContent =
+            "The cleaning date must be in the future.";
+
+          input.focus();
 
           return;
-
         }
 
-
-        finish(
-          scheduledDate
+        closeModal(
+          selected
         );
-
       }
     );
 
-
-    modalActions.append(
-      cancel,
-      confirm
+    modalActions.appendChild(
+      cancelButton
     );
 
+    modalActions.appendChild(
+      confirmButton
+    );
 
     setTimeout(
-      ()=>{
-
-        form.querySelector(
-          "#scheduleDate"
-        )?.focus();
-
-      },
-      0
+      ()=>input.focus(),
+      50
     );
 
   });
 }
 
 
-function matchesSearch(q){
+function normalizedStatus(q){
 
-  const term =
-    dashboardSearch.value
-      .trim()
-      .toLowerCase();
+  const status =
+    String(
+      q?.status || ""
+    ).toLowerCase();
 
-
-  if(!term){
-    return true;
-  }
-
-
-  return [
-    q.customer_name,
-    q.customer_phone,
-    q.customer_email,
-    q.quote_number,
-    q.zip_code
-  ]
-    .filter(Boolean)
-    .some(value=>
-      String(value)
-        .toLowerCase()
-        .includes(term)
-    );
-}
-
-
-function matchesStatus(q){
-
-  const value =
-    statusFilter.value;
-
-
-  if(value === "all"){
-    return true;
-  }
-
-
-  if(value === "booked"){
-
-    return [
+  if(
+    [
       "accepted",
       "card_saved",
       "booked"
-    ].includes(q.status);
-
-  }
-
-
-  return q.status === value;
-}
-
-
-function startOfToday(){
-
-  const d =
-    new Date();
-
-  d.setHours(
-    0,
-    0,
-    0,
-    0
-  );
-
-  return d;
-}
-
-
-function endOfToday(){
-
-  const d =
-    new Date();
-
-  d.setHours(
-    23,
-    59,
-    59,
-    999
-  );
-
-  return d;
-}
-
-
-function endOfWeek(){
-
-  const d =
-    endOfToday();
-
-  const day =
-    d.getDay();
-
-  const daysUntilSunday =
-    7 - day;
-
-  d.setDate(
-    d.getDate() +
-    daysUntilSunday
-  );
-
-  return d;
-}
-
-
-function matchesScheduleFilter(q){
-
-  const value =
-    scheduleFilter.value;
-
-
-  if(value === "all"){
-    return true;
-  }
-
-
-  const active = [
-    "accepted",
-    "card_saved",
-    "booked"
-  ].includes(q.status);
-
-
-  if(value === "needs-scheduling"){
-
-    return (
-      active &&
-      !q.scheduled_for
-    );
-
-  }
-
-
-  if(value === "completed"){
-
-    return (
-      q.status ===
-      "completed"
-    );
-
-  }
-
-
-  if(value === "paid"){
-
-    return (
-      q.status ===
-      "charged"
-    );
-
-  }
-
-
-  if(
-    !active ||
-    !q.scheduled_for
+    ].includes(status)
   ){
+    return "booked";
+  }
+
+  return status;
+}
+
+
+function isToday(value){
+
+  if(!value){
     return false;
   }
 
-
   const date =
-    new Date(
-      q.scheduled_for
-    );
-
+    new Date(value);
 
   if(
     Number.isNaN(
@@ -2471,166 +1886,1680 @@ function matchesScheduleFilter(q){
     return false;
   }
 
+  const now =
+    new Date();
 
-  if(value === "today"){
-
-    return (
-      date >= startOfToday() &&
-      date <= endOfToday()
-    );
-
-  }
-
-
-  if(value === "week"){
-
-    return (
-      date >= startOfToday() &&
-      date <= endOfWeek()
-    );
-
-  }
-
-
-  if(value === "upcoming"){
-
-    return (
-      date >= new Date()
-    );
-
-  }
-
-
-  return true;
-}
-
-
-function filteredQuotes(){
-
-  return allQuotes.filter(
-    q=>
-      matchesSearch(q) &&
-      matchesStatus(q)
+  return (
+    date.getFullYear() ===
+      now.getFullYear() &&
+    date.getMonth() ===
+      now.getMonth() &&
+    date.getDate() ===
+      now.getDate()
   );
 }
 
 
-function filteredScheduleQuotes(){
+function isThisWeek(value){
 
-  return allQuotes.filter(
-    q=>
-      matchesSearch(q) &&
-      matchesScheduleFilter(q)
+  if(!value){
+    return false;
+  }
+
+  const date =
+    new Date(value);
+
+  if(
+    Number.isNaN(
+      date.getTime()
+    )
+  ){
+    return false;
+  }
+
+  const now =
+    new Date();
+
+  const start =
+    new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate()
+    );
+
+  const day =
+    start.getDay();
+
+  const mondayOffset =
+    day === 0
+      ? -6
+      : 1 - day;
+
+  start.setDate(
+    start.getDate() +
+    mondayOffset
+  );
+
+  const end =
+    new Date(start);
+
+  end.setDate(
+    start.getDate() + 7
+  );
+
+  return (
+    date >= start &&
+    date < end
   );
 }
 
 
-function updateFilterSummary(
-  count,
-  total
+function isUpcoming(value){
+
+  if(!value){
+    return false;
+  }
+
+  const date =
+    new Date(value);
+
+  if(
+    Number.isNaN(
+      date.getTime()
+    )
+  ){
+    return false;
+  }
+
+  return (
+    date.getTime() >
+    Date.now()
+  );
+}
+
+
+function quoteSearchText(q){
+
+  return [
+    q.quote_number,
+    q.customer_name,
+    q.customer_email,
+    q.customer_phone,
+    q.service_type,
+    q.property_type,
+    q.frequency,
+    q.zip_code,
+    q.notes,
+    q.status
+  ]
+  .filter(Boolean)
+  .join(" ")
+  .toLowerCase();
+}
+
+
+function sortQuotes(
+  quotes,
+  sortValue
 ){
 
-  filterSummary.textContent =
-    count === total
-      ? `${total} record${total === 1 ? "" : "s"}`
-      : `Showing ${count} of ${total} records`;
+  const result =
+    [...quotes];
 
+  if(
+    sortValue ===
+    "oldest"
+  ){
+
+    result.sort(
+      (a,b)=>
+        new Date(
+          a.created_at || 0
+        ) -
+        new Date(
+          b.created_at || 0
+        )
+    );
+
+  }
+
+  else if(
+    sortValue ===
+    "appointment"
+  ){
+
+    result.sort(
+      (a,b)=>{
+
+        const aTime =
+          a.scheduled_for
+            ? new Date(
+                a.scheduled_for
+              ).getTime()
+            : Number.MAX_SAFE_INTEGER;
+
+        const bTime =
+          b.scheduled_for
+            ? new Date(
+                b.scheduled_for
+              ).getTime()
+            : Number.MAX_SAFE_INTEGER;
+
+        return aTime-bTime;
+      }
+    );
+
+  }
+
+  else if(
+    sortValue ===
+    "name"
+  ){
+
+    result.sort(
+      (a,b)=>
+        String(
+          a.customer_name || ""
+        ).localeCompare(
+          String(
+            b.customer_name || ""
+          )
+        )
+    );
+
+  }
+
+  else if(
+    sortValue ===
+    "price-high"
+  ){
+
+    result.sort(
+      (a,b)=>
+        Number(
+          b.quoted_price || 0
+        ) -
+        Number(
+          a.quoted_price || 0
+        )
+    );
+
+  }
+
+  else if(
+    sortValue ===
+    "price-low"
+  ){
+
+    result.sort(
+      (a,b)=>
+        Number(
+          a.quoted_price || 0
+        ) -
+        Number(
+          b.quoted_price || 0
+        )
+    );
+
+  }
+
+  else{
+
+    result.sort(
+      (a,b)=>
+        new Date(
+          b.created_at || 0
+        ) -
+        new Date(
+          a.created_at || 0
+        )
+    );
+
+  }
+
+  return result;
+}
+
+
+function getFilteredQuotes(){
+
+  const search =
+    String(
+      dashboardSearch.value ||
+      ""
+    )
+    .trim()
+    .toLowerCase();
+
+  const selectedStatus =
+    statusFilter.value;
+
+  const selectedSchedule =
+    scheduleFilter.value;
+
+  let quotes =
+    allQuotes.filter(
+      q=>{
+
+        if(
+          search &&
+          !quoteSearchText(q)
+            .includes(search)
+        ){
+          return false;
+        }
+
+        if(
+          selectedStatus !==
+          "all"
+        ){
+
+          if(
+            normalizedStatus(q) !==
+            selectedStatus
+          ){
+            return false;
+          }
+
+        }
+
+        if(
+          currentView ===
+          "schedule" &&
+          selectedSchedule !==
+          "all"
+        ){
+
+          const status =
+            normalizedStatus(q);
+
+          if(
+            selectedSchedule ===
+            "today" &&
+            !isToday(
+              q.scheduled_for
+            )
+          ){
+            return false;
+          }
+
+          if(
+            selectedSchedule ===
+            "week" &&
+            !isThisWeek(
+              q.scheduled_for
+            )
+          ){
+            return false;
+          }
+
+          if(
+            selectedSchedule ===
+            "upcoming" &&
+            !(
+              status ===
+                "booked" &&
+              isUpcoming(
+                q.scheduled_for
+              )
+            )
+          ){
+            return false;
+          }
+
+          if(
+            selectedSchedule ===
+            "needs-scheduling" &&
+            !(
+              status ===
+                "booked" &&
+              !q.scheduled_for
+            )
+          ){
+            return false;
+          }
+
+          if(
+            selectedSchedule ===
+            "completed" &&
+            status !==
+              "completed"
+          ){
+            return false;
+          }
+
+          if(
+            selectedSchedule ===
+            "paid" &&
+            status !==
+              "charged"
+          ){
+            return false;
+          }
+
+        }
+
+        return true;
+      }
+    );
+
+  return sortQuotes(
+    quotes,
+    sortFilter.value
+  );
+}
+
+
+function setFilterSummary(
+  shown
+){
+
+  const total =
+    allQuotes.length;
+
+  const label =
+    currentView ===
+    "customers"
+      ? "records used for customers"
+      : currentView ===
+        "payments"
+        ? "payment records"
+        : currentView ===
+          "schedule"
+          ? "schedule records"
+          : "quote records";
+
+  filterSummary.textContent =
+    `Showing ${shown} of ${total} ${label}.`;
 }
 
 
 function applyDashboardFilters(){
 
+  const filtered =
+    getFilteredQuotes();
+
   if(
+    currentView ===
+    "overview"
+  ){
+
+    renderOverview(
+      filtered
+    );
+
+  }
+
+  else if(
+    currentView ===
+    "quotes"
+  ){
+
+    renderQuotes(
+      filtered
+    );
+
+  }
+
+  else if(
     currentView ===
     "schedule"
   ){
 
-    const items =
-      filteredScheduleQuotes();
-
-
     renderSchedule(
-      items
+      filtered
     );
-
-
-    updateFilterSummary(
-      items.length,
-      allQuotes.length
-    );
-
-
-    return;
 
   }
 
+  else if(
+    currentView ===
+    "customers"
+  ){
 
-  const items =
-    filteredQuotes();
+    renderCustomers(
+      filtered
+    );
 
+  }
 
-  renderQuotes(
-    items
-  );
+  else if(
+    currentView ===
+    "payments"
+  ){
 
+    renderPayments(
+      filtered
+    );
 
-  updateFilterSummary(
-    items.length,
-    allQuotes.length
+  }
+
+  setFilterSummary(
+    filtered.length
   );
 }
 
 
-function setDashboardView(view){
+function setDashboardView(
+  view
+){
 
   currentView =
-    view === "schedule"
-      ? "schedule"
-      : "quotes";
+    view;
 
+  const validViews = [
+    "overview",
+    "quotes",
+    "schedule",
+    "customers",
+    "payments"
+  ];
 
-  const showingSchedule =
+  if(
+    !validViews.includes(
+      currentView
+    )
+  ){
+    currentView =
+      "overview";
+  }
+
+  overviewTab.classList.toggle(
+    "active",
     currentView ===
-    "schedule";
-
+      "overview"
+  );
 
   quotesTab.classList.toggle(
     "active",
-    !showingSchedule
+    currentView ===
+      "quotes"
   );
-
 
   scheduleTab.classList.toggle(
     "active",
-    showingSchedule
+    currentView ===
+      "schedule"
   );
 
+  customersTab.classList.toggle(
+    "active",
+    currentView ===
+      "customers"
+  );
+
+  paymentsTab.classList.toggle(
+    "active",
+    currentView ===
+      "payments"
+  );
+
+  overviewBoard.classList.toggle(
+    "hidden",
+    currentView !==
+      "overview"
+  );
 
   quotesContainer.classList.toggle(
     "hidden",
-    showingSchedule
+    currentView !==
+      "quotes"
   );
-
 
   scheduleBoard.classList.toggle(
     "hidden",
-    !showingSchedule
+    currentView !==
+      "schedule"
   );
 
-
-  statusFilter.classList.toggle(
+  customersBoard.classList.toggle(
     "hidden",
-    showingSchedule
+    currentView !==
+      "customers"
   );
 
+  paymentsBoard.classList.toggle(
+    "hidden",
+    currentView !==
+      "payments"
+  );
 
   scheduleFilter.classList.toggle(
     "hidden",
-    !showingSchedule
+    currentView !==
+      "schedule"
   );
 
-
   applyDashboardFilters();
+}
+
+
+function overviewMetric(
+  label,
+  value
+){
+
+  return `
+    <div class="overview-card">
+
+      <div class="overview-card-label">
+        ${escapeHtml(label)}
+      </div>
+
+      <div class="overview-card-value">
+        ${escapeHtml(value)}
+      </div>
+
+    </div>
+  `;
+}
+
+
+function renderOverview(
+  quotes
+){
+
+  const newCount =
+    quotes.filter(
+      q=>
+        q.status ===
+        "new"
+    ).length;
+
+  const quotedCount =
+    quotes.filter(
+      q=>
+        q.status ===
+        "quoted"
+    ).length;
+
+  const secured =
+    quotes.filter(
+      q=>
+        normalizedStatus(q) ===
+        "booked"
+    );
+
+  const upcoming =
+    secured
+      .filter(
+        q=>
+          q.scheduled_for &&
+          isUpcoming(
+            q.scheduled_for
+          )
+      )
+      .sort(
+        (a,b)=>
+          new Date(
+            a.scheduled_for
+          ) -
+          new Date(
+            b.scheduled_for
+          )
+      );
+
+  const needsScheduling =
+    secured.filter(
+      q=>!q.scheduled_for
+    );
+
+  const completed =
+    quotes.filter(
+      q=>
+        q.status ===
+        "completed"
+    );
+
+  const charged =
+    quotes.filter(
+      q=>
+        q.status ===
+        "charged"
+    );
+
+  const cancelled =
+    quotes.filter(
+      q=>
+        q.status ===
+        "cancelled"
+    );
+
+  const revenue =
+    charged.reduce(
+      (sum,q)=>
+        sum +
+        Number(
+          q.quoted_price ||
+          0
+        ),
+      0
+    );
+
+  const outstanding =
+    completed.reduce(
+      (sum,q)=>
+        sum +
+        Number(
+          q.quoted_price ||
+          0
+        ),
+      0
+    );
+
+  const today =
+    secured.filter(
+      q=>
+        isToday(
+          q.scheduled_for
+        )
+    );
+
+  const week =
+    secured.filter(
+      q=>
+        isThisWeek(
+          q.scheduled_for
+        )
+    );
+
+  const upcomingRows =
+    upcoming
+      .slice(0,6)
+      .map(
+        q=>`
+          <div class="compact-job">
+
+            <div>
+              <strong>
+                ${escapeHtml(
+                  q.customer_name ||
+                  "Customer"
+                )}
+              </strong>
+
+              <div class="schedule-meta">
+                ${escapeHtml(
+                  q.service_type ||
+                  "Cleaning"
+                )}
+              </div>
+            </div>
+
+            <div>
+              ${escapeHtml(
+                formatSchedule(
+                  q.scheduled_for
+                )
+              )}
+            </div>
+
+            <div class="schedule-price">
+              ${money(
+                q.quoted_price
+              )}
+            </div>
+
+          </div>
+        `
+      )
+      .join("");
+
+  const needsRows =
+    needsScheduling
+      .slice(0,6)
+      .map(
+        q=>`
+          <div class="compact-job">
+
+            <div>
+              <strong>
+                ${escapeHtml(
+                  q.customer_name ||
+                  "Customer"
+                )}
+              </strong>
+
+              <div class="schedule-meta">
+                ${escapeHtml(
+                  q.quote_number ||
+                  ""
+                )}
+              </div>
+            </div>
+
+            <div>
+              ${escapeHtml(
+                q.customer_phone ||
+                q.customer_email ||
+                "No contact information"
+              )}
+            </div>
+
+            <div class="schedule-price">
+              ${money(
+                q.quoted_price
+              )}
+            </div>
+
+          </div>
+        `
+      )
+      .join("");
+
+  overviewBoard.innerHTML=`
+    <div class="overview-grid">
+
+      ${overviewMetric(
+        "Total Leads",
+        quotes.length
+      )}
+
+      ${overviewMetric(
+        "New Requests",
+        newCount
+      )}
+
+      ${overviewMetric(
+        "Quotes Sent",
+        quotedCount
+      )}
+
+      ${overviewMetric(
+        "Secured Jobs",
+        secured.length
+      )}
+
+      ${overviewMetric(
+        "Upcoming",
+        upcoming.length
+      )}
+
+      ${overviewMetric(
+        "Needs Scheduling",
+        needsScheduling.length
+      )}
+
+      ${overviewMetric(
+        "Awaiting Payment",
+        completed.length
+      )}
+
+      ${overviewMetric(
+        "Paid Jobs",
+        charged.length
+      )}
+
+      ${overviewMetric(
+        "Revenue Collected",
+        money(revenue)
+      )}
+
+      ${overviewMetric(
+        "Outstanding",
+        money(outstanding)
+      )}
+
+      ${overviewMetric(
+        "Today's Cleanings",
+        today.length
+      )}
+
+      ${overviewMetric(
+        "This Week",
+        week.length
+      )}
+
+    </div>
+
+    <section class="overview-section">
+
+      <h2>
+        Upcoming Cleanings
+      </h2>
+
+      ${
+        upcomingRows ||
+        `
+          <div class="schedule-empty">
+            No upcoming cleanings.
+          </div>
+        `
+      }
+
+    </section>
+
+    <section class="overview-section">
+
+      <h2>
+        Needs Scheduling
+      </h2>
+
+      ${
+        needsRows ||
+        `
+          <div class="schedule-empty">
+            No secured bookings are waiting for a schedule.
+          </div>
+        `
+      }
+
+    </section>
+
+    <section class="overview-section">
+
+      <h2>
+        Business Status
+      </h2>
+
+      <div class="compact-job">
+        <div>
+          Cancelled Jobs
+        </div>
+
+        <div></div>
+
+        <div class="schedule-price">
+          ${cancelled.length}
+        </div>
+      </div>
+
+      <div class="compact-job">
+        <div>
+          Completed / Awaiting Payment
+        </div>
+
+        <div></div>
+
+        <div class="schedule-price">
+          ${completed.length}
+        </div>
+      </div>
+
+      <div class="compact-job">
+        <div>
+          Successfully Paid
+        </div>
+
+        <div></div>
+
+        <div class="schedule-price">
+          ${charged.length}
+        </div>
+      </div>
+
+    </section>
+  `;
+}
+
+
+function customerKey(q){
+
+  const email =
+    String(
+      q.customer_email ||
+      ""
+    )
+    .trim()
+    .toLowerCase();
+
+  const phone =
+    String(
+      q.customer_phone ||
+      ""
+    )
+    .replace(/\D/g,"");
+
+  if(email){
+    return `email:${email}`;
+  }
+
+  if(phone){
+    return `phone:${phone}`;
+  }
+
+  return (
+    "name:" +
+    String(
+      q.customer_name ||
+      q.id ||
+      crypto.randomUUID()
+    )
+    .trim()
+    .toLowerCase()
+  );
+}
+
+
+function buildCustomers(
+  quotes
+){
+
+  const groups =
+    new Map();
+
+  for(
+    const quote of quotes
+  ){
+
+    const key =
+      customerKey(
+        quote
+      );
+
+    if(
+      !groups.has(key)
+    ){
+
+      groups.set(
+        key,
+        {
+          key,
+          name:
+            quote.customer_name ||
+            "Customer",
+          email:
+            quote.customer_email ||
+            "",
+          phone:
+            quote.customer_phone ||
+            "",
+          zip:
+            quote.zip_code ||
+            "",
+          jobs:[]
+        }
+      );
+
+    }
+
+    const customer =
+      groups.get(key);
+
+    customer.jobs.push(
+      quote
+    );
+
+    if(
+      !customer.email &&
+      quote.customer_email
+    ){
+      customer.email =
+        quote.customer_email;
+    }
+
+    if(
+      !customer.phone &&
+      quote.customer_phone
+    ){
+      customer.phone =
+        quote.customer_phone;
+    }
+
+    if(
+      !customer.zip &&
+      quote.zip_code
+    ){
+      customer.zip =
+        quote.zip_code;
+    }
+  }
+
+  return Array.from(
+    groups.values()
+  )
+  .map(
+    customer=>{
+
+      const jobs =
+        customer.jobs;
+
+      const paid =
+        jobs.filter(
+          q=>
+            q.status ===
+            "charged"
+        );
+
+      const completed =
+        jobs.filter(
+          q=>
+            [
+              "completed",
+              "charged"
+            ].includes(
+              q.status
+            )
+        );
+
+      const cancelled =
+        jobs.filter(
+          q=>
+            q.status ===
+            "cancelled"
+        );
+
+      const outstanding =
+        jobs.filter(
+          q=>
+            q.status ===
+            "completed"
+        );
+
+      const totalPaid =
+        paid.reduce(
+          (sum,q)=>
+            sum +
+            Number(
+              q.quoted_price ||
+              0
+            ),
+          0
+        );
+
+      const outstandingAmount =
+        outstanding.reduce(
+          (sum,q)=>
+            sum +
+            Number(
+              q.quoted_price ||
+              0
+            ),
+          0
+        );
+
+      const completedDates =
+        completed
+          .map(
+            q=>
+              q.completed_at ||
+              q.scheduled_for ||
+              q.charged_at
+          )
+          .filter(Boolean)
+          .map(
+            value=>
+              new Date(value)
+          )
+          .filter(
+            date=>
+              !Number.isNaN(
+                date.getTime()
+              )
+          )
+          .sort(
+            (a,b)=>b-a
+          );
+
+      const upcomingDates =
+        jobs
+          .filter(
+            q=>
+              normalizedStatus(q) ===
+                "booked" &&
+              q.scheduled_for &&
+              isUpcoming(
+                q.scheduled_for
+              )
+          )
+          .map(
+            q=>
+              new Date(
+                q.scheduled_for
+              )
+          )
+          .sort(
+            (a,b)=>a-b
+          );
+
+      return {
+        ...customer,
+        totalBookings:
+          jobs.length,
+        completedCount:
+          completed.length,
+        cancelledCount:
+          cancelled.length,
+        totalPaid,
+        outstandingAmount,
+        lastCleaning:
+          completedDates[0] ||
+          null,
+        nextCleaning:
+          upcomingDates[0] ||
+          null
+      };
+    }
+  )
+  .sort(
+    (a,b)=>
+      String(
+        a.name
+      ).localeCompare(
+        String(
+          b.name
+        )
+      )
+  );
+}
+
+
+function renderCustomers(
+  quotes
+){
+
+  const customers =
+    buildCustomers(
+      quotes
+    );
+
+  if(
+    !customers.length
+  ){
+
+    customersBoard.innerHTML=`
+      <div class="empty">
+        No customers match the current filters.
+      </div>
+    `;
+
+    return;
+  }
+
+  customersBoard.innerHTML=`
+    <div class="customer-grid">
+
+      ${
+        customers.map(
+          customer=>{
+
+            const callLink =
+              customer.phone
+                ? `
+                  <a
+                    class="quick-link"
+                    href="tel:${escapeHtml(
+                      customer.phone
+                    )}"
+                  >
+                    Call
+                  </a>
+                `
+                : "";
+
+            const emailLink =
+              customer.email
+                ? `
+                  <a
+                    class="quick-link"
+                    href="mailto:${escapeHtml(
+                      customer.email
+                    )}"
+                  >
+                    Email
+                  </a>
+                `
+                : "";
+
+            const history =
+              [...customer.jobs]
+                .sort(
+                  (a,b)=>
+                    new Date(
+                      b.created_at ||
+                      0
+                    ) -
+                    new Date(
+                      a.created_at ||
+                      0
+                    )
+                )
+                .map(
+                  q=>`
+                    <div class="customer-history-row">
+
+                      <div>
+                        <strong>
+                          ${escapeHtml(
+                            q.quote_number ||
+                            "Quote"
+                          )}
+                        </strong>
+
+                        <div class="schedule-meta">
+                          ${escapeHtml(
+                            q.service_type ||
+                            "Cleaning"
+                          )}
+                        </div>
+                      </div>
+
+                      <div>
+                        ${escapeHtml(
+                          q.scheduled_for
+                            ? formatSchedule(
+                                q.scheduled_for
+                              )
+                            : q.created_at
+                              ? new Date(
+                                  q.created_at
+                                ).toLocaleDateString(
+                                  "en-US"
+                                )
+                              : "—"
+                        )}
+                      </div>
+
+                      <div>
+                        ${escapeHtml(
+                          String(
+                            q.status ||
+                            "new"
+                          )
+                          .replaceAll(
+                            "_",
+                            " "
+                          )
+                        )}
+                      </div>
+
+                      <div>
+                        <strong>
+                          ${money(
+                            q.quoted_price
+                          )}
+                        </strong>
+                      </div>
+
+                    </div>
+                  `
+                )
+                .join("");
+
+            return `
+              <article class="customer-card">
+
+                <div class="customer-head">
+
+                  <div>
+
+                    <div class="customer-title">
+                      ${escapeHtml(
+                        customer.name
+                      )}
+                    </div>
+
+                    <div class="customer-meta">
+
+                      ${
+                        escapeHtml(
+                          customer.email ||
+                          "No email"
+                        )
+                      }
+
+                      <br>
+
+                      ${
+                        escapeHtml(
+                          customer.phone ||
+                          "No phone"
+                        )
+                      }
+
+                      ${
+                        customer.zip
+                          ? `<br>ZIP ${escapeHtml(
+                              customer.zip
+                            )}`
+                          : ""
+                      }
+
+                    </div>
+
+                    <div class="quick-links">
+                      ${callLink}
+                      ${emailLink}
+                    </div>
+
+                  </div>
+
+                  <div class="status">
+                    ${customer.totalBookings}
+                    ${
+                      customer.totalBookings === 1
+                        ? "booking"
+                        : "bookings"
+                    }
+                  </div>
+
+                </div>
+
+                <div class="customer-stats">
+
+                  <div class="customer-stat">
+                    <div class="customer-stat-label">
+                      Total Paid
+                    </div>
+                    <div class="customer-stat-value">
+                      ${money(
+                        customer.totalPaid
+                      )}
+                    </div>
+                  </div>
+
+                  <div class="customer-stat">
+                    <div class="customer-stat-label">
+                      Outstanding
+                    </div>
+                    <div class="customer-stat-value">
+                      ${money(
+                        customer.outstandingAmount
+                      )}
+                    </div>
+                  </div>
+
+                  <div class="customer-stat">
+                    <div class="customer-stat-label">
+                      Completed
+                    </div>
+                    <div class="customer-stat-value">
+                      ${customer.completedCount}
+                    </div>
+                  </div>
+
+                  <div class="customer-stat">
+                    <div class="customer-stat-label">
+                      Cancelled
+                    </div>
+                    <div class="customer-stat-value">
+                      ${customer.cancelledCount}
+                    </div>
+                  </div>
+
+                  <div class="customer-stat">
+                    <div class="customer-stat-label">
+                      Last Cleaning
+                    </div>
+                    <div class="customer-stat-value">
+                      ${
+                        customer.lastCleaning
+                          ? escapeHtml(
+                              customer.lastCleaning
+                                .toLocaleDateString(
+                                  "en-US"
+                                )
+                            )
+                          : "—"
+                      }
+                    </div>
+                  </div>
+
+                  <div class="customer-stat">
+                    <div class="customer-stat-label">
+                      Next Cleaning
+                    </div>
+                    <div class="customer-stat-value">
+                      ${
+                        customer.nextCleaning
+                          ? escapeHtml(
+                              customer.nextCleaning
+                                .toLocaleDateString(
+                                  "en-US"
+                                )
+                            )
+                          : "—"
+                      }
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="customer-history">
+                  ${history}
+                </div>
+
+              </article>
+            `;
+
+          }
+        ).join("")
+      }
+
+    </div>
+  `;
+}
+
+
+function renderPayments(
+  quotes
+){
+
+  const payments =
+    quotes
+      .filter(
+        q=>
+          [
+            "completed",
+            "charged"
+          ].includes(
+            q.status
+          )
+      )
+      .sort(
+        (a,b)=>
+          new Date(
+            b.charged_at ||
+            b.completed_at ||
+            b.created_at ||
+            0
+          ) -
+          new Date(
+            a.charged_at ||
+            a.completed_at ||
+            a.created_at ||
+            0
+          )
+      );
+
+  if(
+    !payments.length
+  ){
+
+    paymentsBoard.innerHTML=`
+      <div class="empty">
+        No payment records match the current filters.
+      </div>
+    `;
+
+    return;
+  }
+
+  paymentsBoard.innerHTML=`
+    <div class="payment-grid">
+
+      ${
+        payments.map(
+          q=>{
+
+            const isPaid =
+              q.status ===
+              "charged";
+
+            const recovery =
+              paymentUrl(q);
+
+            return `
+              <article class="payment-card">
+
+                <div>
+
+                  <div class="payment-title">
+                    ${escapeHtml(
+                      q.customer_name ||
+                      "Customer"
+                    )}
+                  </div>
+
+                  <div class="payment-meta">
+
+                    ${escapeHtml(
+                      q.quote_number ||
+                      "Quote"
+                    )}
+
+                    <br>
+
+                    ${
+                      isPaid
+                        ? `Paid ${
+                            escapeHtml(
+                              q.charged_at
+                                ? new Date(
+                                    q.charged_at
+                                  ).toLocaleString(
+                                    "en-US"
+                                  )
+                                : ""
+                            )
+                          }`
+                        : "Cleaning completed — awaiting payment"
+                    }
+
+                    ${
+                      q.stripe_payment_intent_id
+                        ? `<br>Stripe: ${escapeHtml(
+                            q.stripe_payment_intent_id
+                          )}`
+                        : ""
+                    }
+
+                  </div>
+
+                </div>
+
+                <div>
+
+                  <div class="payment-amount">
+                    ${money(
+                      q.quoted_price
+                    )}
+                  </div>
+
+                  <div
+                    class="status ${escapeHtml(
+                      q.status
+                    )}"
+                    style="display:inline-block;margin-top:8px"
+                  >
+                    ${
+                      isPaid
+                        ? "Paid"
+                        : "Awaiting Payment"
+                    }
+                  </div>
+
+                </div>
+
+                <div class="payment-actions">
+
+                  ${
+                    !isPaid
+                      ? `
+                        <button
+                          class="pay-main"
+                          id="charge-${q.id}"
+                          onclick="chargeCustomer(
+                            '${q.id}',
+                            ${Number(
+                              q.quoted_price
+                            ) || 0},
+                            '${recovery}'
+                          )"
+                        >
+                          Charge ${money(
+                            q.quoted_price
+                          )}
+                        </button>
+
+                        ${
+                          recovery
+                            ? `
+                              <button
+                                class="pay-soft"
+                                onclick="copyPaymentLink(
+                                  '${q.id}',
+                                  '${recovery}'
+                                )"
+                              >
+                                Copy Recovery Link
+                              </button>
+                            `
+                            : ""
+                        }
+                      `
+                      : `
+                        <button
+                          class="locked-button"
+                          type="button"
+                          disabled
+                        >
+                          Paid ✓
+                        </button>
+                      `
+                  }
+
+                </div>
+
+              </article>
+            `;
+
+          }
+        ).join("")
+      }
+
+    </div>
+  `;
+}
+
+
+async function copyPaymentLink(
+  quoteId,
+  url
+){
+
+  if(!url){
+    return;
+  }
+
+  try{
+
+    await navigator
+      .clipboard
+      .writeText(url);
+
+    await showMessageModal({
+      type:"success",
+      eyebrow:"Payment recovery",
+      title:"Payment link copied",
+      message:
+        "The secure recovery-payment link is ready to send to the customer."
+    });
+
+  }
+  catch{
+
+    await showMessageModal({
+      type:"warning",
+      eyebrow:"Payment recovery",
+      title:"Copy this payment link",
+      message:url,
+      referenceLabel:
+        "Secure Payment Link",
+      referenceValue:url
+    });
+
+  }
 }
 
 
@@ -2644,39 +3573,39 @@ function scheduleJobHtml(
       ? formatSchedule(
           q.scheduled_for
         )
-      : "Needs a cleaning date and time";
-
-
-  const phone =
-    q.customer_phone ||
-    "No phone";
-
+      : "Not scheduled";
 
   const service =
     q.service_type ||
-    "Cleaning service";
+    "Cleaning";
 
+  const phone =
+    q.customer_phone ||
+    q.customer_email ||
+    "No contact information";
 
-  let actions = "";
+  let actions="";
 
+  if(
+    type ===
+    "upcoming"
+  ){
 
-  if(type === "upcoming"){
-
-    actions = `
-      <button
-        class="action-main"
-        id="complete-${q.id}"
-        onclick="markCleaningComplete('${q.id}')"
-      >
-        Mark Complete
-      </button>
-
+    actions=`
       <button
         class="action-soft"
         id="reschedule-${q.id}"
         onclick="rescheduleBooking('${q.id}')"
       >
         Reschedule
+      </button>
+
+      <button
+        class="action-main"
+        id="complete-${q.id}"
+        onclick="markCleaningComplete('${q.id}')"
+      >
+        Mark Complete
       </button>
 
       <button
@@ -2690,13 +3619,12 @@ function scheduleJobHtml(
 
   }
 
-
   else if(
     type ===
     "needs-scheduling"
   ){
 
-    actions = `
+    actions=`
       <button
         class="action-main"
         id="reschedule-${q.id}"
@@ -2714,28 +3642,55 @@ function scheduleJobHtml(
       </button>
     `;
 
-  }  else if(type === "completed"){
+  }
 
-    actions = `
+  else if(
+    type ===
+    "completed"
+  ){
+
+    actions=`
       <button
         class="action-main"
         id="charge-${q.id}"
         onclick="chargeCustomer(
           '${q.id}',
-          ${Number(q.quoted_price)||0},
+          ${Number(
+            q.quoted_price
+          ) || 0},
           '${paymentUrl(q)}'
         )"
       >
-        Charge ${money(q.quoted_price)}
+        Charge ${money(
+          q.quoted_price
+        )}
       </button>
+
+      ${
+        paymentUrl(q)
+          ? `
+            <button
+              class="action-soft"
+              onclick="copyPaymentLink(
+                '${q.id}',
+                '${paymentUrl(q)}'
+              )"
+            >
+              Copy Recovery Link
+            </button>
+          `
+          : ""
+      }
     `;
 
   }
 
+  else if(
+    type ===
+    "paid"
+  ){
 
-  else if(type === "paid"){
-
-    actions = `
+    actions=`
       <button
         class="locked-button"
         type="button"
@@ -2747,44 +3702,116 @@ function scheduleJobHtml(
 
   }
 
+  else if(
+    type ===
+    "cancelled"
+  ){
+
+    actions=`
+      <button
+        class="locked-button"
+        type="button"
+        disabled
+      >
+        Cancelled
+      </button>
+    `;
+
+  }
 
   return `
     <div class="schedule-job">
 
       <div>
+
         <div class="schedule-date">
-          ${escapeHtml(scheduleText)}
-        </div>
-
-        <div class="schedule-meta">
-          ${escapeHtml(q.quote_number || "Quote")}
-        </div>
-      </div>
-
-
-      <div>
-        <div class="schedule-customer">
-          ${escapeHtml(q.customer_name || "Customer")}
-        </div>
-
-        <div class="schedule-meta">
-          ${escapeHtml(service)} · ${escapeHtml(phone)}
-        </div>
-      </div>
-
-
-      <div>
-        <div class="schedule-price">
-          ${money(q.quoted_price)}
+          ${escapeHtml(
+            scheduleText
+          )}
         </div>
 
         <div class="schedule-meta">
           ${escapeHtml(
-            (q.status || "").replaceAll("_"," ")
+            q.quote_number ||
+            "Quote"
           )}
         </div>
+
       </div>
 
+      <div>
+
+        <div class="schedule-customer">
+          ${escapeHtml(
+            q.customer_name ||
+            "Customer"
+          )}
+        </div>
+
+        <div class="schedule-meta">
+          ${escapeHtml(service)}
+          ·
+          ${escapeHtml(phone)}
+        </div>
+
+        <div class="quick-links">
+
+          ${
+            q.customer_phone
+              ? `
+                <a
+                  class="quick-link"
+                  href="tel:${escapeHtml(
+                    q.customer_phone
+                  )}"
+                >
+                  Call
+                </a>
+              `
+              : ""
+          }
+
+          ${
+            q.customer_email
+              ? `
+                <a
+                  class="quick-link"
+                  href="mailto:${escapeHtml(
+                    q.customer_email
+                  )}"
+                >
+                  Email
+                </a>
+              `
+              : ""
+          }
+
+        </div>
+
+      </div>
+
+      <div>
+
+        <div class="schedule-price">
+          ${money(
+            q.quoted_price
+          )}
+        </div>
+
+        <div class="schedule-meta">
+          ${escapeHtml(
+            String(
+              q.status ||
+              ""
+            )
+            .replaceAll(
+              "_",
+              " "
+            )
+          )}
+        </div>
+
+      </div>
 
       <div class="schedule-actions">
         ${actions}
@@ -2817,19 +3844,24 @@ function scheduleSectionHtml(
 
       </div>
 
-
       <div class="schedule-list">
 
         ${
           items.length
             ? items
                 .map(
-                  q=>scheduleJobHtml(q,type)
+                  q=>
+                    scheduleJobHtml(
+                      q,
+                      type
+                    )
                 )
                 .join("")
             : `
                 <div class="schedule-empty">
-                  ${escapeHtml(emptyText)}
+                  ${escapeHtml(
+                    emptyText
+                  )}
                 </div>
               `
         }
@@ -2841,7 +3873,9 @@ function scheduleSectionHtml(
 }
 
 
-function renderSchedule(quotes){
+function renderSchedule(
+  quotes
+){
 
   const activeStatuses = [
     "accepted",
@@ -2849,33 +3883,40 @@ function renderSchedule(quotes){
     "booked"
   ];
 
-
   const upcoming =
     quotes
       .filter(
         q=>
-          activeStatuses.includes(q.status) &&
+          activeStatuses.includes(
+            q.status
+          ) &&
           q.scheduled_for
       )
       .sort(
         (a,b)=>
-          new Date(a.scheduled_for) -
-          new Date(b.scheduled_for)
+          new Date(
+            a.scheduled_for
+          ) -
+          new Date(
+            b.scheduled_for
+          )
       );
-
 
   const needsScheduling =
     quotes.filter(
       q=>
-        activeStatuses.includes(q.status) &&
+        activeStatuses.includes(
+          q.status
+        ) &&
         !q.scheduled_for
     );
-
 
   const completed =
     quotes
       .filter(
-        q=>q.status === "completed"
+        q=>
+          q.status ===
+          "completed"
       )
       .sort(
         (a,b)=>
@@ -2889,11 +3930,12 @@ function renderSchedule(quotes){
           )
       );
 
-
   const paid =
     quotes
       .filter(
-        q=>q.status === "charged"
+        q=>
+          q.status ===
+          "charged"
       )
       .sort(
         (a,b)=>
@@ -2907,6 +3949,24 @@ function renderSchedule(quotes){
           )
       );
 
+  const cancelled =
+    quotes
+      .filter(
+        q=>
+          q.status ===
+          "cancelled"
+      )
+      .sort(
+        (a,b)=>
+          new Date(
+            b.created_at ||
+            0
+          ) -
+          new Date(
+            a.created_at ||
+            0
+          )
+      );
 
   scheduleBoard.innerHTML =
     scheduleSectionHtml(
@@ -2935,11 +3995,20 @@ function renderSchedule(quotes){
       paid,
       "paid",
       "No paid jobs yet."
+    ) +
+
+    scheduleSectionHtml(
+      "Cancelled Jobs",
+      cancelled,
+      "cancelled",
+      "No cancelled jobs."
     );
 }
 
 
-function setStats(quotes){
+function setStats(
+  quotes
+){
 
   document
     .getElementById(
@@ -2948,16 +4017,16 @@ function setStats(quotes){
     .textContent =
       quotes.length;
 
-
   document
     .getElementById(
       "newCount"
     )
     .textContent =
       quotes.filter(
-        q=>q.status==="new"
+        q=>
+          q.status ===
+          "new"
       ).length;
-
 
   document
     .getElementById(
@@ -2965,9 +4034,10 @@ function setStats(quotes){
     )
     .textContent =
       quotes.filter(
-        q=>q.status==="quoted"
+        q=>
+          q.status ===
+          "quoted"
       ).length;
-
 
   document
     .getElementById(
@@ -2989,654 +4059,692 @@ function setStats(quotes){
 }
 
 
-function renderQuotes(quotes){
+function renderQuotes(
+  quotes
+){
 
-  setStats(allQuotes);
+  setStats(
+    allQuotes
+  );
 
-
-  if(!quotes.length){
+  if(
+    !quotes.length
+  ){
 
     quotesContainer.innerHTML=`
       <div class="empty">
-        No quote requests yet.
+        No quote requests match the current filters.
       </div>
     `;
 
     return;
   }
 
-
   quotesContainer.innerHTML =
-    quotes.map(q=>{
+    quotes.map(
+      q=>{
 
-      const propertyDetails = [
+        const propertyDetails = [
 
-        q.bedrooms !== null &&
-        q.bedrooms !== undefined
-          ? `${q.bedrooms} bed`
-          : "",
+          q.bedrooms !== null &&
+          q.bedrooms !== undefined
+            ? `${q.bedrooms} bed`
+            : "",
 
-        q.bathrooms !== null &&
-        q.bathrooms !== undefined
-          ? `${q.bathrooms} bath`
-          : "",
+          q.bathrooms !== null &&
+          q.bathrooms !== undefined
+            ? `${q.bathrooms} bath`
+            : "",
 
-        q.square_feet
-          ? `${Number(
-              q.square_feet
-            ).toLocaleString()} sq ft`
-          : ""
+          q.square_feet
+            ? `${Number(
+                q.square_feet
+              ).toLocaleString()} sq ft`
+            : ""
 
-      ]
-      .filter(Boolean)
-      .join(" · ");
+        ]
+        .filter(Boolean)
+        .join(" · ");
 
+        const priceLocked =
+          [
+            "accepted",
+            "card_saved",
+            "booked",
+            "completed",
+            "charged",
+            "cancelled"
+          ].includes(
+            q.status
+          );
 
-      const priceLocked =
-        [
-          "accepted",
-          "card_saved",
-          "booked",
-          "completed",
-          "charged",
-          "cancelled"
-        ].includes(
-          q.status
-        );
+        const existingOffer =
+          q.quoted_price &&
+          q.quote_token
+            ? `
+              <div
+                class="offer-result"
+                id="result-${q.id}"
+              >
 
+                <div class="offer-price">
+                  ${money(
+                    q.quoted_price
+                  )}
+                </div>
 
-      const existingOffer =
-        q.quoted_price &&
-        q.quote_token
-          ? `
+                <button
+                  class="copy"
+                  id="copy-${q.id}"
+                  onclick="copyOffer(
+                    '${q.id}',
+                    '${offerUrl(q)}'
+                  )"
+                >
+                  Copy Customer Link
+                </button>
+
+                <div class="existing-offer">
+                  ${
+                    priceLocked
+                      ? "Customer offer accepted. Price is now locked."
+                      : "Offer already created. You can update the price and generate it again."
+                  }
+                </div>
+
+              </div>
+            `
+            : `
+              <div
+                id="result-${q.id}"
+              ></div>
+            `;
+
+        let bookingAction="";
+
+        if(
+          [
+            "accepted",
+            "card_saved",
+            "booked"
+          ].includes(
+            q.status
+          )
+        ){
+
+          bookingAction=`
             <div
-              class="offer-result"
-              id="result-${q.id}"
+              class="booking-action"
+              id="booking-action-${q.id}"
             >
 
-              <div class="offer-price">
-                ${money(
-                  q.quoted_price
-                )}
-              </div>
-
-              <button
-                class="copy"
-                id="copy-${q.id}"
-                onclick="copyOffer(
-                  '${q.id}',
-                  '${offerUrl(q)}'
-                )"
-              >
-                Copy Customer Link
-              </button>
-
-              <div class="existing-offer">
+              <div class="booking-action-title">
                 ${
-                  priceLocked
-                    ? "Customer offer accepted. Price is now locked."
-                    : "Offer already created. You can update the price and generate it again."
+                  q.stripe_payment_method_id
+                    ? "Card Saved"
+                    : "Booking Secured"
                 }
               </div>
 
-            </div>
-          `
-          : `
-            <div id="result-${q.id}"></div>
-          `;
-
-
-      let bookingAction="";
-
-
-      if(
-        [
-          "card_saved",
-          "booked"
-        ].includes(
-          q.status
-        )
-      ){
-
-        bookingAction=`
-          <div
-            class="booking-action"
-            id="booking-action-${q.id}"
-          >
-
-            <div class="booking-action-title">
-              Card Saved
-            </div>
-
-            <div class="booking-action-text">
-              The customer's payment method is secured.
-              When the cleaning has actually been completed,
-              mark it complete below.
-              This will NOT charge the customer.
-            </div>
-
-            <div class="schedule-display">
-
-              <div class="schedule-label">
-                Cleaning Schedule
+              <div class="booking-action-text">
+                ${
+                  q.stripe_payment_method_id
+                    ? "The customer's payment method is secured. When the cleaning has actually been completed, mark it complete below. This will NOT charge the customer."
+                    : "This booking is active. Schedule or manage the cleaning below."
+                }
               </div>
 
-              <div class="schedule-value">
+              <div class="schedule-display">
+
+                <div class="schedule-label">
+                  Cleaning Schedule
+                </div>
+
+                <div class="schedule-value">
+                  ${escapeHtml(
+                    formatSchedule(
+                      q.scheduled_for
+                    )
+                  )}
+                </div>
+
+              </div>
+
+              ${
+                q.stripe_payment_method_id
+                  ? `
+                    <button
+                      class="complete-button"
+                      id="complete-${q.id}"
+                      onclick="markCleaningComplete('${q.id}')"
+                    >
+                      Mark Cleaning Complete
+                    </button>
+                  `
+                  : ""
+              }
+
+              <button
+                class="reschedule-button"
+                id="reschedule-${q.id}"
+                onclick="rescheduleBooking('${q.id}')"
+              >
+                ${
+                  q.scheduled_for
+                    ? "Reschedule Booking"
+                    : "Schedule Cleaning"
+                }
+              </button>
+
+              <button
+                class="cancel-button"
+                id="cancel-${q.id}"
+                onclick="cancelBooking('${q.id}')"
+              >
+                Cancel Booking
+              </button>
+
+            </div>
+          `;
+
+        }
+
+        else if(
+          q.status ===
+          "completed"
+        ){
+
+          bookingAction=`
+            <div class="completed-box">
+
+              <div class="completed-title">
+                Cleaning Completed ✓
+              </div>
+
+              <div class="completed-text">
+                This cleaning has been marked complete.
+                The customer's card has not been charged yet.
+              </div>
+
+              ${
+                q.scheduled_for
+                  ? `
+                    <div class="schedule-display">
+
+                      <div class="schedule-label">
+                        Cleaning Schedule
+                      </div>
+
+                      <div class="schedule-value">
+                        ${escapeHtml(
+                          formatSchedule(
+                            q.scheduled_for
+                          )
+                        )}
+                      </div>
+
+                    </div>
+                  `
+                  : ""
+              }
+
+              <div class="amount-due">
+
+                <div class="amount-label">
+                  Amount Due
+                </div>
+
+                <div class="amount-value">
+                  ${money(
+                    q.quoted_price
+                  )}
+                </div>
+
+              </div>
+
+              <button
+                class="charge-button"
+                id="charge-${q.id}"
+                onclick="chargeCustomer(
+                  '${q.id}',
+                  ${Number(
+                    q.quoted_price
+                  ) || 0},
+                  '${paymentUrl(q)}'
+                )"
+              >
+                Charge Customer —
+                ${money(
+                  q.quoted_price
+                )}
+              </button>
+
+              ${
+                paymentUrl(q)
+                  ? `
+                    <button
+                      class="copy"
+                      onclick="copyPaymentLink(
+                        '${q.id}',
+                        '${paymentUrl(q)}'
+                      )"
+                    >
+                      Copy Recovery Payment Link
+                    </button>
+                  `
+                  : ""
+              }
+
+            </div>
+          `;
+
+        }
+
+        else if(
+          q.status ===
+          "charged"
+        ){
+
+          bookingAction=`
+            <div class="completed-box">
+
+              <div class="completed-title">
+                Payment Completed ✓
+              </div>
+
+              <div class="completed-text">
+                This booking has been successfully charged.
+              </div>
+
+              ${
+                q.scheduled_for
+                  ? `
+                    <div class="schedule-display">
+
+                      <div class="schedule-label">
+                        Cleaning Schedule
+                      </div>
+
+                      <div class="schedule-value">
+                        ${escapeHtml(
+                          formatSchedule(
+                            q.scheduled_for
+                          )
+                        )}
+                      </div>
+
+                    </div>
+                  `
+                  : ""
+              }
+
+              <div class="amount-due">
+
+                <div class="amount-label">
+                  Amount Charged
+                </div>
+
+                <div class="amount-value">
+                  ${money(
+                    q.quoted_price
+                  )}
+                </div>
+
+              </div>
+
+              ${
+                q.stripe_payment_intent_id
+                  ? `
+                    <div class="payment-id">
+                      Stripe Payment ID:
+                      ${escapeHtml(
+                        q.stripe_payment_intent_id
+                      )}
+                    </div>
+                  `
+                  : ""
+              }
+
+            </div>
+          `;
+
+        }
+
+        else if(
+          q.status ===
+          "cancelled"
+        ){
+
+          bookingAction=`
+            <div class="cancelled-box">
+
+              <div class="cancelled-title">
+                Booking Cancelled
+              </div>
+
+              <div class="cancelled-text">
+                This booking has been cancelled.
+                No payment was processed.
+              </div>
+
+            </div>
+          `;
+
+        }
+
+        const pricingControls =
+          priceLocked
+            ? `
+              <h3>
+                Quote Price
+              </h3>
+
+              <div class="price-wrap">
+
+                <span class="dollar">
+                  $
+                </span>
+
+                <input
+                  id="price-${q.id}"
+                  class="price-input"
+                  type="number"
+                  value="${
+                    q.quoted_price
+                      ? Number(
+                          q.quoted_price
+                        ) / 100
+                      : ""
+                  }"
+                  disabled
+                >
+
+              </div>
+
+              <button
+                class="locked-button"
+                type="button"
+                disabled
+              >
+                Price Locked
+              </button>
+
+              <div class="locked-note">
+                ${
+                  q.status ===
+                  "cancelled"
+                    ? "This booking has been cancelled. The quote price can no longer be edited."
+                    : "The customer has already accepted this offer. The agreed price can no longer be changed."
+                }
+              </div>
+
+              ${existingOffer}
+
+              ${bookingAction}
+            `
+            : `
+              <h3>
+                Set Quote Price
+              </h3>
+
+              <div class="price-wrap">
+
+                <span class="dollar">
+                  $
+                </span>
+
+                <input
+                  id="price-${q.id}"
+                  class="price-input"
+                  type="number"
+                  min="1"
+                  step="0.01"
+                  placeholder="0.00"
+                  value="${
+                    q.quoted_price
+                      ? Number(
+                          q.quoted_price
+                        ) / 100
+                      : ""
+                  }"
+                >
+
+              </div>
+
+              <button
+                id="offer-${q.id}"
+                class="create-offer"
+                onclick="createOffer('${q.id}')"
+              >
+                ${
+                  q.quoted_price
+                    ? "Update Customer Offer"
+                    : "Create Customer Offer"
+                }
+              </button>
+
+              ${existingOffer}
+            `;
+
+        return `
+          <article class="quote-card">
+
+            <div class="quote-head">
+
+              <div>
+
+                <div class="quote-number">
+                  ${escapeHtml(
+                    q.quote_number ||
+                    "Quote"
+                  )}
+                </div>
+
+                <div class="customer-name">
+                  ${escapeHtml(
+                    q.customer_name ||
+                    "Customer"
+                  )}
+                </div>
+
+                <div class="quick-links">
+
+                  ${
+                    q.customer_phone
+                      ? `
+                        <a
+                          class="quick-link"
+                          href="tel:${escapeHtml(
+                            q.customer_phone
+                          )}"
+                        >
+                          Call
+                        </a>
+                      `
+                      : ""
+                  }
+
+                  ${
+                    q.customer_email
+                      ? `
+                        <a
+                          class="quick-link"
+                          href="mailto:${escapeHtml(
+                            q.customer_email
+                          )}"
+                        >
+                          Email
+                        </a>
+                      `
+                      : ""
+                  }
+
+                </div>
+
+              </div>
+
+              <div
+                class="status ${escapeHtml(
+                  q.status ||
+                  "new"
+                )}"
+              >
                 ${escapeHtml(
-                  formatSchedule(
-                    q.scheduled_for
+                  String(
+                    q.status ||
+                    "new"
+                  )
+                  .replaceAll(
+                    "_",
+                    " "
                   )
                 )}
               </div>
 
             </div>
 
-            <button
-              class="complete-button"
-              id="complete-${q.id}"
-              onclick="markCleaningComplete('${q.id}')"
-            >
-              Mark Cleaning Complete
-            </button>
+            <div class="quote-grid">
 
-            <button
-              class="reschedule-button"
-              id="reschedule-${q.id}"
-              onclick="rescheduleBooking('${q.id}')"
-            >
-              Reschedule Booking
-            </button>
+              <div class="details">
 
-            <button
-              class="cancel-button"
-              id="cancel-${q.id}"
-              onclick="cancelBooking('${q.id}')"
-            >
-              Cancel Booking
-            </button>
-
-          </div>
-        `;
-      }
-
-
-      else if(
-        q.status==="completed"
-      ){
-
-        bookingAction=`
-          <div class="completed-box">
-
-            <div class="completed-title">
-              Cleaning Completed ✓
-            </div>
-
-            <div class="completed-text">
-              This cleaning has been marked complete.
-              The customer's card has not been charged yet.
-            </div>
-
-            ${
-              q.scheduled_for
-                ? `
-                  <div class="schedule-display">
-
-                    <div class="schedule-label">
-                      Cleaning Schedule
-                    </div>
-
-                    <div class="schedule-value">
-                      ${escapeHtml(
-                        formatSchedule(
-                          q.scheduled_for
-                        )
-                      )}
-                    </div>
-
+                <div class="detail">
+                  <div class="detail-label">
+                    Email
                   </div>
-                `
-                : ""
-            }
-
-            <div class="amount-due">
-
-              <div class="amount-label">
-                Amount Due
-              </div>
-
-              <div class="amount-value">
-                ${money(
-                  q.quoted_price
-                )}
-              </div>
-
-            </div>
-
-            <button
-              class="charge-button"
-              id="charge-${q.id}"
-              onclick="chargeCustomer(
-                '${q.id}',
-                ${Number(
-                  q.quoted_price
-                )||0},
-                '${paymentUrl(q)}'
-              )"
-            >
-              Charge Customer —
-              ${money(
-                q.quoted_price
-              )}
-            </button>
-
-          </div>
-        `;
-      }
-
-
-      else if(
-        q.status==="charged"
-      ){
-
-        bookingAction=`
-          <div class="completed-box">
-
-            <div class="completed-title">
-              Payment Completed ✓
-            </div>
-
-            <div class="completed-text">
-              This booking has been successfully charged.
-            </div>
-
-            ${
-              q.scheduled_for
-                ? `
-                  <div class="schedule-display">
-
-                    <div class="schedule-label">
-                      Cleaning Schedule
-                    </div>
-
-                    <div class="schedule-value">
-                      ${escapeHtml(
-                        formatSchedule(
-                          q.scheduled_for
-                        )
-                      )}
-                    </div>
-
-                  </div>
-                `
-                : ""
-            }
-
-            <div class="amount-due">
-
-              <div class="amount-label">
-                Amount Charged
-              </div>
-
-              <div class="amount-value">
-                ${money(
-                  q.quoted_price
-                )}
-              </div>
-
-            </div>
-
-            ${
-              q.stripe_payment_intent_id
-                ? `
-                  <div class="payment-id">
-                    Stripe Payment ID:
+                  <div class="detail-value">
                     ${escapeHtml(
-                      q.stripe_payment_intent_id
+                      q.customer_email ||
+                      "—"
                     )}
                   </div>
-                `
-                : ""
-            }
+                </div>
 
-          </div>
+                <div class="detail">
+                  <div class="detail-label">
+                    Phone
+                  </div>
+                  <div class="detail-value">
+                    ${escapeHtml(
+                      q.customer_phone ||
+                      "—"
+                    )}
+                  </div>
+                </div>
+
+                <div class="detail">
+                  <div class="detail-label">
+                    Service
+                  </div>
+                  <div class="detail-value">
+                    ${escapeHtml(
+                      q.service_type ||
+                      "—"
+                    )}
+                  </div>
+                </div>
+
+                <div class="detail">
+                  <div class="detail-label">
+                    Property
+                  </div>
+                  <div class="detail-value">
+                    ${escapeHtml(
+                      q.property_type ||
+                      "—"
+                    )}
+                  </div>
+                </div>
+
+                <div class="detail">
+                  <div class="detail-label">
+                    Frequency
+                  </div>
+                  <div class="detail-value">
+                    ${escapeHtml(
+                      q.frequency ||
+                      "—"
+                    )}
+                  </div>
+                </div>
+
+                <div class="detail">
+                  <div class="detail-label">
+                    Property Details
+                  </div>
+                  <div class="detail-value">
+                    ${escapeHtml(
+                      propertyDetails ||
+                      "—"
+                    )}
+                  </div>
+                </div>
+
+                <div class="detail">
+                  <div class="detail-label">
+                    ZIP Code
+                  </div>
+                  <div class="detail-value">
+                    ${escapeHtml(
+                      q.zip_code ||
+                      "—"
+                    )}
+                  </div>
+                </div>
+
+                <div class="detail">
+                  <div class="detail-label">
+                    Submitted
+                  </div>
+                  <div class="detail-value">
+                    ${escapeHtml(
+                      q.created_at
+                        ? new Date(
+                            q.created_at
+                          ).toLocaleString(
+                            "en-US"
+                          )
+                        : "—"
+                    )}
+                  </div>
+                </div>
+
+                <div class="detail notes">
+                  <div class="detail-label">
+                    Notes
+                  </div>
+                  <div class="detail-value">
+                    ${escapeHtml(
+                      q.notes ||
+                      "No notes provided."
+                    )}
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="pricing">
+                ${pricingControls}
+              </div>
+
+            </div>
+
+          </article>
         `;
+
       }
-
-
-      else if(
-        q.status==="cancelled"
-      ){
-
-        bookingAction=`
-          <div class="cancelled-box">
-
-            <div class="cancelled-title">
-              Booking Cancelled
-            </div>
-
-            <div class="cancelled-text">
-              This booking has been cancelled.
-              No payment was processed.
-            </div>
-
-          </div>
-        `;
-      }
-
-
-      const pricingControls =
-        priceLocked
-          ? `
-            <h3>Quote Price</h3>
-
-            <div class="price-wrap">
-
-              <span class="dollar">
-                $
-              </span>
-
-              <input
-                id="price-${q.id}"
-                class="price-input"
-                type="number"
-                value="${
-                  q.quoted_price
-                    ? Number(
-                        q.quoted_price
-                      )/100
-                    : ""
-                }"
-                disabled
-              >
-
-            </div>
-
-            <button
-              class="locked-button"
-              type="button"
-              disabled
-            >
-              Price Locked
-            </button>
-
-            <div class="locked-note">
-              ${
-                q.status==="cancelled"
-                  ? "This booking has been cancelled. The quote price can no longer be edited."
-                  : "The customer has already accepted this offer and secured a payment method. The price can no longer be changed."
-              }
-            </div>
-
-            ${existingOffer}
-
-            ${bookingAction}
-          `
-          : `
-            <h3>Set Quote Price</h3>
-
-            <div class="price-wrap">
-
-              <span class="dollar">
-                $
-              </span>
-
-              <input
-                id="price-${q.id}"
-                class="price-input"
-                type="number"
-                min="1"
-                step="0.01"
-                placeholder="0.00"
-                value="${
-                  q.quoted_price
-                    ? Number(
-                        q.quoted_price
-                      )/100
-                    : ""
-                }"
-              >
-
-            </div>
-
-            <button
-              id="offer-${q.id}"
-              class="create-offer"
-              onclick="createOffer('${q.id}')"
-            >
-              ${
-                q.quoted_price
-                  ? "Update Customer Offer"
-                  : "Create Customer Offer"
-              }
-            </button>
-
-            ${existingOffer}
-          `;
-
-
-      return `
-        <article class="quote-card">
-
-          <div class="quote-head">
-
-            <div>
-
-              <div class="quote-number">
-                ${escapeHtml(
-                  q.quote_number ||
-                  "Quote"
-                )}
-              </div>
-
-              <div class="customer-name">
-                ${escapeHtml(
-                  q.customer_name ||
-                  "Customer"
-                )}
-              </div>
-
-            </div>
-
-            <div
-              class="status ${escapeHtml(
-                q.status || "new"
-              )}"
-            >
-              ${escapeHtml(
-                (
-                  q.status ||
-                  "new"
-                )
-                .replaceAll(
-                  "_",
-                  " "
-                )
-              )}
-            </div>
-
-          </div>
-
-
-          <div class="quote-grid">
-
-            <div class="details">
-
-              <div class="detail">
-
-                <div class="detail-label">
-                  Email
-                </div>
-
-                <div class="detail-value">
-                  ${escapeHtml(
-                    q.customer_email ||
-                    "—"
-                  )}
-                </div>
-
-              </div>
-
-
-              <div class="detail">
-
-                <div class="detail-label">
-                  Phone
-                </div>
-
-                <div class="detail-value">
-                  ${escapeHtml(
-                    q.customer_phone ||
-                    "—"
-                  )}
-                </div>
-
-              </div>
-
-
-              <div class="detail">
-
-                <div class="detail-label">
-                  Service
-                </div>
-
-                <div class="detail-value">
-                  ${escapeHtml(
-                    q.service_type ||
-                    "—"
-                  )}
-                </div>
-
-              </div>
-
-
-              <div class="detail">
-
-                <div class="detail-label">
-                  Property
-                </div>
-
-                <div class="detail-value">
-                  ${escapeHtml(
-                    q.property_type ||
-                    "—"
-                  )}
-                </div>
-
-              </div>
-
-
-              <div class="detail">
-
-                <div class="detail-label">
-                  Frequency
-                </div>
-
-                <div class="detail-value">
-                  ${escapeHtml(
-                    q.frequency ||
-                    "—"
-                  )}
-                </div>
-
-              </div>
-
-
-              <div class="detail">
-
-                <div class="detail-label">
-                  Property Details
-                </div>
-
-                <div class="detail-value">
-                  ${escapeHtml(
-                    propertyDetails ||
-                    "—"
-                  )}
-                </div>
-
-              </div>
-
-
-              <div class="detail">
-
-                <div class="detail-label">
-                  ZIP Code
-                </div>
-
-                <div class="detail-value">
-                  ${escapeHtml(
-                    q.zip_code ||
-                    "—"
-                  )}
-                </div>
-
-              </div>
-
-
-              <div class="detail">
-
-                <div class="detail-label">
-                  Submitted
-                </div>
-
-                <div class="detail-value">
-                  ${escapeHtml(
-                    q.created_at
-                      ? new Date(
-                          q.created_at
-                        ).toLocaleString(
-                          "en-US"
-                        )
-                      : "—"
-                  )}
-                </div>
-
-              </div>
-
-
-              <div class="detail notes">
-
-                <div class="detail-label">
-                  Notes
-                </div>
-
-                <div class="detail-value">
-                  ${escapeHtml(
-                    q.notes ||
-                    "No notes provided."
-                  )}
-                </div>
-
-              </div>
-
-            </div>
-
-
-            <div class="pricing">
-              ${pricingControls}
-            </div>
-
-          </div>
-
-        </article>
-      `;
-
-    }).join("");
+    ).join("");
 }
-
-
-async function loadQuotes(){
+  async function loadQuotes(){
 
   if(!adminPassword){
     return;
   }
 
+  refreshButton.disabled =
+    true;
 
-  refreshButton.disabled=true;
-
-  refreshButton.textContent=
+  refreshButton.textContent =
     "Refreshing...";
-
 
   try{
 
@@ -3655,12 +4763,12 @@ async function loadQuotes(){
         }
       );
 
-
     const data =
       await response
         .json()
-        .catch(()=>null);
-
+        .catch(
+          ()=>null
+        );
 
     if(
       !response.ok ||
@@ -3669,7 +4777,8 @@ async function loadQuotes(){
     ){
 
       if(
-        response.status===401
+        response.status ===
+        401
       ){
 
         throw new Error(
@@ -3678,14 +4787,12 @@ async function loadQuotes(){
 
       }
 
-
       throw new Error(
         data?.error ||
         "Could not load quotes."
       );
 
     }
-
 
     allQuotes =
       Array.isArray(
@@ -3694,16 +4801,16 @@ async function loadQuotes(){
         ? data.quotes
         : [];
 
-
-    setStats(allQuotes);
-
+    setStats(
+      allQuotes
+    );
 
     setDashboardView(
       currentView
     );
 
-
-  }catch(error){
+  }
+  catch(error){
 
     quotesContainer.innerHTML=`
       <div class="empty">
@@ -3714,15 +4821,15 @@ async function loadQuotes(){
       </div>
     `;
 
-
     throw error;
 
+  }
+  finally{
 
-  }finally{
+    refreshButton.disabled =
+      false;
 
-    refreshButton.disabled=false;
-
-    refreshButton.textContent=
+    refreshButton.textContent =
       "Refresh";
 
   }
@@ -3732,19 +4839,19 @@ async function loadQuotes(){
 async function login(){
 
   const password =
-    passwordInput.value.trim();
-
+    passwordInput.value
+      .trim();
 
   loginError.classList.add(
     "hidden"
   );
 
-  loginError.textContent="";
-
+  loginError.textContent =
+    "";
 
   if(!password){
 
-    loginError.textContent=
+    loginError.textContent =
       "Enter the admin password.";
 
     loginError.classList.remove(
@@ -3754,54 +4861,51 @@ async function login(){
     return;
   }
 
+  loginButton.disabled =
+    true;
 
-  loginButton.disabled=true;
-
-  loginButton.textContent=
+  loginButton.textContent =
     "Signing In...";
 
-
-  adminPassword=password;
-
+  adminPassword =
+    password;
 
   try{
 
     await loadQuotes();
 
-
     loginPage.classList.add(
       "hidden"
     );
-
 
     dashboard.classList.remove(
       "hidden"
     );
 
+    passwordInput.value =
+      "";
 
-    passwordInput.value="";
+  }
+  catch(error){
 
+    adminPassword =
+      "";
 
-  }catch(error){
-
-    adminPassword="";
-
-
-    loginError.textContent=
+    loginError.textContent =
       error.message ||
       "Could not sign in.";
-
 
     loginError.classList.remove(
       "hidden"
     );
 
+  }
+  finally{
 
-  }finally{
+    loginButton.disabled =
+      false;
 
-    loginButton.disabled=false;
-
-    loginButton.textContent=
+    loginButton.textContent =
       "Sign In";
 
   }
@@ -3810,8 +4914,11 @@ async function login(){
 
 function logout(){
 
-  adminPassword="";
+  adminPassword =
+    "";
 
+  allQuotes =
+    [];
 
   quotesContainer.innerHTML=`
     <div class="loading">
@@ -3819,19 +4926,28 @@ function logout(){
     </div>
   `;
 
+  overviewBoard.innerHTML =
+    "";
+
+  scheduleBoard.innerHTML =
+    "";
+
+  customersBoard.innerHTML =
+    "";
+
+  paymentsBoard.innerHTML =
+    "";
 
   dashboard.classList.add(
     "hidden"
   );
 
-
   loginPage.classList.remove(
     "hidden"
   );
 
-
-  passwordInput.value="";
-
+  passwordInput.value =
+    "";
 
   passwordInput.focus();
 }
@@ -3846,18 +4962,15 @@ async function createOffer(
       `price-${quoteId}`
     );
 
-
   const button =
     document.getElementById(
       `offer-${quoteId}`
     );
 
-
   const result =
     document.getElementById(
       `result-${quoteId}`
     );
-
 
   if(
     !input ||
@@ -3867,18 +4980,16 @@ async function createOffer(
     return;
   }
 
-
   const dollars =
     Number(
       input.value
     );
 
-
   if(
     !Number.isFinite(
       dollars
     ) ||
-    dollars<=0
+    dollars <= 0
   ){
 
     await showMessageModal({
@@ -3889,26 +5000,25 @@ async function createOffer(
         "Enter a valid cleaning price before creating the customer offer."
     });
 
-
     input.focus();
 
     return;
   }
 
+  button.disabled =
+    true;
 
-  const amount =
-    Math.round(
-      dollars*100
-    );
-
-
-  button.disabled=true;
-
-  button.textContent=
+  button.textContent =
     "Creating Offer...";
 
-
   try{
+
+    /*
+      create-offer expects the price in
+      dollars as body.price.
+
+      The server converts it to cents.
+    */
 
     const response =
       await fetch(
@@ -3926,18 +5036,21 @@ async function createOffer(
 
           body:
             JSON.stringify({
-              quote_id:quoteId,
-              amount
+              quote_id:
+                quoteId,
+
+              price:
+                dollars
             })
         }
       );
 
-
     const data =
       await response
         .json()
-        .catch(()=>null);
-
+        .catch(
+          ()=>null
+        );
 
     if(
       !response.ok ||
@@ -3952,10 +5065,8 @@ async function createOffer(
 
     }
 
-
-    result.className=
+    result.className =
       "offer-result";
-
 
     result.innerHTML=`
       <div class="offer-price">
@@ -3976,7 +5087,6 @@ async function createOffer(
       </div>
     `;
 
-
     document
       .getElementById(
         `copy-${quoteId}`
@@ -3991,12 +5101,13 @@ async function createOffer(
         }
       );
 
-
-    button.textContent=
+    button.textContent =
       "Update Customer Offer";
 
+    await loadQuotes();
 
-  }catch(error){
+  }
+  catch(error){
 
     await showMessageModal({
       type:"error",
@@ -4007,21 +5118,22 @@ async function createOffer(
         "Could not create offer."
     });
 
+  }
+  finally{
 
-  }finally{
-
-    button.disabled=false;
-
+    button.disabled =
+      false;
 
     if(
-      button.textContent===
+      button.textContent ===
       "Creating Offer..."
     ){
 
-      button.textContent=
+      button.textContent =
         "Create Customer Offer";
 
     }
+
   }
 }
 
@@ -4035,28 +5147,26 @@ async function copyOffer(
 
     await navigator
       .clipboard
-      .writeText(url);
-
+      .writeText(
+        url
+      );
 
     const button =
       document.getElementById(
         `copy-${quoteId}`
       );
 
-
     if(button){
 
       const original =
         button.textContent;
 
-
-      button.textContent=
+      button.textContent =
         "Copied ✓";
-
 
       setTimeout(
         ()=>{
-          button.textContent=
+          button.textContent =
             original;
         },
         1500
@@ -4064,24 +5174,24 @@ async function copyOffer(
 
     }
 
-
-  }catch{
+  }
+  catch{
 
     await showMessageModal({
       type:"warning",
       eyebrow:"Customer link",
       title:"Copy this link",
       message:url,
+      referenceLabel:
+        "Customer Offer Link",
+      referenceValue:
+        url,
       buttonText:"Done"
     });
 
   }
 }
 
-
-/*
-  RESCHEDULE BOOKING
-*/
 
 async function rescheduleBooking(
   quoteId
@@ -4092,34 +5202,30 @@ async function rescheduleBooking(
       `reschedule-${quoteId}`
     );
 
-
   if(!button){
     return;
   }
 
-
   const scheduledDate =
     await showScheduleModal();
-
 
   if(!scheduledDate){
     return;
   }
 
-
   const displayDate =
-    scheduledDate.toLocaleString(
-      "en-US",
-      {
-        weekday:"long",
-        month:"long",
-        day:"numeric",
-        year:"numeric",
-        hour:"numeric",
-        minute:"2-digit"
-      }
-    );
-
+    scheduledDate
+      .toLocaleString(
+        "en-US",
+        {
+          weekday:"long",
+          month:"long",
+          day:"numeric",
+          year:"numeric",
+          hour:"numeric",
+          minute:"2-digit"
+        }
+      );
 
   const confirmed =
     await showConfirmModal({
@@ -4127,34 +5233,31 @@ async function rescheduleBooking(
         "Booking schedule",
 
       title:
-        "Reschedule this booking?",
+        "Update this booking?",
 
       message:
-        `New cleaning date: ${displayDate}. ` +
+        `Cleaning date: ${displayDate}. ` +
         "The quote price and saved payment method will not change.",
 
       confirmText:
-        "Reschedule Booking",
+        "Update Schedule",
 
       cancelText:
         "Keep Current Schedule"
     });
 
-
   if(!confirmed){
     return;
   }
 
-
   const originalText =
     button.textContent;
 
+  button.disabled =
+    true;
 
-  button.disabled=true;
-
-  button.textContent=
-    "Rescheduling...";
-
+  button.textContent =
+    "Updating...";
 
   try{
 
@@ -4178,17 +5281,18 @@ async function rescheduleBooking(
                 quoteId,
 
               scheduled_for:
-                scheduledDate.toISOString()
+                scheduledDate
+                  .toISOString()
             })
         }
       );
 
-
     const data =
       await response
         .json()
-        .catch(()=>null);
-
+        .catch(
+          ()=>null
+        );
 
     if(
       !response.ok ||
@@ -4198,53 +5302,47 @@ async function rescheduleBooking(
 
       throw new Error(
         data?.error ||
-        "Could not reschedule booking."
+        "Could not update booking schedule."
       );
 
     }
 
-
     await loadQuotes();
-
 
     await showMessageModal({
       type:"success",
       eyebrow:
-        "Booking rescheduled",
-      title:
         "Schedule updated",
+      title:
+        "Booking schedule updated",
       message:
-        `The cleaning has been rescheduled to ${displayDate}. ` +
+        `The cleaning is scheduled for ${displayDate}. ` +
         "The quote price and saved payment method were not changed."
     });
 
-
-  }catch(error){
+  }
+  catch(error){
 
     await showMessageModal({
       type:"error",
       eyebrow:
-        "Reschedule error",
+        "Schedule error",
       title:
-        "Could not reschedule booking",
+        "Could not update booking",
       message:
         error.message ||
-        "Could not reschedule booking."
+        "Could not update booking schedule."
     });
 
+    button.disabled =
+      false;
 
-    button.disabled=false;
-
-    button.textContent=
+    button.textContent =
       originalText;
 
   }
 }
 
-
-/*
-  CANCEL BOOKING
-*/
 
 async function cancelBooking(
   quoteId
@@ -4255,11 +5353,9 @@ async function cancelBooking(
       `cancel-${quoteId}`
     );
 
-
   if(!button){
     return;
   }
-
 
   const confirmed =
     await showConfirmModal({
@@ -4282,21 +5378,18 @@ async function cancelBooking(
       danger:true
     });
 
-
   if(!confirmed){
     return;
   }
 
-
   const originalText =
     button.textContent;
 
+  button.disabled =
+    true;
 
-  button.disabled=true;
-
-  button.textContent=
+  button.textContent =
     "Cancelling...";
-
 
   try{
 
@@ -4322,12 +5415,12 @@ async function cancelBooking(
         }
       );
 
-
     const data =
       await response
         .json()
-        .catch(()=>null);
-
+        .catch(
+          ()=>null
+        );
 
     if(
       !response.ok ||
@@ -4342,9 +5435,7 @@ async function cancelBooking(
 
     }
 
-
     await loadQuotes();
-
 
     await showMessageModal({
       type:"success",
@@ -4357,8 +5448,8 @@ async function cancelBooking(
         "No payment was processed."
     });
 
-
-  }catch(error){
+  }
+  catch(error){
 
     await showMessageModal({
       type:"error",
@@ -4371,19 +5462,15 @@ async function cancelBooking(
         "Could not cancel booking."
     });
 
+    button.disabled =
+      false;
 
-    button.disabled=false;
-
-    button.textContent=
+    button.textContent =
       originalText;
 
   }
 }
 
-
-/*
-  MARK CLEANING COMPLETE
-*/
 
 async function markCleaningComplete(
   quoteId
@@ -4394,11 +5481,9 @@ async function markCleaningComplete(
       `complete-${quoteId}`
     );
 
-
   if(!button){
     return;
   }
-
 
   const confirmed =
     await showConfirmModal({
@@ -4419,21 +5504,18 @@ async function markCleaningComplete(
         "Cancel"
     });
 
-
   if(!confirmed){
     return;
   }
 
-
   const originalText =
     button.textContent;
 
+  button.disabled =
+    true;
 
-  button.disabled=true;
-
-  button.textContent=
+  button.textContent =
     "Marking Complete...";
-
 
   try{
 
@@ -4459,12 +5541,12 @@ async function markCleaningComplete(
         }
       );
 
-
     const data =
       await response
         .json()
-        .catch(()=>null);
-
+        .catch(
+          ()=>null
+        );
 
     if(
       !response.ok ||
@@ -4479,9 +5561,7 @@ async function markCleaningComplete(
 
     }
 
-
     await loadQuotes();
-
 
     await showMessageModal({
       type:"success",
@@ -4494,8 +5574,8 @@ async function markCleaningComplete(
         "The customer has NOT been charged."
     });
 
-
-  }catch(error){
+  }
+  catch(error){
 
     await showMessageModal({
       type:"error",
@@ -4508,19 +5588,15 @@ async function markCleaningComplete(
         "Could not mark cleaning complete."
     });
 
+    button.disabled =
+      false;
 
-    button.disabled=false;
-
-    button.textContent=
+    button.textContent =
       originalText;
 
   }
 }
 
-
-/*
-  CHARGE CUSTOMER
-*/
 
 async function chargeCustomer(
   quoteId,
@@ -4533,17 +5609,14 @@ async function chargeCustomer(
       `charge-${quoteId}`
     );
 
-
   if(!button){
     return;
   }
-
 
   const formattedAmount =
     money(
       displayedAmount
     );
-
 
   const confirmed =
     await showConfirmModal({
@@ -4567,21 +5640,18 @@ async function chargeCustomer(
         "Cancel"
     });
 
-
   if(!confirmed){
     return;
   }
 
-
   const originalText =
     button.textContent;
 
+  button.disabled =
+    true;
 
-  button.disabled=true;
-
-  button.textContent=
+  button.textContent =
     "Processing Payment...";
-
 
   try{
 
@@ -4607,12 +5677,12 @@ async function chargeCustomer(
         }
       );
 
-
     const data =
       await response
         .json()
-        .catch(()=>null);
-
+        .catch(
+          ()=>null
+        );
 
     if(
       !response.ok ||
@@ -4621,10 +5691,10 @@ async function chargeCustomer(
     ){
 
       /*
-        Stripe charged successfully but
+        Stripe charged successfully but the
         database update failed.
 
-        NEVER charge again.
+        Never retry this charge automatically.
       */
 
       if(
@@ -4651,25 +5721,26 @@ async function chargeCustomer(
             "I Understand"
         });
 
+        button.disabled =
+          true;
 
-        button.disabled=true;
-
-        button.textContent=
+        button.textContent =
           "Payment Needs Review";
-
 
         return;
       }
 
-
       /*
-        Saved payment failed.
-        Show secure recovery link.
+        Saved card failed.
+
+        The existing recovery-payment flow
+        can be sent to the customer.
       */
 
       if(
         data &&
-        data.customer_action_required===true &&
+        data.customer_action_required ===
+          true &&
         recoveryLink
       ){
 
@@ -4690,40 +5761,32 @@ async function chargeCustomer(
             recoveryLink
         });
 
-
         const closeButton =
           document.createElement(
             "button"
           );
 
-
         closeButton.className =
           "modal-button secondary";
 
-
         closeButton.textContent =
           "Close";
-
 
         closeButton.addEventListener(
           "click",
           ()=>closeModal(true)
         );
 
-
         const copyButton =
           document.createElement(
             "button"
           );
 
-
         copyButton.className =
           "modal-button primary-modal";
 
-
         copyButton.textContent =
           "Copy Payment Link";
-
 
         copyButton.addEventListener(
           "click",
@@ -4737,10 +5800,8 @@ async function chargeCustomer(
                   recoveryLink
                 );
 
-
               copyButton.textContent =
                 "Copied ✓";
-
 
               setTimeout(
                 ()=>{
@@ -4750,37 +5811,34 @@ async function chargeCustomer(
                 1500
               );
 
-
-            }catch{
+            }
+            catch{
 
               modalReferenceValue
                 .textContent =
                   recoveryLink;
 
             }
+
           }
         );
-
 
         modalActions.appendChild(
           closeButton
         );
 
-
         modalActions.appendChild(
           copyButton
         );
 
+        button.disabled =
+          false;
 
-        button.disabled=false;
-
-        button.textContent=
+        button.textContent =
           originalText;
-
 
         return;
       }
-
 
       throw new Error(
         data?.detail ||
@@ -4790,9 +5848,7 @@ async function chargeCustomer(
 
     }
 
-
     await loadQuotes();
-
 
     await showMessageModal({
       type:"success",
@@ -4814,8 +5870,8 @@ async function chargeCustomer(
         "Done"
     });
 
-
-  }catch(error){
+  }
+  catch(error){
 
     await showMessageModal({
       type:"error",
@@ -4828,15 +5884,19 @@ async function chargeCustomer(
         "The customer could not be charged."
     });
 
+    button.disabled =
+      false;
 
-    button.disabled=false;
-
-    button.textContent=
+    button.textContent =
       originalText;
 
   }
 }
 
+
+/*
+  GLOBAL DASHBOARD EVENTS
+*/
 
 dashboardSearch
   .addEventListener(
@@ -4859,16 +5919,29 @@ scheduleFilter
   );
 
 
+sortFilter
+  .addEventListener(
+    "change",
+    applyDashboardFilters
+  );
+
+
 clearFiltersButton
   .addEventListener(
     "click",
     ()=>{
 
-      dashboardSearch.value = "";
+      dashboardSearch.value =
+        "";
 
-      statusFilter.value = "all";
+      statusFilter.value =
+        "all";
 
-      scheduleFilter.value = "all";
+      scheduleFilter.value =
+        "all";
+
+      sortFilter.value =
+        "newest";
 
       applyDashboardFilters();
 
@@ -4889,7 +5962,8 @@ passwordInput
     event=>{
 
       if(
-        event.key==="Enter"
+        event.key ===
+        "Enter"
       ){
         login();
       }
@@ -4898,17 +5972,48 @@ passwordInput
   );
 
 
+overviewTab
+  .addEventListener(
+    "click",
+    ()=>setDashboardView(
+      "overview"
+    )
+  );
+
+
 quotesTab
   .addEventListener(
     "click",
-    ()=>setDashboardView("quotes")
+    ()=>setDashboardView(
+      "quotes"
+    )
   );
 
 
 scheduleTab
   .addEventListener(
     "click",
-    ()=>setDashboardView("schedule")
+    ()=>setDashboardView(
+      "schedule"
+    )
+  );
+
+
+customersTab
+  .addEventListener(
+    "click",
+    ()=>setDashboardView(
+      "customers"
+    )
+  );
+
+
+paymentsTab
+  .addEventListener(
+    "click",
+    ()=>setDashboardView(
+      "payments"
+    )
   );
 
 
@@ -4921,9 +6026,12 @@ refreshButton
 
         await loadQuotes();
 
-      }catch{
+      }
+      catch{
 
-        /* Error already rendered */
+        /*
+          Error is already displayed.
+        */
 
       }
 
@@ -4938,6 +6046,49 @@ document
   .addEventListener(
     "click",
     logout
+  );
+
+
+modalOverlay
+  .addEventListener(
+    "click",
+    event=>{
+
+      if(
+        event.target ===
+        modalOverlay &&
+        modalResolver
+      ){
+
+        closeModal(false);
+
+      }
+
+    }
+  );
+
+
+document
+  .addEventListener(
+    "keydown",
+    event=>{
+
+      if(
+        event.key ===
+        "Escape" &&
+        !modalOverlay
+          .classList
+          .contains(
+            "hidden"
+          ) &&
+        modalResolver
+      ){
+
+        closeModal(false);
+
+      }
+
+    }
   );
 
 </script>
