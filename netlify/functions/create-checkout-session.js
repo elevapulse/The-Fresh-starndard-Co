@@ -15,17 +15,30 @@ function stripeHeaders(secretKey) {
   };
 }
 
-async function stripePost(path, secretKey, params) {
+async function stripePost(
+  path,
+  secretKey,
+  params,
+  idempotencyKey = null
+) {
+  const headers = stripeHeaders(secretKey);
+
+  if (idempotencyKey) {
+    headers["Idempotency-Key"] = idempotencyKey;
+  }
+
   const response = await fetch(
     `https://api.stripe.com/v1/${path}`,
     {
       method: "POST",
-      headers: stripeHeaders(secretKey),
+      headers,
       body: params.toString()
     }
   );
 
-  const data = await response.json().catch(() => null);
+  const data = await response
+    .json()
+    .catch(() => null);
 
   if (!response.ok) {
     throw new Error(
@@ -38,6 +51,10 @@ async function stripePost(path, secretKey, params) {
 }
 
 export default async (request) => {
+  /*
+    ONLY POST
+  */
+
   if (request.method !== "POST") {
     return json(
       {
@@ -47,6 +64,10 @@ export default async (request) => {
       405
     );
   }
+
+  /*
+    SERVER CONFIGURATION
+  */
 
   const supabaseUrl =
     process.env.SUPABASE_URL;
@@ -65,11 +86,16 @@ export default async (request) => {
     return json(
       {
         ok: false,
-        error: "Server configuration is incomplete."
+        error:
+          "Server configuration is incomplete."
       },
       500
     );
   }
+
+  /*
+    READ REQUEST
+  */
 
   let body;
 
@@ -98,6 +124,19 @@ export default async (request) => {
     );
   }
 
+  /*
+    LOAD QUOTE DIRECTLY FROM DATABASE.
+
+    The browser supplies ONLY the secure token.
+
+    We do not trust the browser for:
+    - quote ID
+    - price
+    - customer
+    - status
+    - Stripe customer ID
+  */
+
   const quoteEndpoint =
     `${supabaseUrl.replace(/\/$/, "")}` +
     `/rest/v1/quotes` +
@@ -107,28 +146,36 @@ export default async (request) => {
   let quoteResponse;
 
   try {
-    quoteResponse = await fetch(
-      quoteEndpoint,
-      {
-        headers: {
-          apikey: serviceRoleKey,
-          Authorization: `Bearer ${serviceRoleKey}`
+    quoteResponse =
+      await fetch(
+        quoteEndpoint,
+        {
+          headers: {
+            apikey:
+              serviceRoleKey,
+
+            Authorization:
+              `Bearer ${serviceRoleKey}`
+          }
         }
-      }
-    );
+      );
   } catch (error) {
     return json(
       {
         ok: false,
-        error: "Could not connect to database.",
-        detail: error?.message || null
+        error:
+          "Could not connect to database.",
+        detail:
+          error?.message || null
       },
       500
     );
   }
 
   const quoteData =
-    await quoteResponse.json().catch(() => null);
+    await quoteResponse
+      .json()
+      .catch(() => null);
 
   if (!quoteResponse.ok) {
     return json(
@@ -136,6 +183,7 @@ export default async (request) => {
         ok: false,
         error:
           quoteData?.message ||
+          quoteData?.error ||
           "Could not retrieve quote."
       },
       500
@@ -157,45 +205,120 @@ export default async (request) => {
     );
   }
 
+  /*
+    VERIFY LOCKED QUOTE PRICE
+  */
+
+  const quotedPrice =
+    Number(quote.quoted_price);
+
   if (
-    !quote.quoted_price ||
-    Number(quote.quoted_price) <= 0
+    !Number.isInteger(quotedPrice) ||
+    quotedPrice <= 0
   ) {
     return json(
       {
         ok: false,
-        error: "This quote has not been priced."
+        error:
+          "This quote has not been priced."
       },
       400
     );
   }
+
+  /*
+    IMPORTANT STATUS PROTECTION
+
+    A new Stripe card setup should ONLY
+    be created while the quote is:
+
+    - quoted
+    - accepted
+
+    "accepted" is allowed because the customer
+    may have started Stripe Checkout previously
+    and then cancelled or closed the page before
+    actually saving the card.
+
+    Once the webhook successfully saves the card,
+    the quote should become card_saved/booked.
+
+    At that point we MUST NOT create another
+    card setup from an old offer link.
+  */
 
   const allowedStatuses = [
     "quoted",
-    "accepted",
-    "card_saved",
-    "booked"
+    "accepted"
   ];
 
   if (!allowedStatuses.includes(quote.status)) {
+    if (
+      quote.status === "card_saved" ||
+      quote.status === "booked"
+    ) {
+      return json(
+        {
+          ok: false,
+          already_confirmed: true,
+          error:
+            "This booking has already been confirmed and the payment method has already been secured."
+        },
+        409
+      );
+    }
+
+    if (
+      quote.status === "completed" ||
+      quote.status === "charged"
+    ) {
+      return json(
+        {
+          ok: false,
+          already_confirmed: true,
+          error:
+            "This booking has already progressed beyond the confirmation stage."
+        },
+        409
+      );
+    }
+
+    if (quote.status === "cancelled") {
+      return json(
+        {
+          ok: false,
+          error:
+            "This booking has been cancelled."
+        },
+        409
+      );
+    }
+
     return json(
       {
         ok: false,
-        error: "This quote is not available for booking."
+        error:
+          "This quote is not available for booking."
       },
-      400
+      409
     );
   }
 
-  let stripeCustomerId =
-    quote.stripe_customer_id;
-
   /*
-   * Create Stripe customer if this quote
-   * does not already have one.
-   */
+    STRIPE CUSTOMER
+
+    Reuse the existing Stripe customer whenever
+    one has already been created.
+  */
+
+  let stripeCustomerId =
+    String(
+      quote.stripe_customer_id || ""
+    ).trim();
 
   if (!stripeCustomerId) {
+    let customer;
+
     try {
       const customerParams =
         new URLSearchParams();
@@ -214,6 +337,13 @@ export default async (request) => {
         );
       }
 
+      if (quote.customer_phone) {
+        customerParams.set(
+          "phone",
+          quote.customer_phone
+        );
+      }
+
       customerParams.set(
         "metadata[quote_id]",
         quote.id
@@ -224,11 +354,21 @@ export default async (request) => {
         quote.quote_number || ""
       );
 
-      const customer =
+      /*
+        Prevent duplicate Stripe customers if
+        multiple requests arrive at nearly the
+        same time for the same quote.
+      */
+
+      const customerIdempotencyKey =
+        `fresh-standard-customer-${quote.id}`;
+
+      customer =
         await stripePost(
           "customers",
           stripeSecretKey,
-          customerParams
+          customerParams,
+          customerIdempotencyKey
         );
 
       stripeCustomerId =
@@ -238,49 +378,79 @@ export default async (request) => {
       return json(
         {
           ok: false,
-          error: "Could not create Stripe customer.",
-          detail: error.message
+          error:
+            "Could not create Stripe customer.",
+          detail:
+            error?.message || null
         },
         500
       );
     }
 
+    /*
+      SAVE STRIPE CUSTOMER TO DATABASE
+    */
+
     const saveCustomerEndpoint =
       `${supabaseUrl.replace(/\/$/, "")}` +
-      `/rest/v1/quotes?id=eq.${encodeURIComponent(quote.id)}`;
+      `/rest/v1/quotes` +
+      `?id=eq.${encodeURIComponent(quote.id)}`;
 
-    const saveCustomerResponse =
-      await fetch(
-        saveCustomerEndpoint,
-        {
-          method: "PATCH",
+    let saveCustomerResponse;
 
-          headers: {
-            apikey: serviceRoleKey,
-            Authorization:
-              `Bearer ${serviceRoleKey}`,
-            "content-type":
-              "application/json"
-          },
+    try {
+      saveCustomerResponse =
+        await fetch(
+          saveCustomerEndpoint,
+          {
+            method: "PATCH",
 
-          body: JSON.stringify({
-            stripe_customer_id:
-              stripeCustomerId
-          })
-        }
-      );
+            headers: {
+              apikey:
+                serviceRoleKey,
 
-    if (!saveCustomerResponse.ok) {
-      const saveError =
-        await saveCustomerResponse
-          .json()
-          .catch(() => null);
+              Authorization:
+                `Bearer ${serviceRoleKey}`,
 
+              "content-type":
+                "application/json",
+
+              Prefer:
+                "return=representation"
+            },
+
+            body:
+              JSON.stringify({
+                stripe_customer_id:
+                  stripeCustomerId
+              })
+          }
+        );
+    } catch (error) {
       return json(
         {
           ok: false,
           error:
-            saveError?.message ||
+            "Stripe customer was created but could not be saved.",
+          detail:
+            error?.message || null
+        },
+        500
+      );
+    }
+
+    const saveCustomerData =
+      await saveCustomerResponse
+        .json()
+        .catch(() => null);
+
+    if (!saveCustomerResponse.ok) {
+      return json(
+        {
+          ok: false,
+          error:
+            saveCustomerData?.message ||
+            saveCustomerData?.error ||
             "Could not save Stripe customer."
         },
         500
@@ -289,144 +459,273 @@ export default async (request) => {
   }
 
   /*
-   * Create Stripe Checkout Session
-   * in SETUP mode.
-   *
-   * This SAVES the card.
-   * It DOES NOT charge the quoted amount.
-   */
+    CREATE STRIPE CHECKOUT SESSION
+
+    SETUP MODE ONLY.
+
+    This securely collects and saves the
+    customer's card.
+
+    NO MONEY IS CHARGED HERE.
+  */
+
+  const params =
+    new URLSearchParams();
+
+  params.set(
+    "mode",
+    "setup"
+  );
+
+  params.set(
+    "customer",
+    stripeCustomerId
+  );
+
+  params.set(
+    "payment_method_types[0]",
+    "card"
+  );
+
+  params.set(
+    "success_url",
+    "https://thefreshstandardco.com/offer/success/" +
+    "?session_id={CHECKOUT_SESSION_ID}"
+  );
+
+  params.set(
+    "cancel_url",
+    "https://thefreshstandardco.com/offer/" +
+    "?token=" +
+    encodeURIComponent(token)
+  );
+
+  /*
+    SESSION METADATA
+
+    The verified Stripe webhook uses this
+    information to connect the completed
+    Checkout Session back to the quote.
+  */
+
+  params.set(
+    "metadata[quote_id]",
+    quote.id
+  );
+
+  params.set(
+    "metadata[quote_number]",
+    quote.quote_number || ""
+  );
+
+  params.set(
+    "metadata[quote_token]",
+    token
+  );
+
+  params.set(
+    "metadata[checkout_type]",
+    "card_setup"
+  );
+
+  /*
+    SETUP INTENT METADATA
+  */
+
+  params.set(
+    "setup_intent_data[metadata][quote_id]",
+    quote.id
+  );
+
+  params.set(
+    "setup_intent_data[metadata][quote_number]",
+    quote.quote_number || ""
+  );
+
+  params.set(
+    "setup_intent_data[metadata][checkout_type]",
+    "card_setup"
+  );
+
+  /*
+    DUPLICATE SESSION PROTECTION
+
+    This protects against:
+    - double-clicks
+    - repeated requests
+    - multiple browser tabs
+    - simultaneous requests
+
+    For the same quote, Stripe returns the
+    same Checkout Session rather than creating
+    multiple identical setup sessions.
+  */
+
+  const checkoutIdempotencyKey =
+    `fresh-standard-card-setup-${quote.id}`;
 
   let session;
 
   try {
-    const params =
-      new URLSearchParams();
-
-    params.set(
-      "mode",
-      "setup"
-    );
-
-    params.set(
-      "customer",
-      stripeCustomerId
-    );
-
-    params.set(
-      "payment_method_types[0]",
-      "card"
-    );
-
-    params.set(
-      "success_url",
-      "https://thefreshstandardco.com/offer/success/" +
-      "?session_id={CHECKOUT_SESSION_ID}"
-    );
-
-    params.set(
-      "cancel_url",
-      "https://thefreshstandardco.com/offer/" +
-      "?token=" +
-      encodeURIComponent(token)
-    );
-
-    params.set(
-      "metadata[quote_id]",
-      quote.id
-    );
-
-    params.set(
-      "metadata[quote_number]",
-      quote.quote_number || ""
-    );
-
-    params.set(
-      "metadata[quote_token]",
-      token
-    );
-
-    params.set(
-      "setup_intent_data[metadata][quote_id]",
-      quote.id
-    );
-
-    params.set(
-      "setup_intent_data[metadata][quote_number]",
-      quote.quote_number || ""
-    );
-
     session =
       await stripePost(
         "checkout/sessions",
         stripeSecretKey,
-        params
+        params,
+        checkoutIdempotencyKey
       );
-
   } catch (error) {
     return json(
       {
         ok: false,
-        error: "Could not create secure checkout.",
-        detail: error.message
+        error:
+          "Could not create secure checkout.",
+        detail:
+          error?.message || null
+      },
+      500
+    );
+  }
+
+  if (
+    !session ||
+    !session.id ||
+    !session.url
+  ) {
+    return json(
+      {
+        ok: false,
+        error:
+          "Stripe did not return a valid secure checkout session."
       },
       500
     );
   }
 
   /*
-   * Save session information.
-   */
+    SAVE CHECKOUT SESSION.
+
+    Status becomes "accepted" because the
+    customer has accepted the quote and entered
+    the secure card-confirmation process.
+
+    The Stripe webhook is responsible for
+    moving the record forward after the card
+    is actually saved.
+  */
 
   const updateEndpoint =
     `${supabaseUrl.replace(/\/$/, "")}` +
-    `/rest/v1/quotes?id=eq.${encodeURIComponent(quote.id)}`;
+    `/rest/v1/quotes` +
+    `?id=eq.${encodeURIComponent(quote.id)}`;
 
-  const updateResponse =
-    await fetch(
-      updateEndpoint,
-      {
-        method: "PATCH",
+  let updateResponse;
 
-        headers: {
-          apikey: serviceRoleKey,
-          Authorization:
-            `Bearer ${serviceRoleKey}`,
-          "content-type":
-            "application/json"
-        },
+  try {
+    updateResponse =
+      await fetch(
+        updateEndpoint,
+        {
+          method: "PATCH",
 
-        body: JSON.stringify({
-          stripe_setup_session_id:
-            session.id,
+          headers: {
+            apikey:
+              serviceRoleKey,
 
-          quote_accepted_at:
-            new Date().toISOString(),
+            Authorization:
+              `Bearer ${serviceRoleKey}`,
 
-          status:
-            "accepted"
-        })
-      }
-    );
+            "content-type":
+              "application/json",
 
-  if (!updateResponse.ok) {
-    const updateError =
-      await updateResponse
-        .json()
-        .catch(() => null);
+            Prefer:
+              "return=representation"
+          },
 
+          body:
+            JSON.stringify({
+              stripe_setup_session_id:
+                session.id,
+
+              quote_accepted_at:
+                quote.quote_accepted_at ||
+                new Date().toISOString(),
+
+              status:
+                "accepted"
+            })
+        }
+      );
+  } catch (error) {
     return json(
       {
         ok: false,
         error:
-          updateError?.message ||
+          "Secure checkout was created but the booking could not be updated.",
+        detail:
+          error?.message || null
+      },
+      500
+    );
+  }
+
+  const updateData =
+    await updateResponse
+      .json()
+      .catch(() => null);
+
+  if (!updateResponse.ok) {
+    return json(
+      {
+        ok: false,
+        error:
+          updateData?.message ||
+          updateData?.error ||
           "Checkout was created but the quote could not be updated."
       },
       500
     );
   }
 
+  const updatedQuote =
+    Array.isArray(updateData)
+      ? updateData[0]
+      : updateData;
+
+  if (!updatedQuote) {
+    return json(
+      {
+        ok: false,
+        error:
+          "Checkout was created but the booking update could not be confirmed."
+      },
+      500
+    );
+  }
+
+  /*
+    RETURN ONLY THE STRIPE-HOSTED CHECKOUT URL.
+
+    Card information never passes through
+    our website or database.
+  */
+
   return json({
     ok: true,
-    checkout_url: session.url
+
+    checkout_url:
+      session.url,
+
+    checkout_session_id:
+      session.id,
+
+    quote_number:
+      updatedQuote.quote_number ||
+      quote.quote_number ||
+      null,
+
+    status:
+      updatedQuote.status ||
+      "accepted"
   });
 };
