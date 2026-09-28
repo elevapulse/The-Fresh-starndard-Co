@@ -3,557 +3,430 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex,nofollow">
 <title>Owner Dashboard | The Fresh Standard Co.</title>
-
 <style>
-*{box-sizing:border-box}
-
 :root{
   --green:#17352b;
-  --sage:#829381;
+  --green-2:#23493b;
+  --sage:#718679;
   --cream:#f4f1e9;
   --paper:#fffdf8;
-  --line:#dedfd8;
-  --muted:#6e7772;
-  --red:#9d4141;
+  --ink:#1c2823;
+  --muted:#69756f;
+  --line:#dce2dc;
+  --red:#8f3d3d;
 }
-
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
 body{
-  margin:0;
   background:var(--cream);
-  color:var(--green);
-  font-family:Arial,Helvetica,sans-serif;
+  color:var(--ink);
+  font-family:Inter,Arial,sans-serif;
 }
-
-button,input{font:inherit}
 .hidden{display:none!important}
-
+button,input{font:inherit}
+button{transition:.18s ease}
+button:hover:not(:disabled){transform:translateY(-1px)}
+button:disabled{cursor:not-allowed;opacity:.62}
 .login-page{
   min-height:100vh;
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:25px;
+  padding:28px;
 }
-
 .login-card{
-  width:100%;
-  max-width:430px;
+  width:min(470px,100%);
+  padding:48px;
   background:var(--paper);
-  padding:45px;
-  border-radius:24px;
-  box-shadow:0 20px 60px rgba(23,53,43,.10);
+  border:1px solid var(--line);
+  border-radius:28px;
+  box-shadow:0 25px 80px rgba(23,53,43,.10);
 }
-
-.brand{
-  text-align:center;
-  margin-bottom:35px;
-}
-
+.brand{margin-bottom:38px}
 .brand-main{
+  color:var(--green);
   font-family:Georgia,serif;
-  font-size:27px;
-  letter-spacing:2px;
+  font-size:28px;
+  letter-spacing:3px;
 }
-
 .brand-sub{
-  margin-top:6px;
-  font-size:10px;
-  letter-spacing:4px;
-  text-transform:uppercase;
   color:var(--sage);
+  font-size:12px;
+  letter-spacing:3px;
+  text-transform:uppercase;
 }
-
-h1,h2,h3{
-  font-family:Georgia,serif;
-  font-weight:400;
-}
-
 .login-card h1{
-  text-align:center;
-  margin-bottom:8px;
+  margin:0 0 12px;
+  font-family:Georgia,serif;
+  font-size:40px;
+  font-weight:400;
+  color:var(--green);
 }
-
 .login-description{
-  text-align:center;
+  margin-bottom:28px;
   color:var(--muted);
-  margin-bottom:30px;
   line-height:1.6;
 }
-
-input{
+.login-card input{
   width:100%;
-  padding:15px 17px;
-  border-radius:12px;
+  padding:16px 18px;
   border:1px solid var(--line);
-  background:white;
-  color:var(--green);
+  border-radius:14px;
   outline:none;
+  background:white;
+  color:var(--ink);
 }
-
-input:focus{
+.login-card input:focus{
   border-color:var(--sage);
+  box-shadow:0 0 0 3px rgba(113,134,121,.12);
 }
-
 .primary{
-  width:100%;
   border:0;
+  border-radius:999px;
   background:var(--green);
   color:white;
-  padding:16px;
-  border-radius:999px;
   font-weight:700;
   cursor:pointer;
 }
-
-.primary:disabled{
-  opacity:.55;
-  cursor:not-allowed;
+.login-button{
+  width:100%;
+  margin-top:14px;
+  padding:15px 20px;
 }
-
-.login-button{margin-top:14px}
-
 .login-error{
+  margin-top:14px;
   color:var(--red);
-  text-align:center;
   font-size:13px;
-  margin-top:15px;
+  font-weight:600;
 }
-
 header{
   background:var(--green);
   color:white;
-  padding:25px 32px;
+  padding:24px 34px;
 }
-
 .header-inner{
-  max-width:1250px;
+  width:min(1240px,100%);
   margin:auto;
   display:flex;
-  justify-content:space-between;
   align-items:center;
-  gap:25px;
+  justify-content:space-between;
+  gap:20px;
 }
-
 .header-brand{
   font-family:Georgia,serif;
-  font-size:22px;
-  letter-spacing:1px;
+  font-size:21px;
+  letter-spacing:2px;
 }
-
 .header-label{
-  margin-top:5px;
-  color:#cbd6cf;
-  font-size:12px;
+  margin-top:4px;
+  color:#c8d3cc;
+  font-size:11px;
   letter-spacing:2px;
   text-transform:uppercase;
 }
-
 .logout{
-  border:1px solid rgba(255,255,255,.35);
-  color:white;
-  background:transparent;
+  border:1px solid rgba(255,255,255,.25);
   border-radius:999px;
-  padding:10px 18px;
+  padding:10px 17px;
+  background:transparent;
+  color:white;
   cursor:pointer;
 }
-
 main{
-  max-width:1250px;
-  margin:auto;
-  padding:45px 25px 80px;
+  width:min(1240px,calc(100% - 40px));
+  margin:0 auto;
+  padding:50px 0 80px;
 }
-
 .top{
   display:flex;
-  justify-content:space-between;
-  gap:25px;
   align-items:flex-end;
+  justify-content:space-between;
+  gap:24px;
   margin-bottom:30px;
 }
-
 .top h1{
-  font-size:40px;
   margin:0;
+  color:var(--green);
+  font-family:Georgia,serif;
+  font-size:46px;
+  font-weight:400;
 }
-
 .top p{
-  color:var(--muted);
   margin:8px 0 0;
+  color:var(--muted);
 }
-
 .refresh{
+  padding:12px 20px;
   border:1px solid var(--line);
+  border-radius:999px;
   background:var(--paper);
   color:var(--green);
-  padding:11px 18px;
-  border-radius:999px;
+  font-weight:700;
   cursor:pointer;
 }
-
 .stats{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:15px;
   margin-bottom:30px;
 }
-
 .stat{
-  background:var(--paper);
-  border-radius:18px;
   padding:20px;
-  border:1px solid rgba(23,53,43,.05);
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:18px;
 }
-
 .stat-label{
   color:var(--muted);
-  font-size:12px;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:1.5px;
   text-transform:uppercase;
-  letter-spacing:1px;
 }
-
 .stat-value{
+  margin-top:6px;
+  color:var(--green);
   font-family:Georgia,serif;
-  font-size:31px;
-  margin-top:7px;
+  font-size:34px;
 }
-
 .quotes{
   display:grid;
-  gap:18px;
+  gap:20px;
 }
-
 .quote-card{
+  padding:28px;
   background:var(--paper);
-  border-radius:22px;
-  padding:26px;
-  border:1px solid rgba(23,53,43,.06);
-  box-shadow:0 10px 35px rgba(23,53,43,.05);
+  border:1px solid var(--line);
+  border-radius:24px;
+  box-shadow:0 14px 45px rgba(23,53,43,.05);
 }
-
 .quote-head{
   display:flex;
   justify-content:space-between;
-  gap:25px;
+  gap:20px;
   margin-bottom:22px;
 }
-
 .quote-number{
   color:var(--sage);
-  font-size:12px;
+  font-size:10px;
   font-weight:700;
-  letter-spacing:1px;
-}
-
-.customer{
-  font-family:Georgia,serif;
-  font-size:26px;
-  margin-top:5px;
-}
-
-.status-badge{
-  align-self:flex-start;
-  padding:8px 12px;
-  border-radius:999px;
-  background:#edf1ec;
-  font-size:11px;
+  letter-spacing:1.5px;
   text-transform:uppercase;
-  letter-spacing:1px;
-  font-weight:700;
 }
-
+.customer-name{
+  margin-top:5px;
+  color:var(--green);
+  font-family:Georgia,serif;
+  font-size:29px;
+}
+.status{
+  height:max-content;
+  padding:7px 11px;
+  border-radius:999px;
+  background:#e8eee9;
+  color:var(--green);
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+.status.new{background:#ecebe5}
+.status.quoted{background:#e7eee8}
+.status.accepted,
+.status.card_saved,
+.status.booked{background:#e5eee7}
+.status.completed{background:#e8eee6}
+.status.charged{background:#dce9df}
+.status.cancelled{
+  background:#f2e5e5;
+  color:var(--red);
+}
 .quote-grid{
   display:grid;
-  grid-template-columns:1.2fr 1fr;
-  gap:30px;
+  grid-template-columns:minmax(0,1.45fr) minmax(260px,.55fr);
+  gap:28px;
 }
-
 .details{
   display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:15px 25px;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:15px;
 }
-
+.detail{
+  padding:14px 15px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fff;
+}
 .detail-label{
+  margin-bottom:5px;
   color:var(--muted);
-  font-size:11px;
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:1.3px;
   text-transform:uppercase;
-  letter-spacing:1px;
-  margin-bottom:4px;
 }
-
 .detail-value{
+  color:var(--ink);
+  font-size:14px;
   line-height:1.5;
   word-break:break-word;
 }
-
 .notes{
   grid-column:1/-1;
-  background:#f6f4ee;
-  padding:14px;
-  border-radius:12px;
 }
-
 .pricing{
   border-left:1px solid var(--line);
-  padding-left:30px;
+  padding-left:28px;
 }
-
 .pricing h3{
-  margin:0 0 15px;
-  font-size:22px;
+  margin:0 0 14px;
+  color:var(--green);
+  font-family:Georgia,serif;
+  font-size:24px;
+  font-weight:400;
 }
-
 .price-wrap{
   position:relative;
-  margin-bottom:12px;
+  margin-bottom:11px;
 }
-
 .dollar{
   position:absolute;
-  left:17px;
+  left:16px;
   top:50%;
   transform:translateY(-50%);
-  font-weight:700;
-}
-
-.price-input{
-  padding-left:34px;
-  font-size:18px;
-  font-weight:700;
-}
-
-.price-input:disabled{
-  background:#eeece5;
-  color:var(--green);
-  opacity:1;
-  cursor:not-allowed;
-}
-
-.locked-note{
-  margin-top:9px;
   color:var(--muted);
-  font-size:12px;
-  line-height:1.5;
+  font-weight:700;
 }
-
+.price-input{
+  width:100%;
+  padding:14px 14px 14px 31px;
+  border:1px solid var(--line);
+  border-radius:13px;
+  outline:none;
+  background:white;
+}
+.price-input:focus{
+  border-color:var(--sage);
+  box-shadow:0 0 0 3px rgba(113,134,121,.12);
+}
+.create-offer,
+.copy,
+.complete-button,
+.reschedule-button,
+.cancel-button,
+.charge-button,
 .locked-button{
   width:100%;
-  border:1px solid var(--line);
-  background:#e9e7e0;
-  color:var(--muted);
-  padding:16px;
-  border-radius:999px;
-  font-weight:700;
-  cursor:not-allowed;
-}
-
-.offer-result{
-  margin-top:15px;
-  padding:15px;
-  border-radius:12px;
-  background:#eef2ed;
-}
-
-.offer-price{
-  font-family:Georgia,serif;
-  font-size:25px;
-  margin-bottom:10px;
-}
-
-.copy{
-  width:100%;
-  border:1px solid var(--green);
-  color:var(--green);
-  background:transparent;
-  padding:12px;
-  border-radius:999px;
-  cursor:pointer;
-  font-weight:700;
-}
-
-.existing-offer{
-  color:var(--muted);
-  font-size:12px;
-  margin-top:10px;
-  line-height:1.5;
-}
-
-.booking-action{
-  margin-top:18px;
-  padding:18px;
-  background:#f3f4ef;
-  border-radius:14px;
-}
-
-.booking-action-title{
-  font-family:Georgia,serif;
-  font-size:20px;
-  margin-bottom:7px;
-}
-
-.booking-action-text{
-  color:var(--muted);
-  font-size:13px;
-  line-height:1.5;
-  margin-bottom:14px;
-}
-
-.schedule-display{
-  margin-bottom:14px;
-  padding:12px 14px;
-  border-radius:12px;
-  background:#fff;
-  border:1px solid var(--line);
-}
-
-.schedule-label{
-  color:var(--muted);
-  font-size:10px;
-  text-transform:uppercase;
-  letter-spacing:1px;
-  margin-bottom:5px;
-}
-
-.schedule-value{
-  font-weight:700;
-  line-height:1.4;
-}
-
-.complete-button{
-  width:100%;
   border:0;
-  background:var(--sage);
+  border-radius:999px;
+  padding:13px 16px;
+  font-weight:700;
+}
+.create-offer,
+.complete-button,
+.charge-button{
+  background:var(--green);
   color:white;
-  padding:14px;
-  border-radius:999px;
   cursor:pointer;
-  font-weight:700;
 }
-
-.complete-button:disabled{
-  opacity:.55;
-  cursor:wait;
-}
-
-.reschedule-button{
-  width:100%;
+.copy{
   margin-top:10px;
-  border:1px solid var(--green);
-  background:transparent;
+  background:#e8eee9;
   color:var(--green);
-  padding:13px;
-  border-radius:999px;
   cursor:pointer;
-  font-weight:700;
 }
-
-.reschedule-button:hover{
-  background:#eef2ed;
+.reschedule-button{
+  margin-top:9px;
+  background:#e8eee9;
+  color:var(--green);
+  cursor:pointer;
 }
-
-.reschedule-button:disabled{
-  opacity:.55;
-  cursor:wait;
-}
-
 .cancel-button{
-  width:100%;
-  margin-top:10px;
-  border:1px solid var(--red);
-  background:transparent;
+  margin-top:9px;
+  background:#f3e8e8;
   color:var(--red);
-  padding:13px;
-  border-radius:999px;
   cursor:pointer;
-  font-weight:700;
 }
-
-.cancel-button:hover{
-  background:#f7eded;
-}
-
-.cancel-button:disabled{
-  opacity:.55;
-  cursor:wait;
-}
-
-.cancelled-box{
-  margin-top:18px;
-  padding:18px;
-  background:#f5eaea;
-  border-radius:14px;
-}
-
-.cancelled-title{
-  font-family:Georgia,serif;
-  font-size:20px;
-  margin-bottom:6px;
-  color:var(--red);
-}
-
-.cancelled-text{
+.locked-button{
+  background:#ecebe5;
   color:var(--muted);
-  font-size:13px;
-  line-height:1.5;
 }
-
-.completed-box{
-  margin-top:18px;
-  padding:18px;
-  background:#e8efe9;
-  border-radius:14px;
-}
-
-.completed-title{
-  font-family:Georgia,serif;
-  font-size:20px;
-  margin-bottom:6px;
-}
-
-.completed-text{
-  color:var(--muted);
-  font-size:13px;
-  line-height:1.5;
-}
-
-.amount-due{
-  margin-top:15px;
-  padding-top:15px;
-  border-top:1px solid rgba(23,53,43,.12);
-}
-
-.amount-label{
+.locked-note,
+.existing-offer{
+  margin-top:9px;
   color:var(--muted);
   font-size:11px;
-  text-transform:uppercase;
-  letter-spacing:1px;
-  margin-bottom:4px;
+  line-height:1.5;
 }
-
-.amount-value{
+.offer-result{
+  margin-top:14px;
+  padding-top:14px;
+  border-top:1px solid var(--line);
+}
+.offer-price{
+  color:var(--green);
   font-family:Georgia,serif;
   font-size:28px;
 }
-
-.charge-button{
-  width:100%;
-  margin-top:15px;
-  border:0;
-  background:var(--green);
-  color:white;
-  padding:15px;
-  border-radius:999px;
-  cursor:pointer;
+.booking-action,
+.completed-box,
+.cancelled-box{
+  margin-top:18px;
+  padding:17px;
+  border-radius:16px;
+  background:#eef2ed;
+}
+.cancelled-box{background:#f4eaea}
+.booking-action-title,
+.completed-title,
+.cancelled-title{
+  color:var(--green);
+  font-weight:800;
+}
+.cancelled-title{color:var(--red)}
+.booking-action-text,
+.completed-text,
+.cancelled-text{
+  margin-top:6px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.55;
+}
+.schedule-display{
+  margin-top:14px;
+  padding:13px;
+  border-radius:12px;
+  background:rgba(255,255,255,.72);
+}
+.schedule-label,
+.amount-label{
+  color:var(--muted);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:1.3px;
+  text-transform:uppercase;
+}
+.schedule-value{
+  margin-top:5px;
+  color:var(--green);
   font-weight:700;
+  line-height:1.45;
 }
-
-.charge-button:disabled{
-  opacity:.55;
-  cursor:wait;
+.complete-button{margin-top:13px}
+.amount-due{
+  margin-top:14px;
+  padding:13px;
+  border-radius:12px;
+  background:rgba(255,255,255,.72);
 }
-
+.amount-value{
+  margin-top:4px;
+  color:var(--green);
+  font-family:Georgia,serif;
+  font-size:28px;
+}
+.charge-button{margin-top:13px}
 .payment-id{
   margin-top:10px;
   color:var(--muted);
@@ -561,7 +434,6 @@ main{
   line-height:1.5;
   word-break:break-all;
 }
-
 .modal-overlay{
   position:fixed;
   inset:0;
@@ -573,7 +445,6 @@ main{
   background:rgba(12,30,24,.52);
   backdrop-filter:blur(8px);
 }
-
 .modal-card{
   width:100%;
   max-width:470px;
@@ -584,7 +455,6 @@ main{
   border:1px solid rgba(23,53,43,.08);
   text-align:center;
 }
-
 .modal-icon{
   width:58px;
   height:58px;
@@ -598,17 +468,14 @@ main{
   font-size:27px;
   font-weight:700;
 }
-
 .modal-icon.error{
   background:#f5e8e8;
   color:var(--red);
 }
-
 .modal-icon.warning{
   background:#f3eee1;
   color:#755f2e;
 }
-
 .modal-eyebrow{
   color:var(--sage);
   font-size:10px;
@@ -617,14 +484,12 @@ main{
   text-transform:uppercase;
   margin-bottom:8px;
 }
-
 .modal-title{
   margin:0;
   font-family:Georgia,serif;
   font-size:31px;
   font-weight:400;
 }
-
 .modal-message{
   margin:13px auto 0;
   max-width:390px;
@@ -632,14 +497,12 @@ main{
   font-size:14px;
   line-height:1.65;
 }
-
 .modal-amount{
   margin:24px 0 0;
   padding:18px;
   border-radius:16px;
   background:#eef2ed;
 }
-
 .modal-amount-label{
   color:var(--muted);
   font-size:10px;
@@ -647,13 +510,11 @@ main{
   letter-spacing:1.5px;
   text-transform:uppercase;
 }
-
 .modal-amount-value{
   margin-top:4px;
   font-family:Georgia,serif;
   font-size:35px;
 }
-
 .modal-reference{
   margin-top:17px;
   padding:14px;
@@ -661,7 +522,6 @@ main{
   border-radius:13px;
   text-align:left;
 }
-
 .modal-reference-label{
   color:var(--muted);
   font-size:9px;
@@ -670,19 +530,59 @@ main{
   text-transform:uppercase;
   margin-bottom:5px;
 }
-
 .modal-reference-value{
   font-size:12px;
   line-height:1.5;
   word-break:break-all;
 }
-
+.modal-form{
+  margin-top:22px;
+  text-align:left;
+}
+.modal-field{margin-top:14px}
+.modal-field:first-child{margin-top:0}
+.modal-field label{
+  display:block;
+  margin-bottom:7px;
+  color:var(--green);
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:1.1px;
+  text-transform:uppercase;
+}
+.modal-field input{
+  width:100%;
+  border:1px solid #d8ddd7;
+  background:#fff;
+  color:var(--ink);
+  border-radius:13px;
+  padding:13px 14px;
+  font:inherit;
+  outline:none;
+}
+.modal-field input:focus{
+  border-color:var(--sage);
+  box-shadow:0 0 0 3px rgba(105,126,112,.12);
+}
+.modal-field-error{
+  min-height:18px;
+  margin-top:8px;
+  color:var(--red);
+  font-size:12px;
+  font-weight:600;
+}
+.modal-card.schedule-modal{
+  max-width:520px;
+  text-align:left;
+}
+.modal-card.schedule-modal .modal-icon{margin-left:0}
+.modal-card.schedule-modal .modal-message{margin-left:0}
+.modal-card.schedule-modal .modal-actions{margin-top:18px}
 .modal-actions{
   display:flex;
   gap:10px;
   margin-top:25px;
 }
-
 .modal-button{
   flex:1;
   border:0;
@@ -691,22 +591,18 @@ main{
   font-weight:700;
   cursor:pointer;
 }
-
 .modal-button.secondary{
   background:#eceae3;
   color:var(--green);
 }
-
 .modal-button.primary-modal{
   background:var(--green);
   color:white;
 }
-
 .modal-button.danger{
   background:var(--red);
   color:white;
 }
-
 .empty,.loading{
   background:var(--paper);
   border-radius:20px;
@@ -714,7 +610,6 @@ main{
   text-align:center;
   color:var(--muted);
 }
-
 @media(max-width:850px){
   .stats{grid-template-columns:repeat(2,1fr)}
   .quote-grid{grid-template-columns:1fr}
@@ -725,7 +620,6 @@ main{
     padding-top:25px;
   }
 }
-
 @media(max-width:550px){
   .login-card{padding:35px 22px}
   header{padding:20px}
@@ -744,12 +638,10 @@ main{
 }
 </style>
 </head>
-
 <body>
 
 <section id="loginPage" class="login-page">
   <div class="login-card">
-
     <div class="brand">
       <div class="brand-main">THE FRESH</div>
       <div class="brand-sub">Standard Co.</div>
@@ -773,16 +665,13 @@ main{
     </button>
 
     <div id="loginError" class="login-error hidden"></div>
-
   </div>
 </section>
-
 
 <section id="dashboard" class="hidden">
 
 <header>
   <div class="header-inner">
-
     <div>
       <div class="header-brand">
         THE FRESH STANDARD CO.
@@ -796,7 +685,6 @@ main{
     <button id="logoutButton" class="logout">
       Sign Out
     </button>
-
   </div>
 </header>
 
@@ -846,7 +734,6 @@ main{
 </main>
 </section>
 
-
 <div id="modalOverlay" class="modal-overlay hidden">
 
   <div class="modal-card" role="dialog" aria-modal="true">
@@ -882,101 +769,133 @@ main{
 
 </div>
 
-
 <script>
 
-let adminPassword = "";
-let modalResolver = null;
-
 const loginPage =
-  document.getElementById("loginPage");
+  document.getElementById(
+    "loginPage"
+  );
 
 const dashboard =
-  document.getElementById("dashboard");
+  document.getElementById(
+    "dashboard"
+  );
 
 const passwordInput =
-  document.getElementById("password");
+  document.getElementById(
+    "password"
+  );
 
 const loginButton =
-  document.getElementById("loginButton");
+  document.getElementById(
+    "loginButton"
+  );
 
 const loginError =
-  document.getElementById("loginError");
+  document.getElementById(
+    "loginError"
+  );
 
 const quotesContainer =
-  document.getElementById("quotes");
+  document.getElementById(
+    "quotes"
+  );
+
+const refreshButton =
+  document.getElementById(
+    "refreshButton"
+  );
 
 const modalOverlay =
-  document.getElementById("modalOverlay");
+  document.getElementById(
+    "modalOverlay"
+  );
 
 const modalIcon =
-  document.getElementById("modalIcon");
+  document.getElementById(
+    "modalIcon"
+  );
 
 const modalEyebrow =
-  document.getElementById("modalEyebrow");
+  document.getElementById(
+    "modalEyebrow"
+  );
 
 const modalTitle =
-  document.getElementById("modalTitle");
+  document.getElementById(
+    "modalTitle"
+  );
 
 const modalMessage =
-  document.getElementById("modalMessage");
+  document.getElementById(
+    "modalMessage"
+  );
 
 const modalAmount =
-  document.getElementById("modalAmount");
+  document.getElementById(
+    "modalAmount"
+  );
 
 const modalAmountValue =
-  document.getElementById("modalAmountValue");
+  document.getElementById(
+    "modalAmountValue"
+  );
 
 const modalReference =
-  document.getElementById("modalReference");
+  document.getElementById(
+    "modalReference"
+  );
 
 const modalReferenceLabel =
-  document.getElementById("modalReferenceLabel");
+  document.getElementById(
+    "modalReferenceLabel"
+  );
 
 const modalReferenceValue =
-  document.getElementById("modalReferenceValue");
+  document.getElementById(
+    "modalReferenceValue"
+  );
 
 const modalActions =
-  document.getElementById("modalActions");
+  document.getElementById(
+    "modalActions"
+  );
+
+let adminPassword = "";
+
+let modalResolver = null;
 
 
 function escapeHtml(value){
-  return String(value ?? "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
+
+  return String(
+    value ?? ""
+  )
+  .replaceAll("&","&amp;")
+  .replaceAll("<","&lt;")
+  .replaceAll(">","&gt;")
+  .replaceAll('"',"&quot;")
+  .replaceAll("'","&#039;");
 }
 
 
 function money(cents){
-  if(!cents) return "";
 
-  return (Number(cents)/100)
-    .toLocaleString("en-US",{
+  const value =
+    Number(cents);
+
+  if(!Number.isFinite(value)){
+    return "$0.00";
+  }
+
+  return (
+    value / 100
+  ).toLocaleString(
+    "en-US",
+    {
       style:"currency",
       currency:"USD"
-    });
-}
-
-
-function offerUrl(q){
-  if(!q.quote_token) return "";
-
-  return (
-    "https://thefreshstandardco.com/offer/?token=" +
-    encodeURIComponent(q.quote_token)
-  );
-}
-
-
-function paymentUrl(q){
-  if(!q.quote_token) return "";
-
-  return (
-    "https://thefreshstandardco.com/payment/?token=" +
-    encodeURIComponent(q.quote_token)
+    }
   );
 }
 
@@ -990,15 +909,19 @@ function formatSchedule(value){
   const date =
     new Date(value);
 
-  if(Number.isNaN(date.getTime())){
+  if(
+    Number.isNaN(
+      date.getTime()
+    )
+  ){
     return "Not scheduled";
   }
 
   return date.toLocaleString(
     "en-US",
     {
-      weekday:"long",
-      month:"long",
+      weekday:"short",
+      month:"short",
       day:"numeric",
       year:"numeric",
       hour:"numeric",
@@ -1008,11 +931,64 @@ function formatSchedule(value){
 }
 
 
+function offerUrl(q){
+
+  if(!q.quote_token){
+    return "";
+  }
+
+  return (
+    `${window.location.origin}` +
+    `/quote/?token=` +
+    encodeURIComponent(
+      q.quote_token
+    )
+  );
+}
+
+
+function paymentUrl(q){
+
+  if(!q.quote_token){
+    return "";
+  }
+
+  return (
+    `${window.location.origin}` +
+    `/payment/?token=` +
+    encodeURIComponent(
+      q.quote_token
+    )
+  );
+}
+
+
 function closeModal(result){
 
-  modalOverlay.classList.add("hidden");
+  modalOverlay.classList.add(
+    "hidden"
+  );
 
-  document.body.style.overflow = "";
+  document.body.style.overflow =
+    "";
+
+  const card =
+    modalOverlay.querySelector(
+      ".modal-card"
+    );
+
+  card?.classList.remove(
+    "schedule-modal"
+  );
+
+  const oldForm =
+    modalOverlay.querySelector(
+      ".modal-form"
+    );
+
+  if(oldForm){
+    oldForm.remove();
+  }
 
   if(modalResolver){
 
@@ -1036,19 +1012,43 @@ function prepareModal({
   referenceValue=""
 }){
 
+  const oldForm =
+    modalOverlay.querySelector(
+      ".modal-form"
+    );
+
+  if(oldForm){
+    oldForm.remove();
+  }
+
+  const card =
+    modalOverlay.querySelector(
+      ".modal-card"
+    );
+
+  card?.classList.remove(
+    "schedule-modal"
+  );
+
   modalIcon.className =
     "modal-icon";
 
   if(type==="error"){
-    modalIcon.classList.add("error");
+    modalIcon.classList.add(
+      "error"
+    );
     modalIcon.textContent="×";
   }
   else if(type==="warning"){
-    modalIcon.classList.add("warning");
+    modalIcon.classList.add(
+      "warning"
+    );
     modalIcon.textContent="!";
   }
   else if(type==="confirm"){
-    modalIcon.classList.add("warning");
+    modalIcon.classList.add(
+      "warning"
+    );
     modalIcon.textContent="?";
   }
   else{
@@ -1085,7 +1085,8 @@ function prepareModal({
   if(referenceValue){
 
     modalReferenceLabel.textContent =
-      referenceLabel || "Reference";
+      referenceLabel ||
+      "Reference";
 
     modalReferenceValue.textContent =
       referenceValue;
@@ -1141,7 +1142,9 @@ function showMessageModal({
     });
 
     const button =
-      document.createElement("button");
+      document.createElement(
+        "button"
+      );
 
     button.className =
       "modal-button primary-modal";
@@ -1154,7 +1157,9 @@ function showMessageModal({
       ()=>closeModal(true)
     );
 
-    modalActions.appendChild(button);
+    modalActions.appendChild(
+      button
+    );
   });
 }
 
@@ -1182,7 +1187,9 @@ function showConfirmModal({
     });
 
     const cancelButton =
-      document.createElement("button");
+      document.createElement(
+        "button"
+      );
 
     cancelButton.className =
       "modal-button secondary";
@@ -1196,7 +1203,9 @@ function showConfirmModal({
     );
 
     const confirmButton =
-      document.createElement("button");
+      document.createElement(
+        "button"
+      );
 
     confirmButton.className =
       danger
@@ -1222,29 +1231,250 @@ function showConfirmModal({
 }
 
 
+function showScheduleModal(){
+
+  return new Promise(resolve=>{
+
+    modalResolver=null;
+
+    prepareModal({
+      type:"confirm",
+      eyebrow:"Booking schedule",
+      title:"Choose a new schedule",
+      message:
+        "Select the new cleaning date and time. " +
+        "The quote price and saved payment method will not change."
+    });
+
+    const card =
+      modalOverlay.querySelector(
+        ".modal-card"
+      );
+
+    card.classList.add(
+      "schedule-modal"
+    );
+
+    const form =
+      document.createElement(
+        "div"
+      );
+
+    form.className =
+      "modal-form";
+
+    const now =
+      new Date();
+
+    const year =
+      now.getFullYear();
+
+    const month =
+      String(
+        now.getMonth()+1
+      ).padStart(2,"0");
+
+    const day =
+      String(
+        now.getDate()
+      ).padStart(2,"0");
+
+    const minDate =
+      `${year}-${month}-${day}`;
+
+    form.innerHTML=`
+      <div class="modal-field">
+        <label for="scheduleDate">
+          Cleaning date
+        </label>
+
+        <input
+          id="scheduleDate"
+          type="date"
+          min="${minDate}"
+          autocomplete="off"
+        >
+      </div>
+
+      <div class="modal-field">
+        <label for="scheduleTime">
+          Cleaning time
+        </label>
+
+        <input
+          id="scheduleTime"
+          type="time"
+          step="900"
+          autocomplete="off"
+        >
+      </div>
+
+      <div
+        id="scheduleError"
+        class="modal-field-error"
+        aria-live="polite"
+      ></div>
+    `;
+
+    modalActions.parentNode
+      .insertBefore(
+        form,
+        modalActions
+      );
+
+    const finish=value=>{
+
+      form.remove();
+
+      card.classList.remove(
+        "schedule-modal"
+      );
+
+      modalOverlay.classList.add(
+        "hidden"
+      );
+
+      document.body.style.overflow =
+        "";
+
+      resolve(value);
+    };
+
+    const cancel =
+      document.createElement(
+        "button"
+      );
+
+    cancel.className =
+      "modal-button secondary";
+
+    cancel.textContent =
+      "Keep Current Schedule";
+
+    cancel.addEventListener(
+      "click",
+      ()=>finish(null)
+    );
+
+    const confirm =
+      document.createElement(
+        "button"
+      );
+
+    confirm.className =
+      "modal-button primary-modal";
+
+    confirm.textContent =
+      "Continue";
+
+    confirm.addEventListener(
+      "click",
+      ()=>{
+
+        const date =
+          form.querySelector(
+            "#scheduleDate"
+          ).value;
+
+        const time =
+          form.querySelector(
+            "#scheduleTime"
+          ).value;
+
+        const error =
+          form.querySelector(
+            "#scheduleError"
+          );
+
+        error.textContent="";
+
+        if(
+          !date ||
+          !time
+        ){
+          error.textContent =
+            "Choose both a date and time.";
+          return;
+        }
+
+        const scheduledDate =
+          new Date(
+            `${date}T${time}:00`
+          );
+
+        if(
+          Number.isNaN(
+            scheduledDate.getTime()
+          )
+        ){
+          error.textContent =
+            "Choose a valid date and time.";
+          return;
+        }
+
+        if(
+          scheduledDate.getTime() <=
+          Date.now()
+        ){
+          error.textContent =
+            "The cleaning must be scheduled for a future date and time.";
+          return;
+        }
+
+        finish(
+          scheduledDate
+        );
+      }
+    );
+
+    modalActions.append(
+      cancel,
+      confirm
+    );
+
+    setTimeout(
+      ()=>{
+        form.querySelector(
+          "#scheduleDate"
+        )?.focus();
+      },
+      0
+    );
+  });
+}
+
+
 function setStats(quotes){
 
   document
-    .getElementById("totalCount")
+    .getElementById(
+      "totalCount"
+    )
     .textContent =
       quotes.length;
 
   document
-    .getElementById("newCount")
+    .getElementById(
+      "newCount"
+    )
     .textContent =
       quotes.filter(
         q=>q.status==="new"
       ).length;
 
   document
-    .getElementById("quotedCount")
+    .getElementById(
+      "quotedCount"
+    )
     .textContent =
       quotes.filter(
         q=>q.status==="quoted"
       ).length;
 
   document
-    .getElementById("bookedCount")
+    .getElementById(
+      "bookedCount"
+    )
     .textContent =
       quotes.filter(q=>
         [
@@ -1253,7 +1483,9 @@ function setStats(quotes){
           "booked",
           "completed",
           "charged"
-        ].includes(q.status)
+        ].includes(
+          q.status
+        )
       ).length;
 }
 
@@ -1273,7 +1505,6 @@ function renderQuotes(quotes){
     return;
   }
 
-
   quotesContainer.innerHTML =
     quotes.map(q=>{
 
@@ -1290,13 +1521,14 @@ function renderQuotes(quotes){
           : "",
 
         q.square_feet
-          ? `${Number(q.square_feet).toLocaleString()} sq ft`
+          ? `${Number(
+              q.square_feet
+            ).toLocaleString()} sq ft`
           : ""
 
       ]
       .filter(Boolean)
       .join(" · ");
-
 
       const priceLocked =
         [
@@ -1306,8 +1538,9 @@ function renderQuotes(quotes){
           "completed",
           "charged",
           "cancelled"
-        ].includes(q.status);
-
+        ].includes(
+          q.status
+        );
 
       const existingOffer =
         q.quoted_price &&
@@ -1319,7 +1552,9 @@ function renderQuotes(quotes){
             >
 
               <div class="offer-price">
-                ${money(q.quoted_price)}
+                ${money(
+                  q.quoted_price
+                )}
               </div>
 
               <button
@@ -1347,13 +1582,15 @@ function renderQuotes(quotes){
             <div id="result-${q.id}"></div>
           `;
 
-
       let bookingAction="";
 
-
       if(
-        ["card_saved","booked"]
-          .includes(q.status)
+        [
+          "card_saved",
+          "booked"
+        ].includes(
+          q.status
+        )
       ){
 
         bookingAction=`
@@ -1417,8 +1654,9 @@ function renderQuotes(quotes){
         `;
       }
 
-
-      else if(q.status==="completed"){
+      else if(
+        q.status==="completed"
+      ){
 
         bookingAction=`
           <div class="completed-box">
@@ -1461,7 +1699,9 @@ function renderQuotes(quotes){
               </div>
 
               <div class="amount-value">
-                ${money(q.quoted_price)}
+                ${money(
+                  q.quoted_price
+                )}
               </div>
 
             </div>
@@ -1471,19 +1711,25 @@ function renderQuotes(quotes){
               id="charge-${q.id}"
               onclick="chargeCustomer(
                 '${q.id}',
-                ${Number(q.quoted_price)||0},
+                ${Number(
+                  q.quoted_price
+                )||0},
                 '${paymentUrl(q)}'
               )"
             >
-              Charge Customer — ${money(q.quoted_price)}
+              Charge Customer —
+              ${money(
+                q.quoted_price
+              )}
             </button>
 
           </div>
         `;
       }
 
-
-      else if(q.status==="charged"){
+      else if(
+        q.status==="charged"
+      ){
 
         bookingAction=`
           <div class="completed-box">
@@ -1525,7 +1771,9 @@ function renderQuotes(quotes){
               </div>
 
               <div class="amount-value">
-                ${money(q.quoted_price)}
+                ${money(
+                  q.quoted_price
+                )}
               </div>
 
             </div>
@@ -1547,8 +1795,9 @@ function renderQuotes(quotes){
         `;
       }
 
-
-      else if(q.status==="cancelled"){
+      else if(
+        q.status==="cancelled"
+      ){
 
         bookingAction=`
           <div class="cancelled-box">
@@ -1566,7 +1815,6 @@ function renderQuotes(quotes){
         `;
       }
 
-
       const pricingControls =
         priceLocked
           ? `
@@ -1574,7 +1822,9 @@ function renderQuotes(quotes){
 
             <div class="price-wrap">
 
-              <span class="dollar">$</span>
+              <span class="dollar">
+                $
+              </span>
 
               <input
                 id="price-${q.id}"
@@ -1582,7 +1832,9 @@ function renderQuotes(quotes){
                 type="number"
                 value="${
                   q.quoted_price
-                    ? Number(q.quoted_price)/100
+                    ? Number(
+                        q.quoted_price
+                      )/100
                     : ""
                 }"
                 disabled
@@ -1602,16 +1854,22 @@ function renderQuotes(quotes){
               ${
                 q.status==="cancelled"
                   ? "This booking has been cancelled. The quote price can no longer be edited."
-                  : "The customer has already accepted this offer and secured a payment method. The agreed price can no longer be edited."
+                  : "The customer has already accepted this offer and secured a payment method. The price can no longer be changed."
               }
             </div>
+
+            ${existingOffer}
+
+            ${bookingAction}
           `
           : `
             <h3>Set Quote Price</h3>
 
             <div class="price-wrap">
 
-              <span class="dollar">$</span>
+              <span class="dollar">
+                $
+              </span>
 
               <input
                 id="price-${q.id}"
@@ -1619,10 +1877,12 @@ function renderQuotes(quotes){
                 type="number"
                 min="1"
                 step="0.01"
-                placeholder="150.00"
+                placeholder="0.00"
                 value="${
                   q.quoted_price
-                    ? Number(q.quoted_price)/100
+                    ? Number(
+                        q.quoted_price
+                      )/100
                     : ""
                 }"
               >
@@ -1630,8 +1890,8 @@ function renderQuotes(quotes){
             </div>
 
             <button
-              class="primary"
-              id="create-${q.id}"
+              id="offer-${q.id}"
+              class="create-offer"
               onclick="createOffer('${q.id}')"
             >
               ${
@@ -1640,8 +1900,9 @@ function renderQuotes(quotes){
                   : "Create Customer Offer"
               }
             </button>
-          `;
 
+            ${existingOffer}
+          `;
 
       return `
         <article class="quote-card">
@@ -1649,191 +1910,279 @@ function renderQuotes(quotes){
           <div class="quote-head">
 
             <div>
-
               <div class="quote-number">
-                ${escapeHtml(q.quote_number)}
+                ${escapeHtml(
+                  q.quote_number ||
+                  "Quote"
+                )}
               </div>
 
-              <div class="customer">
-                ${escapeHtml(q.customer_name)}
+              <div class="customer-name">
+                ${escapeHtml(
+                  q.customer_name ||
+                  "Customer"
+                )}
               </div>
-
             </div>
 
-            <div class="status-badge">
-              ${escapeHtml(q.status||"new")}
+            <div
+              class="status ${escapeHtml(
+                q.status || "new"
+              )}"
+            >
+              ${escapeHtml(
+                (
+                  q.status ||
+                  "new"
+                )
+                .replaceAll(
+                  "_",
+                  " "
+                )
+              )}
             </div>
 
           </div>
-
 
           <div class="quote-grid">
 
             <div class="details">
 
-              <div>
-                <div class="detail-label">
-                  Service
-                </div>
-
-                <div class="detail-value">
-                  ${escapeHtml(
-                    q.service_type||"—"
-                  )}
-                </div>
-              </div>
-
-
-              <div>
-                <div class="detail-label">
-                  Property
-                </div>
-
-                <div class="detail-value">
-                  ${escapeHtml(
-                    q.property_type||"—"
-                  )}
-                </div>
-              </div>
-
-
-              <div>
-                <div class="detail-label">
-                  Frequency
-                </div>
-
-                <div class="detail-value">
-                  ${escapeHtml(
-                    q.frequency||"—"
-                  )}
-                </div>
-              </div>
-
-
-              <div>
-                <div class="detail-label">
-                  Property Details
-                </div>
-
-                <div class="detail-value">
-                  ${escapeHtml(
-                    propertyDetails||"—"
-                  )}
-                </div>
-              </div>
-
-
-              <div>
-                <div class="detail-label">
-                  ZIP
-                </div>
-
-                <div class="detail-value">
-                  ${escapeHtml(
-                    q.zip_code||"—"
-                  )}
-                </div>
-              </div>
-
-
-              <div>
-                <div class="detail-label">
-                  Phone
-                </div>
-
-                <div class="detail-value">
-                  ${escapeHtml(
-                    q.customer_phone||"—"
-                  )}
-                </div>
-              </div>
-
-
-              <div>
+              <div class="detail">
                 <div class="detail-label">
                   Email
                 </div>
 
                 <div class="detail-value">
                   ${escapeHtml(
-                    q.customer_email||"—"
+                    q.customer_email ||
+                    "—"
                   )}
                 </div>
               </div>
 
+              <div class="detail">
+                <div class="detail-label">
+                  Phone
+                </div>
 
-              ${
-                q.scheduled_for
-                  ? `
-                    <div>
+                <div class="detail-value">
+                  ${escapeHtml(
+                    q.customer_phone ||
+                    "—"
+                  )}
+                </div>
+              </div>
 
-                      <div class="detail-label">
-                        Scheduled For
-                      </div>
+              <div class="detail">
+                <div class="detail-label">
+                  Service
+                </div>
 
-                      <div class="detail-value">
-                        ${escapeHtml(
-                          formatSchedule(
-                            q.scheduled_for
-                          )
-                        )}
-                      </div>
+                <div class="detail-value">
+                  ${escapeHtml(
+                    q.service_type ||
+                    "—"
+                  )}
+                </div>
+              </div>
 
-                    </div>
-                  `
-                  : ""
-              }
+              <div class="detail">
+                <div class="detail-label">
+                  Property
+                </div>
 
+                <div class="detail-value">
+                  ${escapeHtml(
+                    q.property_type ||
+                    "—"
+                  )}
+                </div>
+              </div>
 
-              ${
-                q.notes
-                  ? `
-                    <div class="notes">
+              <div class="detail">
+                <div class="detail-label">
+                  Frequency
+                </div>
 
-                      <div class="detail-label">
-                        Customer Notes
-                      </div>
+                <div class="detail-value">
+                  ${escapeHtml(
+                    q.frequency ||
+                    "—"
+                  )}
+                </div>
+              </div>
 
-                      <div class="detail-value">
-                        ${escapeHtml(q.notes)}
-                      </div>
+              <div class="detail">
+                <div class="detail-label">
+                  Property Details
+                </div>
 
-                    </div>
-                  `
-                  : ""
-              }
+                <div class="detail-value">
+                  ${escapeHtml(
+                    propertyDetails ||
+                    "—"
+                  )}
+                </div>
+              </div>
+
+              <div class="detail">
+                <div class="detail-label">
+                  ZIP Code
+                </div>
+
+                <div class="detail-value">
+                  ${escapeHtml(
+                    q.zip_code ||
+                    "—"
+                  )}
+                </div>
+              </div>
+
+              <div class="detail">
+                <div class="detail-label">
+                  Submitted
+                </div>
+
+                <div class="detail-value">
+                  ${escapeHtml(
+                    q.created_at
+                      ? new Date(
+                          q.created_at
+                        ).toLocaleString(
+                          "en-US"
+                        )
+                      : "—"
+                  )}
+                </div>
+              </div>
+
+              <div class="detail notes">
+                <div class="detail-label">
+                  Notes
+                </div>
+
+                <div class="detail-value">
+                  ${escapeHtml(
+                    q.notes ||
+                    "No notes provided."
+                  )}
+                </div>
+              </div>
 
             </div>
 
-
             <div class="pricing">
-
               ${pricingControls}
-
-              ${existingOffer}
-
-              ${bookingAction}
-
             </div>
 
           </div>
 
         </article>
       `;
-
     }).join("");
+}
+
+
+async function loadQuotes(){
+
+  if(!adminPassword){
+    return;
+  }
+
+  refreshButton.disabled=true;
+
+  refreshButton.textContent=
+    "Refreshing...";
+
+  try{
+
+    const response =
+      await fetch(
+        "/.netlify/functions/admin-quotes",
+        {
+          method:"GET",
+
+          headers:{
+            "x-admin-password":
+              adminPassword
+          },
+
+          cache:"no-store"
+        }
+      );
+
+    const data =
+      await response
+        .json()
+        .catch(()=>null);
+
+    if(
+      !response.ok ||
+      !data ||
+      !data.ok
+    ){
+
+      if(
+        response.status===401
+      ){
+        throw new Error(
+          "Incorrect admin password."
+        );
+      }
+
+      throw new Error(
+        data?.error ||
+        "Could not load quotes."
+      );
+    }
+
+    renderQuotes(
+      Array.isArray(
+        data.quotes
+      )
+        ? data.quotes
+        : []
+    );
+
+  }catch(error){
+
+    quotesContainer.innerHTML=`
+      <div class="empty">
+        ${escapeHtml(
+          error.message ||
+          "Could not load quotes."
+        )}
+      </div>
+    `;
+
+    throw error;
+
+  }finally{
+
+    refreshButton.disabled=false;
+
+    refreshButton.textContent=
+      "Refresh";
+  }
 }
 
 
 async function login(){
 
   const password =
-    passwordInput.value;
+    passwordInput.value.trim();
+
+  loginError.classList.add(
+    "hidden"
+  );
+
+  loginError.textContent="";
 
   if(!password){
 
-    loginError.textContent =
-      "Enter your admin password.";
+    loginError.textContent=
+      "Enter the admin password.";
 
     loginError.classList.remove(
       "hidden"
@@ -1847,44 +2196,11 @@ async function login(){
   loginButton.textContent=
     "Signing In...";
 
-  loginError.classList.add(
-    "hidden"
-  );
+  adminPassword=password;
 
   try{
 
-    const response =
-      await fetch(
-        "/.netlify/functions/admin-auth",
-        {
-          method:"POST",
-
-          headers:{
-            "Content-Type":
-              "application/json"
-          },
-
-          body:
-            JSON.stringify({
-              password
-            })
-        }
-      );
-
-    const data =
-      await response.json();
-
-    if(!response.ok||!data.ok){
-
-      throw new Error(
-        data.error||
-        "Sign in failed."
-      );
-    }
-
-    adminPassword=password;
-
-    passwordInput.value="";
+    await loadQuotes();
 
     loginPage.classList.add(
       "hidden"
@@ -1894,13 +2210,15 @@ async function login(){
       "hidden"
     );
 
-    await loadQuotes();
+    passwordInput.value="";
 
   }catch(error){
 
-    loginError.textContent =
-      error.message||
-      "Sign in failed.";
+    adminPassword="";
+
+    loginError.textContent=
+      error.message ||
+      "Could not sign in.";
 
     loginError.classList.remove(
       "hidden"
@@ -1916,7 +2234,9 @@ async function login(){
 }
 
 
-async function loadQuotes(){
+function logout(){
+
+  adminPassword="";
 
   quotesContainer.innerHTML=`
     <div class="loading">
@@ -1924,49 +2244,23 @@ async function loadQuotes(){
     </div>
   `;
 
-  try{
+  dashboard.classList.add(
+    "hidden"
+  );
 
-    const response =
-      await fetch(
-        "/.netlify/functions/admin-quotes",
-        {
-          headers:{
-            "x-admin-password":
-              adminPassword
-          }
-        }
-      );
+  loginPage.classList.remove(
+    "hidden"
+  );
 
-    const data =
-      await response.json();
+  passwordInput.value="";
 
-    if(!response.ok||!data.ok){
-
-      throw new Error(
-        data.error||
-        "Could not load quotes."
-      );
-    }
-
-    renderQuotes(
-      data.quotes||[]
-    );
-
-  }catch(error){
-
-    quotesContainer.innerHTML=`
-      <div class="empty">
-        ${escapeHtml(
-          error.message||
-          "Could not load quotes."
-        )}
-      </div>
-    `;
-  }
+  passwordInput.focus();
 }
 
 
-async function createOffer(quoteId){
+async function createOffer(
+  quoteId
+){
 
   const input =
     document.getElementById(
@@ -1975,7 +2269,7 @@ async function createOffer(quoteId){
 
   const button =
     document.getElementById(
-      `create-${quoteId}`
+      `offer-${quoteId}`
     );
 
   const result =
@@ -1983,25 +2277,24 @@ async function createOffer(quoteId){
       `result-${quoteId}`
     );
 
-  if(!input||!button){
-
-    await showMessageModal({
-      type:"error",
-      eyebrow:"Price locked",
-      title:"This offer cannot be changed",
-      message:
-        "The customer has already accepted this offer and secured a payment method."
-    });
-
+  if(
+    !input ||
+    !button ||
+    !result
+  ){
     return;
   }
 
-  const price =
-    Number(input.value);
+  const dollars =
+    Number(
+      input.value
+    );
 
   if(
-    !Number.isFinite(price)||
-    price<=0
+    !Number.isFinite(
+      dollars
+    ) ||
+    dollars<=0
   ){
 
     await showMessageModal({
@@ -2009,11 +2302,18 @@ async function createOffer(quoteId){
       eyebrow:"Quote price",
       title:"Enter a valid price",
       message:
-        "The quote price must be greater than $0."
+        "Enter a valid cleaning price before creating the customer offer."
     });
+
+    input.focus();
 
     return;
   }
+
+  const amount =
+    Math.round(
+      dollars*100
+    );
 
   button.disabled=true;
 
@@ -2024,7 +2324,7 @@ async function createOffer(quoteId){
 
     const response =
       await fetch(
-        "/.netlify/functions/set-quote-price",
+        "/.netlify/functions/create-offer",
         {
           method:"POST",
 
@@ -2039,18 +2339,24 @@ async function createOffer(quoteId){
           body:
             JSON.stringify({
               quote_id:quoteId,
-              price
+              amount
             })
         }
       );
 
     const data =
-      await response.json();
+      await response
+        .json()
+        .catch(()=>null);
 
-    if(!response.ok||!data.ok){
+    if(
+      !response.ok ||
+      !data ||
+      !data.ok
+    ){
 
       throw new Error(
-        data.error||
+        data?.error ||
         "Could not create offer."
       );
     }
@@ -2060,7 +2366,9 @@ async function createOffer(quoteId){
 
     result.innerHTML=`
       <div class="offer-price">
-        ${money(data.quoted_price)}
+        ${money(
+          data.quoted_price
+        )}
       </div>
 
       <button
@@ -2099,7 +2407,7 @@ async function createOffer(quoteId){
       eyebrow:"Offer error",
       title:"Could not create offer",
       message:
-        error.message||
+        error.message ||
         "Could not create offer."
     });
 
@@ -2181,170 +2489,12 @@ async function rescheduleBooking(
     return;
   }
 
-
-  const date =
-    window.prompt(
-      "Enter the new cleaning date (YYYY-MM-DD):"
-    );
-
-  if(!date){
-    return;
-  }
-
-
-  const time =
-    window.prompt(
-      "Enter the new cleaning time (example: 10:00 AM):"
-    );
-
-  if(!time){
-    return;
-  }
-
-
-  const dateMatch =
-    date.trim().match(
-      /^(\d{4})-(\d{2})-(\d{2})$/
-    );
-
-  if(!dateMatch){
-
-    await showMessageModal({
-      type:"error",
-      eyebrow:"Invalid date",
-      title:"Check the cleaning date",
-      message:
-        "Enter the date as YYYY-MM-DD. Example: 2026-10-05."
-    });
-
-    return;
-  }
-
-
-  const timeMatch =
-    time.trim().match(
-      /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i
-    );
-
-  if(!timeMatch){
-
-    await showMessageModal({
-      type:"error",
-      eyebrow:"Invalid time",
-      title:"Check the cleaning time",
-      message:
-        "Enter the time like 10:00 AM or 2:30 PM."
-    });
-
-    return;
-  }
-
-
-  const year =
-    Number(dateMatch[1]);
-
-  const month =
-    Number(dateMatch[2]);
-
-  const day =
-    Number(dateMatch[3]);
-
-
-  let hour =
-    Number(timeMatch[1]);
-
-  const minute =
-    Number(timeMatch[2]);
-
-  const period =
-    timeMatch[3]
-      .toUpperCase();
-
-
-  if(
-    hour<1||
-    hour>12||
-    minute<0||
-    minute>59
-  ){
-
-    await showMessageModal({
-      type:"error",
-      eyebrow:"Invalid time",
-      title:"Check the cleaning time",
-      message:
-        "Enter a valid time like 10:00 AM or 2:30 PM."
-    });
-
-    return;
-  }
-
-
-  if(
-    period==="AM" &&
-    hour===12
-  ){
-    hour=0;
-  }
-
-
-  if(
-    period==="PM" &&
-    hour!==12
-  ){
-    hour+=12;
-  }
-
-
   const scheduledDate =
-    new Date(
-      year,
-      month-1,
-      day,
-      hour,
-      minute,
-      0,
-      0
-    );
+    await showScheduleModal();
 
-
-  if(
-    Number.isNaN(
-      scheduledDate.getTime()
-    ) ||
-    scheduledDate.getFullYear()!==year ||
-    scheduledDate.getMonth()!==month-1 ||
-    scheduledDate.getDate()!==day
-  ){
-
-    await showMessageModal({
-      type:"error",
-      eyebrow:"Invalid date",
-      title:"Check the cleaning date",
-      message:
-        "Enter a valid calendar date."
-    });
-
+  if(!scheduledDate){
     return;
   }
-
-
-  if(
-    scheduledDate.getTime()<=
-    Date.now()
-  ){
-
-    await showMessageModal({
-      type:"error",
-      eyebrow:"Invalid date",
-      title:"Choose a future date",
-      message:
-        "The cleaning must be scheduled for a future date and time."
-    });
-
-    return;
-  }
-
 
   const displayDate =
     scheduledDate.toLocaleString(
@@ -2358,7 +2508,6 @@ async function rescheduleBooking(
         minute:"2-digit"
       }
     );
-
 
   const confirmed =
     await showConfirmModal({
@@ -2379,11 +2528,9 @@ async function rescheduleBooking(
         "Keep Current Schedule"
     });
 
-
   if(!confirmed){
     return;
   }
-
 
   const originalText =
     button.textContent;
@@ -2392,7 +2539,6 @@ async function rescheduleBooking(
 
   button.textContent=
     "Rescheduling...";
-
 
   try{
 
@@ -2421,28 +2567,24 @@ async function rescheduleBooking(
         }
       );
 
-
     const data =
       await response
         .json()
         .catch(()=>null);
 
-
     if(
-      !response.ok||
-      !data||
+      !response.ok ||
+      !data ||
       !data.ok
     ){
 
       throw new Error(
-        data?.error||
+        data?.error ||
         "Could not reschedule booking."
       );
     }
 
-
     await loadQuotes();
-
 
     await showMessageModal({
       type:"success",
@@ -2455,7 +2597,6 @@ async function rescheduleBooking(
         "The quote price and saved payment method were not changed."
     });
 
-
   }catch(error){
 
     await showMessageModal({
@@ -2465,7 +2606,7 @@ async function rescheduleBooking(
       title:
         "Could not reschedule booking",
       message:
-        error.message||
+        error.message ||
         "Could not reschedule booking."
     });
 
@@ -2494,28 +2635,30 @@ async function cancelBooking(
     return;
   }
 
-
   const confirmed =
     await showConfirmModal({
       eyebrow:
         "Booking cancellation",
+
       title:
         "Cancel this booking?",
+
       message:
         "This will cancel the booking. " +
         "The customer's saved payment method will NOT be charged.",
+
       confirmText:
         "Cancel Booking",
+
       cancelText:
         "Keep Booking",
+
       danger:true
     });
-
 
   if(!confirmed){
     return;
   }
-
 
   const originalText =
     button.textContent;
@@ -2524,7 +2667,6 @@ async function cancelBooking(
 
   button.textContent=
     "Cancelling...";
-
 
   try{
 
@@ -2544,33 +2686,30 @@ async function cancelBooking(
 
           body:
             JSON.stringify({
-              quote_id:quoteId
+              quote_id:
+                quoteId
             })
         }
       );
-
 
     const data =
       await response
         .json()
         .catch(()=>null);
 
-
     if(
-      !response.ok||
-      !data||
+      !response.ok ||
+      !data ||
       !data.ok
     ){
 
       throw new Error(
-        data?.error||
+        data?.error ||
         "Could not cancel booking."
       );
     }
 
-
     await loadQuotes();
-
 
     await showMessageModal({
       type:"success",
@@ -2583,7 +2722,6 @@ async function cancelBooking(
         "No payment was processed."
     });
 
-
   }catch(error){
 
     await showMessageModal({
@@ -2593,7 +2731,7 @@ async function cancelBooking(
       title:
         "Could not cancel booking",
       message:
-        error.message||
+        error.message ||
         "Could not cancel booking."
     });
 
@@ -2622,25 +2760,28 @@ async function markCleaningComplete(
     return;
   }
 
-
   const confirmed =
     await showConfirmModal({
-      eyebrow:"Service status",
-      title:"Mark cleaning complete?",
+      eyebrow:
+        "Service status",
+
+      title:
+        "Mark cleaning complete?",
+
       message:
         "This confirms the cleaning has been completed. " +
         "The customer will NOT be charged yet.",
+
       confirmText:
         "Mark Complete",
+
       cancelText:
         "Cancel"
     });
 
-
   if(!confirmed){
     return;
   }
-
 
   const originalText =
     button.textContent;
@@ -2649,7 +2790,6 @@ async function markCleaningComplete(
 
   button.textContent=
     "Marking Complete...";
-
 
   try{
 
@@ -2669,30 +2809,30 @@ async function markCleaningComplete(
 
           body:
             JSON.stringify({
-              quote_id:quoteId
+              quote_id:
+                quoteId
             })
         }
       );
 
-
     const data =
-      await response.json();
-
+      await response
+        .json()
+        .catch(()=>null);
 
     if(
-      !response.ok||
+      !response.ok ||
+      !data ||
       !data.ok
     ){
 
       throw new Error(
-        data.error||
+        data?.error ||
         "Could not mark cleaning complete."
       );
     }
 
-
     await loadQuotes();
-
 
     await showMessageModal({
       type:"success",
@@ -2705,7 +2845,6 @@ async function markCleaningComplete(
         "The customer has NOT been charged."
     });
 
-
   }catch(error){
 
     await showMessageModal({
@@ -2715,7 +2854,7 @@ async function markCleaningComplete(
       title:
         "Could not update booking",
       message:
-        error.message||
+        error.message ||
         "Could not mark cleaning complete."
     });
 
@@ -2746,33 +2885,36 @@ async function chargeCustomer(
     return;
   }
 
-
   const formattedAmount =
-    money(displayedAmount);
-
+    money(
+      displayedAmount
+    );
 
   const confirmed =
     await showConfirmModal({
       eyebrow:
         "Payment authorization",
+
       title:
         "Charge customer?",
+
       message:
         "The cleaning is marked complete. " +
         "This will charge the customer's saved payment method.",
+
       amount:
         formattedAmount,
+
       confirmText:
         `Charge ${formattedAmount}`,
+
       cancelText:
         "Cancel"
     });
 
-
   if(!confirmed){
     return;
   }
-
 
   const originalText =
     button.textContent;
@@ -2781,7 +2923,6 @@ async function chargeCustomer(
 
   button.textContent=
     "Processing Payment...";
-
 
   try{
 
@@ -2801,21 +2942,20 @@ async function chargeCustomer(
 
           body:
             JSON.stringify({
-              quote_id:quoteId
+              quote_id:
+                quoteId
             })
         }
       );
-
 
     const data =
       await response
         .json()
         .catch(()=>null);
 
-
     if(
-      !response.ok||
-      !data||
+      !response.ok ||
+      !data ||
       !data.ok
     ){
 
@@ -2844,7 +2984,7 @@ async function chargeCustomer(
           referenceLabel:
             "Stripe Payment ID",
           referenceValue:
-            data.payment_intent_id||
+            data.payment_intent_id ||
             "Unknown",
           buttonText:
             "I Understand"
@@ -2857,7 +2997,6 @@ async function chargeCustomer(
 
         return;
       }
-
 
       /*
         Saved payment failed.
@@ -2877,7 +3016,7 @@ async function chargeCustomer(
           title:
             "Customer action required",
           message:
-            data.customer_message||
+            data.customer_message ||
             "The saved payment method could not be charged. Send the customer the secure payment link so they can use another payment method.",
           amount:
             formattedAmount,
@@ -2886,7 +3025,6 @@ async function chargeCustomer(
           referenceValue:
             recoveryLink
         });
-
 
         const closeButton =
           document.createElement(
@@ -2904,7 +3042,6 @@ async function chargeCustomer(
           ()=>closeModal(true)
         );
 
-
         const copyButton =
           document.createElement(
             "button"
@@ -2916,10 +3053,9 @@ async function chargeCustomer(
         copyButton.textContent =
           "Copy Payment Link";
 
-
         copyButton.addEventListener(
           "click",
-          async()=>{
+          async ()=>{
 
             try{
 
@@ -2949,7 +3085,6 @@ async function chargeCustomer(
           }
         );
 
-
         modalActions.appendChild(
           closeButton
         );
@@ -2957,7 +3092,6 @@ async function chargeCustomer(
         modalActions.appendChild(
           copyButton
         );
-
 
         button.disabled=false;
 
@@ -2967,58 +3101,46 @@ async function chargeCustomer(
         return;
       }
 
-
-      const detail =
-        data?.detail
-          ? ` ${data.detail}`
-          : "";
-
-
       throw new Error(
-        (
-          data?.error||
-          "Could not charge customer."
-        )+
-        detail
+        data?.detail ||
+        data?.error ||
+        "The customer could not be charged."
       );
     }
 
-
     await loadQuotes();
-
 
     await showMessageModal({
       type:"success",
       eyebrow:
-        "Payment complete",
+        "Payment completed",
       title:
-        "Payment successful",
+        "Customer charged successfully",
       message:
-        "The customer's saved payment method was charged successfully.",
+        "The payment was processed successfully and this booking is now marked as paid.",
       amount:
-        data.amount_formatted||
+        data.amount_formatted ||
         formattedAmount,
       referenceLabel:
-        "Payment reference",
+        "Stripe Payment ID",
       referenceValue:
-        data.payment_intent_id||
-        "—",
+        data.payment_intent_id ||
+        "",
       buttonText:
         "Done"
     });
-
 
   }catch(error){
 
     await showMessageModal({
       type:"error",
       eyebrow:
-        "Payment failed",
+        "Payment error",
       title:
-        "Could not charge customer",
+        "Payment could not be completed",
       message:
-        error.message||
-        "Could not charge customer."
+        error.message ||
+        "The customer could not be charged."
     });
 
     button.disabled=false;
@@ -3029,46 +3151,38 @@ async function chargeCustomer(
 }
 
 
-function logout(){
-
-  adminPassword="";
-
-  dashboard.classList.add(
-    "hidden"
-  );
-
-  loginPage.classList.remove(
-    "hidden"
-  );
-
-  quotesContainer.innerHTML="";
-}
-
-
-loginButton.addEventListener(
-  "click",
-  login
-);
-
-
-passwordInput.addEventListener(
-  "keydown",
-  event=>{
-
-    if(event.key==="Enter"){
-      login();
-    }
-  }
-);
-
-
-document
-  .getElementById(
-    "refreshButton"
-  )
+loginButton
   .addEventListener(
     "click",
-    loadQuotes
+    login
+  );
+
+
+passwordInput
+  .addEventListener(
+    "keydown",
+    event=>{
+
+      if(
+        event.key==="Enter"
+      ){
+        login();
+      }
+    }
+  );
+
+
+refreshButton
+  .addEventListener(
+    "click",
+    async ()=>{
+
+      try{
+        await loadQuotes();
+      }catch{
+        /* Error already rendered */
+      }
+    }
   );
 
 
