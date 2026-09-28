@@ -13,7 +13,7 @@ function json(data, status = 200) {
 
 
 /*
-  Verify Stripe webhook signature.
+  VERIFY STRIPE WEBHOOK SIGNATURE
 */
 
 function verifyStripeSignature(
@@ -133,7 +133,7 @@ function verifyStripeSignature(
 
 
 /*
-  Retrieve an object directly from Stripe.
+  STRIPE GET
 */
 
 async function stripeGet(
@@ -168,7 +168,7 @@ async function stripeGet(
 
 
 /*
-  Retrieve quote from Supabase.
+  GET QUOTE
 */
 
 async function getQuote(
@@ -216,7 +216,7 @@ async function getQuote(
 
 
 /*
-  Update quote in Supabase.
+  UPDATE QUOTE
 */
 
 async function updateQuote(
@@ -274,7 +274,7 @@ async function updateQuote(
 
 
 /*
-  Email helpers.
+  EMAIL HELPERS
 */
 
 function escapeHtml(value) {
@@ -310,13 +310,75 @@ function formatUsd(cents) {
 }
 
 
-/*
-  Send booking confirmation.
+async function sendResendEmail({
+  apiKey,
+  from,
+  to,
+  subject,
+  text,
+  html
+}) {
+  if (
+    !apiKey ||
+    !from ||
+    !to
+  ) {
+    return {
+      ok: false,
+      skipped: true
+    };
+  }
 
-  IMPORTANT:
-  Email failure must NOT cause Stripe
-  to retry an otherwise successful
-  card-saving webhook.
+  const response =
+    await fetch(
+      "https://api.resend.com/emails",
+      {
+        method: "POST",
+
+        headers: {
+          Authorization:
+            `Bearer ${apiKey}`,
+
+          "content-type":
+            "application/json"
+        },
+
+        body:
+          JSON.stringify({
+            from,
+            to: Array.isArray(to)
+              ? to
+              : [to],
+            subject,
+            text,
+            html
+          })
+      }
+    );
+
+  const data =
+    await response
+      .json()
+      .catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(
+      data?.message ||
+      data?.error ||
+      `Resend returned status ${response.status}.`
+    );
+  }
+
+  return {
+    ok: true,
+    email_id:
+      data?.id || null
+  };
+}
+
+
+/*
+  BOOKING CONFIRMATION EMAIL
 */
 
 async function sendBookingConfirmation(
@@ -499,70 +561,538 @@ thefreshstandardco@outlook.com
 </p>
 
 </div>
-
 </div>
 
 </body>
 </html>
   `.trim();
 
-  const response =
-    await fetch(
-      "https://api.resend.com/emails",
-      {
-        method: "POST",
+  return await sendResendEmail({
+    apiKey:
+      resendApiKey,
 
-        headers: {
-          Authorization:
-            `Bearer ${resendApiKey}`,
+    from:
+      fromEmail,
 
-          "content-type":
-            "application/json"
-        },
+    to: [
+      customerEmail
+    ],
 
-        body:
-          JSON.stringify({
-            from:
-              fromEmail,
+    subject,
 
-            to: [
-              customerEmail
-            ],
+    text:
+      plainText,
 
-            subject,
-
-            text:
-              plainText,
-
-            html
-          })
-      }
-    );
-
-  const data =
-    await response
-      .json()
-      .catch(() => null);
-
-  if (!response.ok) {
-    throw new Error(
-      data?.message ||
-      data?.error ||
-      `Resend returned status ${response.status}.`
-    );
-  }
-
-  return {
-    ok: true,
-
-    email_id:
-      data?.id || null
-  };
+    html
+  });
 }
 
 
 /*
-  Main Netlify Function
+  RECOVERY PAYMENT CUSTOMER EMAIL
+*/
+
+async function sendRecoveryPaymentConfirmation(
+  quote,
+  paymentIntent,
+  resendApiKey,
+  fromEmail
+) {
+  const customerEmail =
+    String(
+      quote?.customer_email || ""
+    ).trim();
+
+  if (
+    !resendApiKey ||
+    !fromEmail ||
+    !customerEmail
+  ) {
+    return {
+      ok: false,
+      skipped: true
+    };
+  }
+
+  const customerName =
+    String(
+      quote?.customer_name || ""
+    ).trim();
+
+  const firstName =
+    customerName
+      ? customerName.split(/\s+/)[0]
+      : "there";
+
+  const quoteNumber =
+    quote?.quote_number ||
+    quote?.id ||
+    "—";
+
+  const service =
+    quote?.service_type ||
+    "Cleaning Service";
+
+  const property =
+    quote?.property_type ||
+    "—";
+
+  const amount =
+    formatUsd(
+      quote?.quoted_price
+    ) || "—";
+
+  const paymentReference =
+    paymentIntent?.id ||
+    "—";
+
+  const subject =
+    `Payment Received — ${quoteNumber} — The Fresh Standard Co.`;
+
+  const text = [
+    `Hi ${firstName},`,
+    "",
+    "Payment complete.",
+    "",
+    "Your payment for your cleaning service with The Fresh Standard Co. was processed successfully.",
+    "",
+    `Quote: ${quoteNumber}`,
+    `Service: ${service}`,
+    `Property: ${property}`,
+    `Amount Paid: ${amount}`,
+    `Payment Reference: ${paymentReference}`,
+    "",
+    "No further payment is required for this cleaning service.",
+    "",
+    "Your payment was processed securely through Stripe.",
+    "",
+    "If you have any questions, contact us:",
+    "",
+    "954-379-6765",
+    "thefreshstandardco@outlook.com",
+    "",
+    "Thank you for choosing The Fresh Standard Co."
+  ].join("\n");
+
+  const html = `
+<!doctype html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+
+<body style="margin:0;padding:0;background:#f4f1e9;font-family:Arial,Helvetica,sans-serif;color:#17352b;">
+
+<div style="max-width:620px;margin:0 auto;padding:40px 20px;">
+
+<div style="background:#fffdf8;border-radius:24px;padding:42px;">
+
+<div style="text-align:center;margin-bottom:34px;">
+
+<div style="font-family:Georgia,'Times New Roman',serif;font-size:25px;letter-spacing:2px;font-weight:600;color:#17352b;">
+THE FRESH
+</div>
+
+<div style="margin-top:6px;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#758b78;">
+Standard Co.
+</div>
+
+</div>
+
+<div style="width:54px;height:54px;border-radius:50%;background:#17352b;color:#ffffff;margin:0 auto 22px;line-height:54px;text-align:center;font-size:26px;font-weight:700;">
+✓
+</div>
+
+<div style="text-align:center;text-transform:uppercase;letter-spacing:3px;font-size:11px;font-weight:700;color:#758b78;margin-bottom:12px;">
+Payment Complete
+</div>
+
+<h1 style="font-family:Georgia,'Times New Roman',serif;font-size:36px;font-weight:400;text-align:center;margin:0 0 16px;color:#17352b;">
+Thank you.
+</h1>
+
+<p style="font-size:16px;line-height:1.7;color:#64716b;text-align:center;margin:0 0 34px;">
+Hi ${escapeHtml(firstName)}, your payment has been completed successfully.
+No further payment is required for this cleaning service.
+</p>
+
+<div style="border-top:1px solid #e6e5df;border-bottom:1px solid #e6e5df;padding:22px 0;margin-bottom:30px;">
+
+<p style="margin:8px 0;font-size:15px;color:#64716b;">
+<strong style="color:#17352b;">Quote:</strong>
+${escapeHtml(quoteNumber)}
+</p>
+
+<p style="margin:8px 0;font-size:15px;color:#64716b;">
+<strong style="color:#17352b;">Service:</strong>
+${escapeHtml(service)}
+</p>
+
+<p style="margin:8px 0;font-size:15px;color:#64716b;">
+<strong style="color:#17352b;">Property:</strong>
+${escapeHtml(property)}
+</p>
+
+<p style="margin:8px 0;font-size:15px;color:#64716b;">
+<strong style="color:#17352b;">Amount Paid:</strong>
+${escapeHtml(amount)}
+</p>
+
+<p style="margin:8px 0;font-size:15px;color:#64716b;">
+<strong style="color:#17352b;">Payment Reference:</strong>
+${escapeHtml(paymentReference)}
+</p>
+
+</div>
+
+<div style="background:#f7f7f2;border:1px solid #e1e5de;border-radius:16px;padding:20px;margin-bottom:28px;">
+
+<div style="font-family:Georgia,'Times New Roman',serif;font-size:18px;margin-bottom:8px;color:#17352b;">
+Payment received
+</div>
+
+<p style="font-size:14px;line-height:1.65;color:#69736e;margin:0;">
+Your secure payment was processed through Stripe.
+Thank you for choosing The Fresh Standard Co.
+</p>
+
+</div>
+
+<p style="font-size:14px;line-height:1.7;color:#69736e;text-align:center;margin:0;">
+
+Questions about your service or payment?
+
+<br>
+
+<a href="tel:+19543796765" style="color:#17352b;font-weight:600;text-decoration:none;">
+954-379-6765
+</a>
+
+<br>
+
+<a href="mailto:thefreshstandardco@outlook.com" style="color:#17352b;font-weight:600;text-decoration:none;">
+thefreshstandardco@outlook.com
+</a>
+
+</p>
+
+</div>
+</div>
+
+</body>
+</html>
+  `.trim();
+
+  return await sendResendEmail({
+    apiKey:
+      resendApiKey,
+
+    from:
+      fromEmail,
+
+    to: [
+      customerEmail
+    ],
+
+    subject,
+
+    text,
+
+    html
+  });
+}
+
+
+/*
+  RECOVERY PAYMENT OWNER EMAIL
+*/
+
+async function sendRecoveryOwnerNotification(
+  quote,
+  paymentIntent,
+  customerEmailSent,
+  resendApiKey,
+  fromEmail
+) {
+  if (
+    !resendApiKey ||
+    !fromEmail
+  ) {
+    return {
+      ok: false,
+      skipped: true
+    };
+  }
+
+  const quoteNumber =
+    quote?.quote_number ||
+    quote?.id ||
+    "—";
+
+  const customerName =
+    quote?.customer_name ||
+    "";
+
+  const customerEmail =
+    quote?.customer_email ||
+    "";
+
+  const customerPhone =
+    quote?.customer_phone ||
+    "";
+
+  const service =
+    quote?.service_type ||
+    "Cleaning Service";
+
+  const amount =
+    formatUsd(
+      quote?.quoted_price
+    ) || "—";
+
+  const paymentReference =
+    paymentIntent?.id ||
+    "—";
+
+  const text = [
+    "A recovery payment has been completed successfully.",
+    "",
+    `Quote: ${quoteNumber}`,
+    `Customer: ${customerName}`,
+    `Email: ${customerEmail}`,
+    `Phone: ${customerPhone}`,
+    `Service: ${service}`,
+    `Amount Paid: ${amount}`,
+    "",
+    `Stripe PaymentIntent: ${paymentReference}`,
+    `Stripe Status: ${paymentIntent?.status || "succeeded"}`,
+    "Booking Status: CHARGED",
+    "Payment Type: RECOVERY",
+    "",
+    customerEmailSent
+      ? "Customer payment confirmation email: Sent successfully."
+      : "Customer payment confirmation email: Not sent or failed."
+  ].join("\n");
+
+  const html = `
+<!doctype html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+
+<body style="margin:0;padding:0;background:#f4f1e9;font-family:Arial,Helvetica,sans-serif;color:#1c2823;">
+
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
+style="width:100%;background:#f4f1e9;padding:36px 16px;">
+
+<tr>
+<td align="center">
+
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
+style="width:100%;max-width:620px;background:#fffdf8;border-radius:24px;overflow:hidden;border:1px solid #dce2dc;">
+
+<tr>
+<td style="background:#17352b;padding:30px 34px;color:#ffffff;">
+
+<div style="font-family:Georgia,serif;font-size:23px;letter-spacing:2px;">
+THE FRESH
+</div>
+
+<div style="margin-top:4px;color:#c8d3cc;font-size:11px;letter-spacing:3px;text-transform:uppercase;">
+Standard Co.
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td style="padding:42px 36px;">
+
+<div style="color:#718679;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">
+Recovery Payment Successful
+</div>
+
+<h1 style="margin:0;color:#17352b;font-family:Georgia,serif;font-size:34px;font-weight:400;line-height:1.2;">
+Customer payment received.
+</h1>
+
+<p style="margin:18px 0 0;color:#69756f;font-size:15px;line-height:1.7;">
+The customer completed the secure recovery payment through Stripe Checkout.
+The booking has been updated to CHARGED.
+</p>
+
+<div style="margin-top:28px;padding:24px;background:#eef2ed;border-radius:18px;">
+
+<div style="color:#69756f;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">
+Amount Paid
+</div>
+
+<div style="margin-top:7px;color:#17352b;font-family:Georgia,serif;font-size:30px;">
+${escapeHtml(amount)}
+</div>
+
+</div>
+
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
+style="margin-top:24px;border-collapse:collapse;">
+
+<tr>
+<td style="padding:12px 0;border-bottom:1px solid #e5e8e3;color:#69756f;font-size:13px;">
+Quote
+</td>
+
+<td align="right" style="padding:12px 0;border-bottom:1px solid #e5e8e3;color:#1c2823;font-size:13px;font-weight:700;">
+${escapeHtml(quoteNumber)}
+</td>
+</tr>
+
+<tr>
+<td style="padding:12px 0;border-bottom:1px solid #e5e8e3;color:#69756f;font-size:13px;">
+Customer
+</td>
+
+<td align="right" style="padding:12px 0;border-bottom:1px solid #e5e8e3;color:#1c2823;font-size:13px;font-weight:700;">
+${escapeHtml(customerName)}
+</td>
+</tr>
+
+<tr>
+<td style="padding:12px 0;border-bottom:1px solid #e5e8e3;color:#69756f;font-size:13px;">
+Email
+</td>
+
+<td align="right" style="padding:12px 0;border-bottom:1px solid #e5e8e3;color:#1c2823;font-size:13px;font-weight:700;">
+${escapeHtml(customerEmail)}
+</td>
+</tr>
+
+<tr>
+<td style="padding:12px 0;border-bottom:1px solid #e5e8e3;color:#69756f;font-size:13px;">
+Phone
+</td>
+
+<td align="right" style="padding:12px 0;border-bottom:1px solid #e5e8e3;color:#1c2823;font-size:13px;font-weight:700;">
+${escapeHtml(customerPhone)}
+</td>
+</tr>
+
+<tr>
+<td style="padding:12px 0;border-bottom:1px solid #e5e8e3;color:#69756f;font-size:13px;">
+Service
+</td>
+
+<td align="right" style="padding:12px 0;border-bottom:1px solid #e5e8e3;color:#1c2823;font-size:13px;font-weight:700;">
+${escapeHtml(service)}
+</td>
+</tr>
+
+<tr>
+<td style="padding:12px 0;border-bottom:1px solid #e5e8e3;color:#69756f;font-size:13px;">
+Payment Type
+</td>
+
+<td align="right" style="padding:12px 0;border-bottom:1px solid #e5e8e3;color:#17352b;font-size:13px;font-weight:700;">
+RECOVERY
+</td>
+</tr>
+
+<tr>
+<td style="padding:12px 0;border-bottom:1px solid #e5e8e3;color:#69756f;font-size:13px;">
+Payment Status
+</td>
+
+<td align="right" style="padding:12px 0;border-bottom:1px solid #e5e8e3;color:#17352b;font-size:13px;font-weight:700;">
+SUCCEEDED
+</td>
+</tr>
+
+<tr>
+<td style="padding:12px 0;border-bottom:1px solid #e5e8e3;color:#69756f;font-size:13px;">
+Booking Status
+</td>
+
+<td align="right" style="padding:12px 0;border-bottom:1px solid #e5e8e3;color:#17352b;font-size:13px;font-weight:700;">
+CHARGED
+</td>
+</tr>
+
+<tr>
+<td style="padding:12px 0;color:#69756f;font-size:13px;">
+Customer Receipt
+</td>
+
+<td align="right" style="padding:12px 0;color:#1c2823;font-size:13px;font-weight:700;">
+${
+  customerEmailSent
+    ? "Sent successfully"
+    : "Not sent or failed"
+}
+</td>
+</tr>
+
+</table>
+
+<div style="margin-top:26px;padding:18px;background:#f7f5ef;border:1px solid #e5e8e3;border-radius:15px;">
+
+<div style="color:#69756f;font-size:11px;text-transform:uppercase;letter-spacing:1.4px;margin-bottom:7px;">
+Stripe PaymentIntent
+</div>
+
+<div style="color:#17352b;font-size:13px;line-height:1.6;word-break:break-all;">
+${escapeHtml(paymentReference)}
+</div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td style="padding:22px 36px;background:#f7f5ef;border-top:1px solid #e5e8e3;color:#718079;font-size:12px;line-height:1.6;">
+The Fresh Standard Co.<br>
+Recovery payment notification.
+</td>
+</tr>
+
+</table>
+
+</td>
+</tr>
+
+</table>
+
+</body>
+</html>
+  `.trim();
+
+  return await sendResendEmail({
+    apiKey:
+      resendApiKey,
+
+    from:
+      fromEmail,
+
+    to: [
+      "thefreshstandardco@outlook.com"
+    ],
+
+    subject:
+      `Recovery Payment Received — ${quoteNumber}`,
+
+    text,
+
+    html
+  });
+}
+
+
+/*
+  MAIN NETLIFY FUNCTION
 */
 
 export default async (request) => {
@@ -578,6 +1108,7 @@ export default async (request) => {
     );
   }
 
+
   const webhookSecret =
     process.env.STRIPE_WEBHOOK_SECRET;
 
@@ -589,6 +1120,7 @@ export default async (request) => {
 
   const serviceRoleKey =
     process.env.SUPABASE_SERVICE_ROLE_KEY;
+
 
   if (
     !webhookSecret ||
@@ -613,8 +1145,8 @@ export default async (request) => {
 
 
   /*
-    Signature verification MUST use
-    the exact raw request body.
+    SIGNATURE VERIFICATION MUST USE
+    THE EXACT RAW REQUEST BODY
   */
 
   const rawBody =
@@ -624,6 +1156,7 @@ export default async (request) => {
     request.headers.get(
       "stripe-signature"
     );
+
 
   try {
 
@@ -654,6 +1187,7 @@ export default async (request) => {
 
   let event;
 
+
   try {
 
     event =
@@ -681,7 +1215,8 @@ export default async (request) => {
 
 
   /*
-    We care about completed Checkout Sessions.
+    WE CARE ABOUT COMPLETED
+    CHECKOUT SESSIONS
   */
 
   if (
@@ -691,6 +1226,7 @@ export default async (request) => {
 
     const session =
       event.data?.object;
+
 
     if (!session) {
       return json({
@@ -718,6 +1254,7 @@ export default async (request) => {
       const quoteId =
         session.metadata?.quote_id;
 
+
       if (!quoteId) {
 
         console.error(
@@ -739,6 +1276,7 @@ export default async (request) => {
       const setupIntentId =
         session.setup_intent;
 
+
       if (!setupIntentId) {
 
         console.error(
@@ -758,10 +1296,6 @@ export default async (request) => {
 
 
       try {
-
-        /*
-          Retrieve SetupIntent.
-        */
 
         const setupIntent =
           await stripeGet(
@@ -787,13 +1321,6 @@ export default async (request) => {
           null;
 
 
-        /*
-          Retrieve current quote BEFORE changing it.
-
-          Stripe can send the same webhook
-          more than once.
-        */
-
         const existingQuote =
           await getQuote(
             quoteId,
@@ -810,14 +1337,7 @@ export default async (request) => {
 
 
         /*
-          Duplicate setup protection.
-
-          If this exact Checkout Session was
-          already processed, acknowledge it.
-
-          Do NOT:
-          - rewrite card_saved_at
-          - resend confirmation email
+          DUPLICATE SETUP PROTECTION
         */
 
         if (
@@ -867,7 +1387,7 @@ export default async (request) => {
 
 
         /*
-          Save Stripe references.
+          SAVE STRIPE REFERENCES
         */
 
         const updatedQuote =
@@ -904,14 +1424,9 @@ export default async (request) => {
 
 
         /*
-          Send customer confirmation.
+          CUSTOMER BOOKING CONFIRMATION
 
-          IMPORTANT:
-          This is NON-FATAL.
-
-          If Resend fails, the card was still
-          saved correctly and Stripe receives
-          a successful webhook response.
+          NON-FATAL
         */
 
         let confirmationEmailSent =
@@ -1003,11 +1518,9 @@ export default async (request) => {
       RECOVERY PAYMENT CHECKOUT
       ==================================================
 
-      This is the payment page used when
-      the original saved-card charge failed.
-
       Customer enters another payment method
-      through Stripe Checkout.
+      through Stripe Checkout after the
+      original saved-card charge failed.
     */
 
     if (
@@ -1068,7 +1581,7 @@ export default async (request) => {
       try {
 
         /*
-          Retrieve authoritative PaymentIntent.
+          RETRIEVE AUTHORITATIVE PAYMENTINTENT
         */
 
         const paymentIntent =
@@ -1079,7 +1592,7 @@ export default async (request) => {
 
 
         /*
-          Retrieve authoritative quote.
+          RETRIEVE AUTHORITATIVE QUOTE
         */
 
         const quote =
@@ -1098,11 +1611,12 @@ export default async (request) => {
 
 
         /*
-          Exact duplicate webhook.
+          EXACT DUPLICATE WEBHOOK
 
-          Same quote.
-          Same successful PaymentIntent.
-          Already recorded as charged.
+          DO NOT:
+          - update again
+          - resend customer receipt
+          - resend owner notification
         */
 
         if (
@@ -1144,10 +1658,8 @@ export default async (request) => {
 
 
         /*
-          Quote already paid by a different
-          PaymentIntent.
-
-          Never overwrite it.
+          QUOTE ALREADY PAID BY
+          ANOTHER PAYMENTINTENT
         */
 
         if (
@@ -1181,8 +1693,8 @@ export default async (request) => {
 
 
         /*
-          Recovery should only complete
-          after service completion.
+          RECOVERY PAYMENT ONLY AFTER
+          SERVICE COMPLETION
         */
 
         if (
@@ -1197,8 +1709,7 @@ export default async (request) => {
 
 
         /*
-          Confirm Stripe says the payment
-          actually succeeded.
+          CONFIRM STRIPE PAYMENT SUCCEEDED
         */
 
         if (
@@ -1213,8 +1724,7 @@ export default async (request) => {
 
 
         /*
-          Confirm payment belongs to the
-          correct Stripe customer.
+          CONFIRM CORRECT STRIPE CUSTOMER
         */
 
         const expectedCustomer =
@@ -1246,8 +1756,7 @@ export default async (request) => {
 
 
         /*
-          Confirm amount matches the
-          server-side quote exactly.
+          CONFIRM EXACT SERVER-SIDE AMOUNT
         */
 
         const expectedAmount =
@@ -1291,7 +1800,7 @@ export default async (request) => {
 
 
         /*
-          Confirm currency.
+          CONFIRM CURRENCY
         */
 
         if (
@@ -1309,7 +1818,7 @@ export default async (request) => {
 
 
         /*
-          Confirm PaymentIntent metadata.
+          CONFIRM PAYMENTINTENT METADATA
         */
 
         if (
@@ -1337,13 +1846,7 @@ export default async (request) => {
 
 
         /*
-          Stripe Checkout can save the
-          newly used payment method.
-
-          If available, replace the old
-          saved payment method so future
-          authorized charges use the
-          successful method.
+          SAVE SUCCESSFULLY USED PAYMENT METHOD
         */
 
         const successfulPaymentMethodId =
@@ -1376,7 +1879,7 @@ export default async (request) => {
 
 
         /*
-          Record successful recovery payment.
+          RECORD SUCCESSFUL RECOVERY PAYMENT
         */
 
         const updatedQuote =
@@ -1395,6 +1898,113 @@ export default async (request) => {
         );
 
 
+        /*
+          CUSTOMER PAYMENT CONFIRMATION
+
+          NON-FATAL.
+
+          IMPORTANT:
+          Database is already CHARGED before
+          we attempt this email.
+        */
+
+        let customerEmailSent =
+          false;
+
+
+        try {
+
+          const emailResult =
+            await sendRecoveryPaymentConfirmation(
+              updatedQuote || quote,
+              paymentIntent,
+              process.env.RESEND_API_KEY,
+              process.env.FROM_EMAIL
+            );
+
+
+          customerEmailSent =
+            !!emailResult?.ok;
+
+
+          if (
+            customerEmailSent
+          ) {
+
+            console.log(
+              "Recovery payment confirmation email sent:",
+              quoteId,
+              emailResult?.email_id ||
+                null
+            );
+          }
+
+        } catch (emailError) {
+
+          console.error(
+            "Recovery customer payment email failed:",
+            quoteId,
+            emailError.message
+          );
+        }
+
+
+        /*
+          OWNER RECOVERY PAYMENT NOTIFICATION
+
+          ALSO NON-FATAL.
+        */
+
+        let ownerEmailSent =
+          false;
+
+
+        try {
+
+          const ownerEmailResult =
+            await sendRecoveryOwnerNotification(
+              updatedQuote || quote,
+              paymentIntent,
+              customerEmailSent,
+              process.env.RESEND_API_KEY,
+              process.env.FROM_EMAIL
+            );
+
+
+          ownerEmailSent =
+            !!ownerEmailResult?.ok;
+
+
+          if (
+            ownerEmailSent
+          ) {
+
+            console.log(
+              "Recovery owner notification sent:",
+              quoteId,
+              ownerEmailResult?.email_id ||
+                null
+            );
+          }
+
+        } catch (emailError) {
+
+          console.error(
+            "Recovery owner notification failed:",
+            quoteId,
+            emailError.message
+          );
+        }
+
+
+        /*
+          SUCCESS
+
+          Email failures DO NOT make Stripe
+          retry a payment that was successfully
+          recorded.
+        */
+
         return json({
           received: true,
 
@@ -1411,7 +2021,13 @@ export default async (request) => {
             "charged",
 
           payment_intent_id:
-            paymentIntent.id
+            paymentIntent.id,
+
+          customer_email_sent:
+            customerEmailSent,
+
+          owner_email_sent:
+            ownerEmailSent
         });
 
 
@@ -1424,14 +2040,10 @@ export default async (request) => {
 
 
         /*
-          Return 500 so Stripe retries.
+          RETURN 500 SO STRIPE RETRIES
+          DATABASE/VALIDATION FAILURES.
 
-          IMPORTANT:
-          Stripe may already have received
-          the customer's money at this point.
-
-          We NEVER create another charge
-          from inside this webhook.
+          WE NEVER CREATE A NEW CHARGE HERE.
         */
 
         return json(
@@ -1451,8 +2063,7 @@ export default async (request) => {
 
 
     /*
-      Checkout completed, but it was neither
-      our setup flow nor our recovery flow.
+      UNRELATED CHECKOUT SESSION
     */
 
     console.log(
@@ -1467,8 +2078,7 @@ export default async (request) => {
 
 
   /*
-    Other Stripe events can safely
-    be acknowledged.
+    ACKNOWLEDGE OTHER STRIPE EVENTS
   */
 
   return json({
