@@ -167,10 +167,6 @@ async function updateQuote(
 }
 
 
-/*
-  Payment confirmation email helpers.
-*/
-
 function escapeHtml(value) {
   return String(value ?? "")
     .replace(/&/g, "&amp;")
@@ -203,19 +199,6 @@ function formatUsd(cents) {
   );
 }
 
-
-/*
-  Send payment confirmation AFTER:
-  1. Stripe confirms the charge succeeded.
-  2. Supabase is updated to "charged".
-
-  IMPORTANT:
-  Email failure is NON-FATAL.
-
-  The customer has already been charged at
-  this point, so an email problem must never
-  cause another payment attempt.
-*/
 
 async function sendPaymentConfirmation(
   quote,
@@ -502,28 +485,18 @@ async function sendPaymentConfirmation(
     throw new Error(
       data?.message ||
       data?.error ||
-      `Resend returned status ${response.status}.`
+      `Payment confirmation email failed with status ${response.status}`
     );
   }
 
 
   return {
     ok: true,
-
     email_id:
       data?.id || null
   };
 }
 
-
-/*
-  Classify Stripe failures.
-
-  Any failure that requires the customer to
-  authenticate, replace their card, contact
-  their bank, or use another payment method
-  should open the secure recovery flow.
-*/
 
 function classifyStripeFailure(error) {
   const stripeCode =
@@ -536,20 +509,11 @@ function classifyStripeFailure(error) {
       error?.declineCode || ""
     ).toLowerCase();
 
-  const stripeType =
-    String(
-      error?.stripeType || ""
-    ).toLowerCase();
-
-  const paymentIntentStatus =
+  const paymentStatus =
     String(
       error?.paymentIntent?.status || ""
     ).toLowerCase();
 
-
-  /*
-    Authentication / 3D Secure required.
-  */
 
   const authenticationRequired =
     stripeCode ===
@@ -558,7 +522,7 @@ function classifyStripeFailure(error) {
     declineCode ===
       "authentication_required" ||
 
-    paymentIntentStatus ===
+    paymentStatus ===
       "requires_action";
 
 
@@ -576,109 +540,55 @@ function classifyStripeFailure(error) {
   }
 
 
-  /*
-    Insufficient funds.
-
-    The saved card cannot complete the charge.
-    The customer should be sent back through
-    secure Stripe Checkout so they can use
-    another payment method.
-  */
-
-  if (
-    declineCode ===
-      "insufficient_funds" ||
-
-    stripeCode ===
-      "insufficient_funds"
-  ) {
-    return {
-      failure_type:
-        "insufficient_funds",
-
-      customer_action_required:
-        true,
-
-      customer_message:
-        "The customer's saved payment method has insufficient funds. Send the customer the secure payment link so they can use another payment method."
-    };
-  }
-
-
-  /*
-    Other card declines.
-
-    Stripe commonly returns:
-      code = card_declined
-      decline_code = the specific reason
-
-    These should also use the recovery link.
-  */
-
   const cardDeclined =
     stripeCode ===
       "card_declined" ||
 
-    stripeType ===
-      "card_error";
+    declineCode ===
+      "generic_decline" ||
+
+    declineCode ===
+      "insufficient_funds" ||
+
+    declineCode ===
+      "lost_card" ||
+
+    declineCode ===
+      "stolen_card" ||
+
+    declineCode ===
+      "expired_card" ||
+
+    declineCode ===
+      "incorrect_cvc" ||
+
+    declineCode ===
+      "processing_error";
 
 
   if (cardDeclined) {
     return {
       failure_type:
-        declineCode ||
         "card_declined",
 
       customer_action_required:
         true,
 
       customer_message:
-        "The customer's saved payment method was declined. Send the customer the secure payment link so they can use another payment method."
+        "The saved card could not be charged. Send the customer the secure payment link so they can use another payment method."
     };
   }
 
-
-  /*
-    PaymentIntent states where Stripe is
-    explicitly waiting for a different or
-    corrected payment method.
-  */
-
-  if (
-    paymentIntentStatus ===
-      "requires_payment_method"
-  ) {
-    return {
-      failure_type:
-        "requires_payment_method",
-
-      customer_action_required:
-        true,
-
-      customer_message:
-        "The saved payment method could not complete the payment. Send the customer the secure payment link so they can use another payment method."
-    };
-  }
-
-
-  /*
-    Unknown/system failure.
-
-    Do NOT automatically send the customer
-    through recovery because this may be an
-    API/configuration/server problem rather
-    than a card problem.
-  */
 
   return {
     failure_type:
       "payment_failed",
 
     customer_action_required:
-      false,
+      true,
 
     customer_message:
-      "Stripe could not complete this payment. Review the payment before trying again."
+      "The payment could not be completed. Send the customer the secure payment link to complete payment."
   };
 }
 
@@ -686,15 +596,15 @@ function classifyStripeFailure(error) {
 export default async (request) => {
 
   /*
-    Only the owner dashboard should POST
-    to this function.
+    ONLY POST
   */
 
   if (request.method !== "POST") {
     return json(
       {
         ok: false,
-        error: "Method not allowed."
+        error:
+          "Method not allowed."
       },
       405
     );
@@ -702,7 +612,7 @@ export default async (request) => {
 
 
   /*
-    Private server configuration.
+    SERVER CONFIGURATION
   */
 
   const adminPassword =
@@ -736,25 +646,26 @@ export default async (request) => {
 
 
   /*
-    Require the owner password.
-
-    The Stripe secret and Supabase service
-    key never leave the server.
+    ADMIN AUTHENTICATION
   */
 
   const suppliedPassword =
-    request.headers.get(
-      "x-admin-password"
+    String(
+      request.headers.get(
+        "x-admin-password"
+      ) || ""
     );
 
+
   if (
-    !suppliedPassword ||
-    suppliedPassword !== adminPassword
+    suppliedPassword !==
+    adminPassword
   ) {
     return json(
       {
         ok: false,
-        error: "Unauthorized."
+        error:
+          "Unauthorized."
       },
       401
     );
@@ -762,13 +673,11 @@ export default async (request) => {
 
 
   /*
-    Read the quote ID.
-
-    IMPORTANT:
-    The browser does NOT send us the amount.
+    REQUEST BODY
   */
 
   let body;
+
 
   try {
     body =
@@ -777,7 +686,8 @@ export default async (request) => {
     return json(
       {
         ok: false,
-        error: "Invalid JSON body."
+        error:
+          "Invalid JSON body."
       },
       400
     );
@@ -785,14 +695,17 @@ export default async (request) => {
 
 
   const quoteId =
-    String(body.quote_id || "").trim();
+    String(
+      body.quote_id || ""
+    ).trim();
 
 
   if (!quoteId) {
     return json(
       {
         ok: false,
-        error: "Quote ID is required."
+        error:
+          "Quote ID is required."
       },
       400
     );
@@ -800,23 +713,33 @@ export default async (request) => {
 
 
   /*
-    Get the authoritative booking record
-    directly from Supabase.
+    LOAD BOOKING FROM DATABASE.
+
+    NEVER trust:
+    - browser amount
+    - browser customer ID
+    - browser payment method
+    - browser booking status
   */
 
   let quote;
 
+
   try {
+
     quote =
       await getQuote(
         quoteId,
         supabaseUrl,
         serviceRoleKey
       );
+
   } catch (error) {
+
     return json(
       {
         ok: false,
+
         error:
           error.message ||
           "Could not retrieve booking."
@@ -830,7 +753,8 @@ export default async (request) => {
     return json(
       {
         ok: false,
-        error: "Booking not found."
+        error:
+          "Booking not found."
       },
       404
     );
@@ -838,44 +762,110 @@ export default async (request) => {
 
 
   /*
-    Prevent duplicate charges.
+    DUPLICATE CHARGE PROTECTION.
 
-    A booking must be COMPLETED before
-    this endpoint will attempt payment.
+    If our database already says charged,
+    NEVER create another PaymentIntent.
   */
 
-  if (quote.status === "charged") {
+  if (
+    quote.status === "charged"
+  ) {
+    return json({
+      ok: true,
+
+      already_charged:
+        true,
+
+      message:
+        "This booking has already been charged.",
+
+      quote_id:
+        quote.id,
+
+      quote_number:
+        quote.quote_number ||
+        null,
+
+      status:
+        "charged",
+
+      payment_intent_id:
+        quote.stripe_payment_intent_id ||
+        null,
+
+      charged_at:
+        quote.charged_at ||
+        null,
+
+      amount:
+        quote.quoted_price,
+
+      amount_formatted:
+        formatUsd(
+          quote.quoted_price
+        )
+    });
+  }
+
+
+  /*
+    EXTRA DUPLICATE PROTECTION.
+
+    If a PaymentIntent is already recorded,
+    do not risk charging again even if the
+    status was accidentally not updated.
+  */
+
+  if (
+    quote.stripe_payment_intent_id
+  ) {
     return json(
       {
         ok: false,
+
+        payment_may_have_succeeded:
+          true,
+
         error:
-          "This customer has already been charged."
+          "A Stripe payment is already associated with this booking. Review the payment before trying again.",
+
+        payment_intent_id:
+          quote.stripe_payment_intent_id
       },
       409
     );
   }
 
 
-  if (quote.status !== "completed") {
+  /*
+    CUSTOMER MAY ONLY BE CHARGED AFTER
+    CLEANING IS MARKED COMPLETE.
+  */
+
+  if (
+    quote.status !== "completed"
+  ) {
     return json(
       {
         ok: false,
+
         error:
           `This booking cannot be charged while its status is "${quote.status}".`
       },
-      400
+      409
     );
   }
 
 
   /*
-    Validate the SERVER-SIDE amount.
-
-    quoted_price is stored in cents.
+    VALIDATE SERVER-SIDE AMOUNT.
   */
 
   const amount =
-    Number(quote.quoted_price);
+    Number(
+      quote.quoted_price
+    );
 
 
   if (
@@ -885,6 +875,7 @@ export default async (request) => {
     return json(
       {
         ok: false,
+
         error:
           "This booking does not have a valid charge amount."
       },
@@ -894,26 +885,41 @@ export default async (request) => {
 
 
   /*
-    The card must already have been saved
-    through Stripe Checkout.
+    VALIDATE SAVED STRIPE CUSTOMER
+    AND PAYMENT METHOD.
   */
 
   const stripeCustomerId =
-    quote.stripe_customer_id;
+    String(
+      quote.stripe_customer_id || ""
+    ).trim();
 
-  const paymentMethodId =
-    quote.stripe_payment_method_id;
+
+  const stripePaymentMethodId =
+    String(
+      quote.stripe_payment_method_id || ""
+    ).trim();
 
 
   if (
     !stripeCustomerId ||
-    !paymentMethodId
+    !stripePaymentMethodId
   ) {
     return json(
       {
         ok: false,
+
         error:
-          "This booking does not have a saved payment method."
+          "This booking does not have a saved payment method.",
+
+        customer_action_required:
+          true,
+
+        failure_type:
+          "requires_payment_method",
+
+        customer_message:
+          "The customer needs to provide a valid payment method before payment can be completed."
       },
       400
     );
@@ -921,16 +927,17 @@ export default async (request) => {
 
 
   /*
-    Build the Stripe PaymentIntent.
+    CREATE OFF-SESSION PAYMENTINTENT.
 
-    off_session=true:
-    The customer is not actively entering
-    their card during this charge.
+    We use a deterministic idempotency key
+    based on the booking ID.
 
-    confirm=true:
-    Stripe immediately attempts payment.
-
-    The amount comes ONLY from Supabase.
+    This prevents accidental duplicate
+    PaymentIntent creation if:
+    - admin double-clicks
+    - browser retries
+    - Netlify retries
+    - request times out
   */
 
   const params =
@@ -957,13 +964,7 @@ export default async (request) => {
 
   params.set(
     "payment_method",
-    paymentMethodId
-  );
-
-
-  params.set(
-    "off_session",
-    "true"
+    stripePaymentMethodId
   );
 
 
@@ -974,14 +975,20 @@ export default async (request) => {
 
 
   params.set(
+    "off_session",
+    "true"
+  );
+
+
+  params.set(
     "description",
-    `The Fresh Standard Co. cleaning ${quote.quote_number || quoteId}`
+    `The Fresh Standard Co. — ${quote.quote_number || quote.id}`
   );
 
 
   params.set(
     "metadata[quote_id]",
-    quoteId
+    quote.id
   );
 
 
@@ -991,17 +998,14 @@ export default async (request) => {
   );
 
 
-  /*
-    Idempotency protects against accidental
-    duplicate Stripe PaymentIntents if the
-    owner double-clicks or the request retries.
+  params.set(
+    "metadata[payment_type]",
+    "cleaning_service"
+  );
 
-    Each booking gets one deterministic
-    completion charge key.
-  */
 
   const idempotencyKey =
-    `fresh-standard-charge-${quoteId}`;
+    `fresh-standard-charge-${quote.id}`;
 
 
   let paymentIntent;
@@ -1022,11 +1026,7 @@ export default async (request) => {
     /*
       Stripe did NOT report a successful charge.
 
-      Classify the failure so the dashboard
-      knows whether the customer needs to
-      authenticate or replace their card.
-
-      We do NOT mark the booking charged.
+      We DO NOT update Supabase to charged.
     */
 
     console.error(
@@ -1036,7 +1036,9 @@ export default async (request) => {
 
 
     const failure =
-      classifyStripeFailure(error);
+      classifyStripeFailure(
+        error
+      );
 
 
     return json(
@@ -1059,16 +1061,20 @@ export default async (request) => {
           failure.customer_message,
 
         stripe_code:
-          error.stripeCode || null,
+          error.stripeCode ||
+          null,
 
         decline_code:
-          error.declineCode || null,
+          error.declineCode ||
+          null,
 
         payment_status:
-          error.paymentIntent?.status || null,
+          error.paymentIntent?.status ||
+          null,
 
         payment_intent_id:
-          error.paymentIntent?.id || null
+          error.paymentIntent?.id ||
+          null
       },
       402
     );
@@ -1076,8 +1082,7 @@ export default async (request) => {
 
 
   /*
-    We only mark the booking charged if
-    Stripe explicitly reports success.
+    STRIPE MUST EXPLICITLY REPORT SUCCESS.
   */
 
   if (
@@ -1142,7 +1147,7 @@ export default async (request) => {
 
 
   /*
-    Stripe succeeded.
+    STRIPE SUCCEEDED.
 
     NOW update Supabase.
   */
@@ -1178,11 +1183,12 @@ export default async (request) => {
   } catch (error) {
 
     /*
-      Important:
+      IMPORTANT:
+
       Stripe already charged successfully.
 
-      Return a special error instead of
-      attempting another payment.
+      Never attempt another payment just
+      because Supabase failed to update.
     */
 
     console.error(
@@ -1195,7 +1201,8 @@ export default async (request) => {
       {
         ok: false,
 
-        payment_succeeded: true,
+        payment_succeeded:
+          true,
 
         error:
           "Stripe charged the customer, but the booking record could not be updated.",
@@ -1212,14 +1219,11 @@ export default async (request) => {
 
 
   /*
-    PAYMENT CONFIRMATION EMAIL
+    CUSTOMER PAYMENT CONFIRMATION.
 
-    Stripe has succeeded AND Supabase has
-    recorded the booking as charged.
+    Stripe succeeded AND Supabase says charged.
 
-    Email delivery is intentionally non-fatal.
-    We must never retry or reverse a successful
-    payment merely because an email fails.
+    Email failure is NON-FATAL.
   */
 
   let paymentEmailSent =
@@ -1245,7 +1249,8 @@ export default async (request) => {
       console.log(
         "Payment confirmation email sent:",
         quoteId,
-        emailResult?.email_id || null
+        emailResult?.email_id ||
+        null
       );
     }
 
@@ -1258,6 +1263,658 @@ export default async (request) => {
     );
   }
 
+
+  /*
+    OWNER PAYMENT SUCCESS NOTIFICATION.
+
+    Payment and database update are already
+    complete before this runs.
+
+    Email failure is NON-FATAL.
+  */
+
+  let ownerPaymentEmailSent =
+    false;
+
+
+  const resendApiKey =
+    process.env.RESEND_API_KEY;
+
+
+  const fromEmail =
+    process.env.FROM_EMAIL;
+
+
+  if (
+    resendApiKey &&
+    fromEmail
+  ) {
+
+    try {
+
+      const amountFormatted =
+        (
+          amount / 100
+        ).toLocaleString(
+          "en-US",
+          {
+            style:
+              "currency",
+
+            currency:
+              "USD"
+          }
+        );
+
+
+      const finalQuote =
+        updatedQuote ||
+        quote;
+
+
+      const quoteNumber =
+        finalQuote?.quote_number ||
+        quoteId;
+
+
+      const customerName =
+        finalQuote?.customer_name ||
+        "";
+
+
+      const customerEmail =
+        finalQuote?.customer_email ||
+        "";
+
+
+      const customerPhone =
+        finalQuote?.customer_phone ||
+        "";
+
+
+      const service =
+        finalQuote?.service_type ||
+        "Cleaning Service";
+
+
+      const ownerText = [
+        "A customer payment has been completed successfully.",
+        "",
+        `Quote: ${quoteNumber}`,
+        `Customer: ${customerName}`,
+        `Email: ${customerEmail}`,
+        `Phone: ${customerPhone}`,
+        `Service: ${service}`,
+        `Amount Paid: ${amountFormatted}`,
+        "",
+        `Stripe PaymentIntent: ${paymentIntent.id}`,
+        `Stripe Status: ${paymentIntent.status}`,
+        "Booking Status: CHARGED",
+        "",
+        paymentEmailSent
+          ? "Customer payment confirmation email: Sent successfully."
+          : "Customer payment confirmation email: Not sent or failed."
+      ].join("\n");
+
+
+      const ownerHtml = `
+<!doctype html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1"
+>
+</head>
+
+<body
+  style="
+    margin:0;
+    padding:0;
+    background:#f4f1e9;
+    font-family:Arial,Helvetica,sans-serif;
+    color:#1c2823;
+  "
+>
+
+<table
+  role="presentation"
+  width="100%"
+  cellspacing="0"
+  cellpadding="0"
+  border="0"
+  style="
+    width:100%;
+    background:#f4f1e9;
+    padding:36px 16px;
+  "
+>
+
+<tr>
+<td align="center">
+
+<table
+  role="presentation"
+  width="100%"
+  cellspacing="0"
+  cellpadding="0"
+  border="0"
+  style="
+    width:100%;
+    max-width:620px;
+    background:#fffdf8;
+    border-radius:24px;
+    overflow:hidden;
+    border:1px solid #dce2dc;
+  "
+>
+
+<tr>
+<td
+  style="
+    background:#17352b;
+    padding:30px 34px;
+    color:#ffffff;
+  "
+>
+
+<div
+  style="
+    font-family:Georgia,serif;
+    font-size:23px;
+    letter-spacing:2px;
+  "
+>
+  THE FRESH
+</div>
+
+<div
+  style="
+    margin-top:4px;
+    color:#c8d3cc;
+    font-size:11px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+  "
+>
+  Standard Co.
+</div>
+
+</td>
+</tr>
+
+
+<tr>
+<td
+  style="
+    padding:42px 36px;
+  "
+>
+
+<div
+  style="
+    color:#718679;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    margin-bottom:10px;
+  "
+>
+  Payment Successful
+</div>
+
+
+<h1
+  style="
+    margin:0;
+    color:#17352b;
+    font-family:Georgia,serif;
+    font-size:34px;
+    font-weight:400;
+    line-height:1.2;
+  "
+>
+  Customer payment received.
+</h1>
+
+
+<p
+  style="
+    margin:18px 0 0;
+    color:#69756f;
+    font-size:15px;
+    line-height:1.7;
+  "
+>
+  Stripe successfully processed the cleaning
+  payment and the booking has been updated
+  to CHARGED.
+</p>
+
+
+<div
+  style="
+    margin-top:28px;
+    padding:24px;
+    background:#eef2ed;
+    border-radius:18px;
+  "
+>
+
+<div
+  style="
+    color:#69756f;
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+  "
+>
+  Amount Paid
+</div>
+
+<div
+  style="
+    margin-top:7px;
+    color:#17352b;
+    font-family:Georgia,serif;
+    font-size:30px;
+  "
+>
+  ${escapeHtml(amountFormatted)}
+</div>
+
+</div>
+
+
+<table
+  role="presentation"
+  width="100%"
+  cellspacing="0"
+  cellpadding="0"
+  border="0"
+  style="
+    margin-top:24px;
+    border-collapse:collapse;
+  "
+>
+
+<tr>
+
+<td
+  style="
+    padding:12px 0;
+    border-bottom:1px solid #e5e8e3;
+    color:#69756f;
+    font-size:13px;
+  "
+>
+  Quote
+</td>
+
+<td
+  align="right"
+  style="
+    padding:12px 0;
+    border-bottom:1px solid #e5e8e3;
+    color:#1c2823;
+    font-size:13px;
+    font-weight:700;
+  "
+>
+  ${escapeHtml(quoteNumber)}
+</td>
+
+</tr>
+
+
+<tr>
+
+<td
+  style="
+    padding:12px 0;
+    border-bottom:1px solid #e5e8e3;
+    color:#69756f;
+    font-size:13px;
+  "
+>
+  Customer
+</td>
+
+<td
+  align="right"
+  style="
+    padding:12px 0;
+    border-bottom:1px solid #e5e8e3;
+    color:#1c2823;
+    font-size:13px;
+    font-weight:700;
+  "
+>
+  ${escapeHtml(customerName)}
+</td>
+
+</tr>
+
+
+<tr>
+
+<td
+  style="
+    padding:12px 0;
+    border-bottom:1px solid #e5e8e3;
+    color:#69756f;
+    font-size:13px;
+  "
+>
+  Email
+</td>
+
+<td
+  align="right"
+  style="
+    padding:12px 0;
+    border-bottom:1px solid #e5e8e3;
+    color:#1c2823;
+    font-size:13px;
+    font-weight:700;
+  "
+>
+  ${escapeHtml(customerEmail)}
+</td>
+
+</tr>
+
+
+<tr>
+
+<td
+  style="
+    padding:12px 0;
+    border-bottom:1px solid #e5e8e3;
+    color:#69756f;
+    font-size:13px;
+  "
+>
+  Phone
+</td>
+
+<td
+  align="right"
+  style="
+    padding:12px 0;
+    border-bottom:1px solid #e5e8e3;
+    color:#1c2823;
+    font-size:13px;
+    font-weight:700;
+  "
+>
+  ${escapeHtml(customerPhone)}
+</td>
+
+</tr>
+
+
+<tr>
+
+<td
+  style="
+    padding:12px 0;
+    border-bottom:1px solid #e5e8e3;
+    color:#69756f;
+    font-size:13px;
+  "
+>
+  Service
+</td>
+
+<td
+  align="right"
+  style="
+    padding:12px 0;
+    border-bottom:1px solid #e5e8e3;
+    color:#1c2823;
+    font-size:13px;
+    font-weight:700;
+  "
+>
+  ${escapeHtml(service)}
+</td>
+
+</tr>
+
+
+<tr>
+
+<td
+  style="
+    padding:12px 0;
+    border-bottom:1px solid #e5e8e3;
+    color:#69756f;
+    font-size:13px;
+  "
+>
+  Payment Status
+</td>
+
+<td
+  align="right"
+  style="
+    padding:12px 0;
+    border-bottom:1px solid #e5e8e3;
+    color:#17352b;
+    font-size:13px;
+    font-weight:700;
+  "
+>
+  SUCCEEDED
+</td>
+
+</tr>
+
+
+<tr>
+
+<td
+  style="
+    padding:12px 0;
+    border-bottom:1px solid #e5e8e3;
+    color:#69756f;
+    font-size:13px;
+  "
+>
+  Booking Status
+</td>
+
+<td
+  align="right"
+  style="
+    padding:12px 0;
+    border-bottom:1px solid #e5e8e3;
+    color:#17352b;
+    font-size:13px;
+    font-weight:700;
+  "
+>
+  CHARGED
+</td>
+
+</tr>
+
+
+<tr>
+
+<td
+  style="
+    padding:12px 0;
+    color:#69756f;
+    font-size:13px;
+  "
+>
+  Customer Receipt
+</td>
+
+<td
+  align="right"
+  style="
+    padding:12px 0;
+    color:#1c2823;
+    font-size:13px;
+    font-weight:700;
+  "
+>
+  ${
+    paymentEmailSent
+      ? "Sent successfully"
+      : "Not sent or failed"
+  }
+</td>
+
+</tr>
+
+</table>
+
+
+<div
+  style="
+    margin-top:26px;
+    padding:18px;
+    background:#f7f5ef;
+    border:1px solid #e5e8e3;
+    border-radius:15px;
+  "
+>
+
+<div
+  style="
+    color:#69756f;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:1.4px;
+    margin-bottom:7px;
+  "
+>
+  Stripe PaymentIntent
+</div>
+
+<div
+  style="
+    color:#17352b;
+    font-size:13px;
+    line-height:1.6;
+    word-break:break-all;
+  "
+>
+  ${escapeHtml(paymentIntent.id)}
+</div>
+
+</div>
+
+</td>
+</tr>
+
+
+<tr>
+
+<td
+  style="
+    padding:22px 36px;
+    background:#f7f5ef;
+    border-top:1px solid #e5e8e3;
+    color:#718079;
+    font-size:12px;
+    line-height:1.6;
+  "
+>
+  The Fresh Standard Co.<br>
+  Payment processing notification.
+</td>
+
+</tr>
+
+</table>
+
+</td>
+</tr>
+
+</table>
+
+</body>
+</html>
+      `.trim();
+
+
+      const ownerResponse =
+        await fetch(
+          "https://api.resend.com/emails",
+          {
+            method: "POST",
+
+            headers: {
+              Authorization:
+                `Bearer ${resendApiKey}`,
+
+              "content-type":
+                "application/json"
+            },
+
+            body:
+              JSON.stringify({
+                from:
+                  fromEmail,
+
+                to: [
+                  "thefreshstandardco@outlook.com"
+                ],
+
+                subject:
+                  `Payment Received — ${quoteNumber}`,
+
+                text:
+                  ownerText,
+
+                html:
+                  ownerHtml
+              })
+          }
+        );
+
+
+      ownerPaymentEmailSent =
+        ownerResponse.ok;
+
+
+      if (!ownerResponse.ok) {
+
+        const ownerError =
+          await ownerResponse
+            .text()
+            .catch(() => "");
+
+
+        console.error(
+          "Owner payment notification failed:",
+          ownerResponse.status,
+          ownerError
+        );
+      }
+
+    } catch (ownerEmailError) {
+
+      console.error(
+        "Owner payment notification error:",
+        ownerEmailError
+      );
+    }
+  }
+
+
+  /*
+    FINAL SUCCESS RESPONSE
+  */
 
   return json({
     ok: true,
@@ -1276,14 +1933,18 @@ export default async (request) => {
       amount,
 
     amount_formatted:
-      (amount / 100)
-        .toLocaleString(
-          "en-US",
-          {
-            style: "currency",
-            currency: "USD"
-          }
-        ),
+      (
+        amount / 100
+      ).toLocaleString(
+        "en-US",
+        {
+          style:
+            "currency",
+
+          currency:
+            "USD"
+        }
+      ),
 
     payment_intent_id:
       paymentIntent.id,
@@ -1296,6 +1957,9 @@ export default async (request) => {
       chargedAt,
 
     payment_confirmation_email_sent:
-      paymentEmailSent
+      paymentEmailSent,
+
+    owner_payment_email_sent:
+      ownerPaymentEmailSent
   });
 };
